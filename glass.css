@@ -197,3 +197,6 @@ body::after {
   .reel-vid[data-scrub] { inset: 9% auto auto 50%; width: 170vw; height: auto; aspect-ratio: 16 / 9; object-fit: cover; translate: -71% 0;
     -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent); mask-image: radial-gradient(closest-side, #000 72%, transparent); }
 }
+
+/* Слоган першого екрана (Алекс, 2026-11-19): окремий рядок над описом */
+.reel-card .slogan { display: block; margin-bottom: .7em; font-family: Unbounded, "Arial Black", sans-serif; font-weight: 500; font-size: 1.12em; line-height: 1.35; color: #17201b; }
