@@ -65,8 +65,12 @@
         <h2>Самовивіз у Львові</h2><p>Замовлення можна забрати в Акордеон Центрі. Адресу й час узгоджуємо телефоном, щоб товар уже чекав на вас.</p>
         <h2>Оплата</h2><p>Спосіб оплати узгоджуємо під час підтвердження замовлення телефоном.</p>
         <h2>Інструменти</h2><p>Нові акордеони часто їдуть під замовлення від виробника. Термін і умови скажемо, коли зателефонуєте.</p>`,
-      service: `<p>Ремонтуємо кнопкові й клавішні акордеони та готуємо інструменти до продажу. Усі деталі з каталогу є в нас під рукою, тож ремонт не чекає на запчастини.</p>
-        <h2>Як записатися</h2><p>Зателефонуйте й розкажіть, що з інструментом: модель, що саме не працює. Домовимося про огляд.</p>`,
+      service: `<p>Ремонтуємо кнопкові й клавішні акордеони та баяни і готуємо інструменти до продажу. Деталі з каталогу є в нас під рукою, тож ремонт не чекає на запчастини.</p>
+        <h2>Міх</h2><p>Переклеюємо ледерин, міняємо картон, кутники, шпильки й ущільнювач між корпусом і міхом. Коли старий міх уже не відновити, ставимо новий італійський.</p><p><a href="#/c/11">Деталі для міха в каталозі</a></p>
+        <h2>Голоси</h2><p>Чистимо й настроюємо голосові планки, міняємо клапани (залоги) і віск.</p><p><a href="#/c/31">Деталі для голосів</a></p>
+        <h2>Клавіатура й механіка</h2><p>Міняємо клавіші, ґудзики, кнопки, пружини, клапани, фетр і повсть. Прибираємо западання клавіш, стук і зайві шуми механіки.</p><p><a href="#/c/4">Деталі клавіатури й механіки</a></p>
+        <h2>Регістри й корпус</h2><p>Відновлюємо регістрові перемикачі, кріплення ременів, ніжки, целулоїд і декор корпусу.</p><p><a href="#/c/26">Регістри</a> · <a href="#/c/19">Деталі корпусу</a></p>
+        <h2>Як записатися</h2><p>Зателефонуйте й розкажіть, що з інструментом: модель і що саме не працює. Домовимося про огляд.</p>`,
       contacts: `<p>Перед візитом зателефонуйте, щоб ми підготували потрібні деталі чи інструмент до огляду.</p>`,
     },
     nfTitle: 'Сторінку не знайдено', nfH: 'Такої сторінки немає',
@@ -140,7 +144,11 @@
         <h2>Pick-up in Lviv</h2><p>You can collect your order at the Accordion Centre. We agree the address and time by phone so the goods are waiting for you.</p>
         <h2>Payment</h2><p>We agree the payment method when we confirm your order by phone.</p>
         <h2>Instruments</h2><p>New accordions are often ordered from the maker. Call us and we will tell you the lead time and terms.</p>`,
-      service: `<p>We repair button and piano accordions and prepare instruments for sale. Every part in the catalogue is on hand, so a repair never waits for spares.</p>
+      service: `<p>We repair button and piano accordions and bayans and prepare instruments for sale. Every part in the catalogue is on hand, so a repair never waits for spares.</p>
+        <h2>Bellows</h2><p>We re-glue the leatherette and replace the card, corners, pins and the gasket between the body and the bellows. When old bellows can no longer be restored, we fit new Italian ones.</p><p><a href="#/c/11">Bellows parts in the catalogue</a></p>
+        <h2>Reeds</h2><p>We clean and tune the reed plates and replace the reed valves and wax.</p><p><a href="#/c/31">Reed parts</a></p>
+        <h2>Keyboard and action</h2><p>We replace keys, treble and bass buttons, springs, pallets, felt and cloth, and cure sticking keys, knocking and action noise.</p><p><a href="#/c/4">Keyboard and action parts</a></p>
+        <h2>Registers and body</h2><p>We restore register switches, strap fittings, feet, celluloid and the body trim.</p><p><a href="#/c/26">Registers</a> · <a href="#/c/19">Body parts</a></p>
         <h2>How to book</h2><p>Call and tell us about the instrument: the model and what exactly is not working. We will arrange an inspection.</p>`,
       contacts: `<p>Please call before you visit so we can have the parts or the instrument ready for you.</p>`,
     },

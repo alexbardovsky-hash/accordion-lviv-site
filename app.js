@@ -371,6 +371,7 @@
           <h2 style="margin-top:18px">${L.otherSections}</h2><ul>${roots.filter(r => r !== top).map(r => `<li><a href="#/c/${r.id}">${esc(r.name)}<span>${count(r.id)}</span></a></li>`).join('')}</ul></aside>
         <div>
           <div class="cat-head"><h1>${esc(c.name)}</h1><small>${goods(all.length)}</small></div>
+          ${(window.CAT_INTRO?.[lang] || {})[id] ? `<p class="cat-lead">${esc(window.CAT_INTRO[lang][id])}</p>` : ''}
           ${c.children.length ? `<div class="chips">${c.children.filter(count).map(k => `<a class="chip" href="#/c/${k}">${esc(cat.get(k).name)}<span>${count(k)}</span></a>`).join('')}</div>` : ''}
           <div id="list"></div>
         </div>

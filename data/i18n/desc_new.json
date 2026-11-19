@@ -1,0 +1,910 @@
+{
+ "1": {
+  "uk": "Білий ґудзик правої клавіатури баяна діаметром 15 мм. Кріпиться на шуруп, тож замінюється без клею.",
+  "en": "White 15 mm treble button for a bayan (button accordion). Fastens with a screw, so it is replaced without glue."
+ },
+ "3": {
+  "uk": "Ґудзик правої клавіатури баяна діаметром 14,5 мм, білий перламутр. Виконання з шурупом для кріплення.",
+  "en": "Treble button for a bayan (button accordion), 14.5 mm in diameter, white mother-of-pearl. Version with a fixing screw."
+ },
+ "4": {
+  "uk": "Ґудзик правої клавіатури баяна діаметром 14,5 мм, чорний перламутр.",
+  "en": "Treble button for a bayan (button accordion), 14.5 mm in diameter, black mother-of-pearl."
+ },
+ "5": {
+  "uk": "Дзеркальний золотистий ґудзик правої клавіатури баяна діаметром 14,8 мм. Виконання з шурупом для кріплення.",
+  "en": "Mirror-gold treble button for a bayan (button accordion), 14.8 mm in diameter. Version with a fixing screw."
+ },
+ "139": {
+  "uk": "Ґудзик правої клавіатури баяна діаметром 15 мм, для заміни зношених або втрачених ґудзиків.",
+  "en": "Treble button for a bayan (button accordion), 15 mm in diameter, for replacing worn or missing buttons."
+ },
+ "140": {
+  "uk": "Ґудзик правої клавіатури баяна діаметром 14,8 мм, для заміни зношених або втрачених ґудзиків.",
+  "en": "Treble button for a bayan (button accordion), 14.8 mm in diameter, for replacing worn or missing buttons."
+ },
+ "195": {
+  "uk": "Перламутровий ґудзик правої клавіатури баяна з отвором, діаметр 15.",
+  "en": "Mother-of-pearl treble button with a hole for a bayan (button accordion), diameter 15."
+ },
+ "251": {
+  "uk": "Маркований ґудзик правої клавіатури баяна, діаметр 14,5.",
+  "en": "Marked treble button for a bayan (button accordion), diameter 14.5."
+ },
+ "252": {
+  "uk": "Маркований ґудзик правої клавіатури баяна, діаметр 15.",
+  "en": "Marked treble button for a bayan (button accordion), diameter 15."
+ },
+ "253": {
+  "uk": "Маркований ґудзик правої клавіатури баяна, діаметр 16.",
+  "en": "Marked treble button for a bayan (button accordion), diameter 16."
+ },
+ "254": {
+  "uk": "Дзеркальний маркований ґудзик правої клавіатури баяна, діаметр 14,8.",
+  "en": "Mirror-finish marked treble button for a bayan (button accordion), diameter 14.8."
+ },
+ "255": {
+  "uk": "Дзеркальний маркований ґудзик правої клавіатури баяна, діаметр 14,8.",
+  "en": "Mirror-finish marked treble button for a bayan (button accordion), diameter 14.8."
+ },
+ "380": {
+  "uk": "Ґудзик правої клавіатури баяна діаметром 14 мм, білий перламутр. Кріпиться за допомогою шурупа.",
+  "en": "Treble button for a bayan (button accordion), 14 mm in diameter, white mother-of-pearl. Fastens with a screw."
+ },
+ "381": {
+  "uk": "Ґудзик правої клавіатури баяна діаметром 14 мм, чорний перламутр. Кріпиться за допомогою шурупа.",
+  "en": "Treble button for a bayan (button accordion), 14 mm in diameter, black mother-of-pearl. Fastens with a screw."
+ },
+ "434": {
+  "uk": "Ґудзик правої клавіатури баяна діаметром 16, що кріпиться за допомогою гвинта.",
+  "en": "Treble button for a bayan (button accordion), diameter 16, fastened with a bolt."
+ },
+ "465": {
+  "uk": "Ґудзик-циліндр діаметром 13 для клавіатури баяна, що втоплюється.",
+  "en": "Cylinder button, diameter 13, for a recessed bayan (button accordion) keyboard."
+ },
+ "263": {
+  "uk": "Однотонна накладка на клавішу клавішного акордеона.",
+  "en": "Plain-colour overlay for a piano accordion key."
+ },
+ "264": {
+  "uk": "Перламутрова накладка на клавішу клавішного акордеона.",
+  "en": "Mother-of-pearl overlay for a piano accordion key."
+ },
+ "265": {
+  "uk": "Комплект однотонних накладок на клавіші клавішного акордеона.",
+  "en": "Set of plain-colour overlays for piano accordion keys."
+ },
+ "266": {
+  "uk": "Комплект перламутрових накладок на клавіші клавішного акордеона.",
+  "en": "Set of mother-of-pearl overlays for piano accordion keys."
+ },
+ "464": {
+  "uk": "Італійські накладки на клавіші для акордеонів 41/120, тобто з 41 клавішею та 120 басами.",
+  "en": "Italian key overlays for accordions with 41 keys and 120 basses (41/120)."
+ },
+ "192": {
+  "uk": "Кнопка лівої (басової) клавіатури розміром 7,5х17,5 мм.",
+  "en": "Bass button for the left-hand keyboard, 7.5x17.5 mm."
+ },
+ "193": {
+  "uk": "Кнопка лівої (басової) клавіатури розміром 8х15 мм.",
+  "en": "Bass button for the left-hand keyboard, 8x15 mm."
+ },
+ "196": {
+  "uk": "Кнопка лівої (басової) клавіатури розміром 7,5х15 мм.",
+  "en": "Bass button for the left-hand keyboard, 7.5x15 mm."
+ },
+ "197": {
+  "uk": "Кнопка лівої (басової) клавіатури розміром 7,5х15 мм.",
+  "en": "Bass button for the left-hand keyboard, 7.5x15 mm."
+ },
+ "198": {
+  "uk": "Кнопка лівої (басової) клавіатури розміром 7,5х15 мм.",
+  "en": "Bass button for the left-hand keyboard, 7.5x15 mm."
+ },
+ "199": {
+  "uk": "Кнопка лівої (басової) клавіатури розміром 7,5х15 мм.",
+  "en": "Bass button for the left-hand keyboard, 7.5x15 mm."
+ },
+ "200": {
+  "uk": "Кнопка лівої (басової) клавіатури розміром 7,5х15 мм.",
+  "en": "Bass button for the left-hand keyboard, 7.5x15 mm."
+ },
+ "201": {
+  "uk": "Кнопка лівої (басової) клавіатури розміром 7,5х15 мм.",
+  "en": "Bass button for the left-hand keyboard, 7.5x15 mm."
+ },
+ "202": {
+  "uk": "Кнопка лівої (басової) клавіатури діаметром 7,5.",
+  "en": "Bass button for the left-hand keyboard, diameter 7.5."
+ },
+ "203": {
+  "uk": "Кнопка лівої (басової) клавіатури діаметром 7,5 мм.",
+  "en": "Bass button for the left-hand keyboard, 7.5 mm in diameter."
+ },
+ "204": {
+  "uk": "Кнопка лівої (басової) клавіатури діаметром 9 мм.",
+  "en": "Bass button for the left-hand keyboard, 9 mm in diameter."
+ },
+ "205": {
+  "uk": "Кнопка лівої (басової) клавіатури діаметром 9 мм.",
+  "en": "Bass button for the left-hand keyboard, 9 mm in diameter."
+ },
+ "206": {
+  "uk": "Кнопка лівої (басової) клавіатури діаметром 9,5 мм.",
+  "en": "Bass button for the left-hand keyboard, 9.5 mm in diameter."
+ },
+ "207": {
+  "uk": "Кнопка лівої (басової) клавіатури діаметром 9,5 мм.",
+  "en": "Bass button for the left-hand keyboard, 9.5 mm in diameter."
+ },
+ "518": {
+  "uk": "Пластиковий клапан розміром 12х31 мм для механіки клавіатури.",
+  "en": "Plastic pallet, 12x31 mm, for the keyboard mechanism."
+ },
+ "519": {
+  "uk": "Пластиковий клапан розміром 12х49 мм для механіки клавіатури.",
+  "en": "Plastic pallet, 12x49 mm, for the keyboard mechanism."
+ },
+ "238": {
+  "uk": "Спіральна пружина для механіки клавіатури.",
+  "en": "Coil spring for the keyboard mechanism."
+ },
+ "239": {
+  "uk": "Алюмінієвий важіль розміром 125х175 мм для механіки клавіатури.",
+  "en": "Aluminium lever, 125x175 mm, for the keyboard mechanism."
+ },
+ "240": {
+  "uk": "Поршень під ґудзик розміром 7х30 мм, деталь важільної механіки клавіатури.",
+  "en": "Piston for a button, 7x30 mm, a part of the keyboard lever mechanism."
+ },
+ "241": {
+  "uk": "Поршень під ґудзик розміром 7,5х20 мм, деталь важільної механіки клавіатури.",
+  "en": "Piston for a button, 7.5x20 mm, a part of the keyboard lever mechanism."
+ },
+ "242": {
+  "uk": "Поршень під ґудзик розміром 7,5х25, деталь важільної механіки клавіатури.",
+  "en": "Piston for a button, 7.5x25, a part of the keyboard lever mechanism."
+ },
+ "243": {
+  "uk": "Поршень під ґудзик розміром 7,5х30, деталь важільної механіки клавіатури.",
+  "en": "Piston for a button, 7.5x30, a part of the keyboard lever mechanism."
+ },
+ "244": {
+  "uk": "Поршень під ґудзик розміром 7,5х35, деталь важільної механіки клавіатури.",
+  "en": "Piston for a button, 7.5x35, a part of the keyboard lever mechanism."
+ },
+ "245": {
+  "uk": "Мала кругла втулка розміром 10,4 для механіки клавіатури.",
+  "en": "Small round bushing, size 10.4, for the keyboard mechanism."
+ },
+ "246": {
+  "uk": "Мала кругла латунна втулка 11,4 мм без отвору для механіки клавіатури.",
+  "en": "Small round brass bushing, 11.4 mm, without a hole, for the keyboard mechanism."
+ },
+ "247": {
+  "uk": "Велика латунна втулка без отвору для клавіші акордеона.",
+  "en": "Large brass bushing without a hole for an accordion key."
+ },
+ "388": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 19 мм, колір червоний. Продається на погонні метри.",
+  "en": "Smooth leatherette for bellows edging, 19 mm wide, colour: red. Sold by the linear metre."
+ },
+ "389": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 19 мм, колір чорний.",
+  "en": "Smooth leatherette for bellows edging, 19 mm wide, colour: black."
+ },
+ "390": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 19 мм, колір сріблястий.",
+  "en": "Smooth leatherette for bellows edging, 19 mm wide, colour: silver."
+ },
+ "391": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 19 мм, колір золотистий.",
+  "en": "Smooth leatherette for bellows edging, 19 mm wide, colour: gold."
+ },
+ "392": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 19 мм, колір зелений. Продається на погонні метри.",
+  "en": "Smooth leatherette for bellows edging, 19 mm wide, colour: green. Sold by the linear metre."
+ },
+ "393": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 19 мм, колір синій.",
+  "en": "Smooth leatherette for bellows edging, 19 mm wide, colour: blue."
+ },
+ "394": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 19 мм, колір червоний.",
+  "en": "Patterned leatherette for bellows edging, 19 mm wide, colour: red."
+ },
+ "395": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 19 мм, колір сріблястий.",
+  "en": "Patterned leatherette for bellows edging, 19 mm wide, colour: silver."
+ },
+ "396": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 19 мм, колір світло-золотистий.",
+  "en": "Patterned leatherette for bellows edging, 19 mm wide, colour: light gold."
+ },
+ "397": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 19 мм, колір білий. Продається на погонні метри.",
+  "en": "Patterned leatherette for bellows edging, 19 mm wide, colour: white. Sold by the linear metre."
+ },
+ "406": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 19 мм, колір синій.",
+  "en": "Patterned leatherette for bellows edging, 19 mm wide, colour: blue."
+ },
+ "407": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 19 мм, колір зелений. Продається на погонні метри.",
+  "en": "Patterned leatherette for bellows edging, 19 mm wide, colour: green. Sold by the linear metre."
+ },
+ "408": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 24 мм, колір чорний.",
+  "en": "Patterned leatherette for bellows edging, 24 mm wide, colour: black."
+ },
+ "409": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 24 мм, колір червоний.",
+  "en": "Patterned leatherette for bellows edging, 24 mm wide, colour: red."
+ },
+ "410": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 24 мм, колір сріблястий.",
+  "en": "Patterned leatherette for bellows edging, 24 mm wide, colour: silver."
+ },
+ "412": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 24 мм, колір синій.",
+  "en": "Patterned leatherette for bellows edging, 24 mm wide, colour: blue."
+ },
+ "411": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 24 мм, колір зелений.",
+  "en": "Patterned leatherette for bellows edging, 24 mm wide, colour: green."
+ },
+ "413": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 24 мм, колір золотистий.",
+  "en": "Patterned leatherette for bellows edging, 24 mm wide, colour: gold."
+ },
+ "414": {
+  "uk": "Візерунковий ледерин для окантовки міху шириною 24 мм, колір білий.",
+  "en": "Patterned leatherette for bellows edging, 24 mm wide, colour: white."
+ },
+ "415": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 24 мм, колір чорний.",
+  "en": "Smooth leatherette for bellows edging, 24 mm wide, colour: black."
+ },
+ "416": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 24 мм, колір червоний.",
+  "en": "Smooth leatherette for bellows edging, 24 mm wide, colour: red."
+ },
+ "417": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 24 мм, колір золотистий.",
+  "en": "Smooth leatherette for bellows edging, 24 mm wide, colour: gold."
+ },
+ "418": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 24 мм, колір сріблястий.",
+  "en": "Smooth leatherette for bellows edging, 24 mm wide, colour: silver."
+ },
+ "419": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 24 мм, колір білий.",
+  "en": "Smooth leatherette for bellows edging, 24 mm wide, colour: white."
+ },
+ "420": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 24 мм, колір синій.",
+  "en": "Smooth leatherette for bellows edging, 24 mm wide, colour: blue."
+ },
+ "421": {
+  "uk": "Гладкий ледерин для окантовки міху шириною 24 мм, колір зелений.",
+  "en": "Smooth leatherette for bellows edging, 24 mm wide, colour: green."
+ },
+ "74": {
+  "uk": "Кутник для міху з маркуванням 35 CH R-7.",
+  "en": "Bellows corner marked 35 CH R-7."
+ },
+ "59": {
+  "uk": "Шпилька з фрезерованою головкою розміром 2х19 мм для міху.",
+  "en": "Pin with a milled head, 2x19 mm, for the bellows."
+ },
+ "340": {
+  "uk": "Шпилька для міху діаметром 2,5 мм і довжиною 26 мм.",
+  "en": "Bellows pin, 2.5 mm in diameter and 26 mm long."
+ },
+ "341": {
+  "uk": "Шпилька для міху діаметром 2,0 мм і довжиною 26 мм, з фрезерованою головкою.",
+  "en": "Bellows pin, 2.0 mm in diameter and 26 mm long, with a milled head."
+ },
+ "342": {
+  "uk": "Золотиста шпилька для міху діаметром 2,5 мм і довжиною 26 мм.",
+  "en": "Gold-coloured bellows pin, 2.5 mm in diameter and 26 mm long."
+ },
+ "468": {
+  "uk": "Комплект із гвинта, шайби та штуцера діаметром 2,5 мм для міху.",
+  "en": "Bolt, washer and fitting set, 2.5 mm in diameter, for the bellows."
+ },
+ "186": {
+  "uk": "Целулоїд для оздоблення корпусу акордеона, перламутровий, колір: білий перламутр.",
+  "en": "Celluloid for finishing the accordion body, mother-of-pearl, colour: white mother-of-pearl."
+ },
+ "187": {
+  "uk": "Целулоїд для оздоблення корпусу акордеона, перламутровий, колір: блакитний перламутр.",
+  "en": "Celluloid for finishing the accordion body, mother-of-pearl, colour: light blue mother-of-pearl."
+ },
+ "188": {
+  "uk": "Целулоїд для оздоблення корпусу акордеона, перламутровий, колір: перламутр «чорна перлина».",
+  "en": "Celluloid for finishing the accordion body, mother-of-pearl, colour: black pearl mother-of-pearl."
+ },
+ "189": {
+  "uk": "Целулоїд для оздоблення корпусу акордеона, перламутровий, колір: перламутр «сіра перлина».",
+  "en": "Celluloid for finishing the accordion body, mother-of-pearl, colour: grey pearl mother-of-pearl."
+ },
+ "190": {
+  "uk": "Целулоїд для оздоблення корпусу акордеона, перламутровий, колір: бузковий перламутр.",
+  "en": "Celluloid for finishing the accordion body, mother-of-pearl, colour: lilac mother-of-pearl."
+ },
+ "191": {
+  "uk": "Целулоїд з чорно-синіми смугами для оздоблення корпусу акордеона.",
+  "en": "Celluloid with black and blue stripes for finishing the accordion body."
+ },
+ "61": {
+  "uk": "Одинарне кріплення ременя на корпус акордеона.",
+  "en": "Single strap mount for the accordion body."
+ },
+ "64": {
+  "uk": "Трикутне кріплення ременя на основі для корпусу акордеона.",
+  "en": "Triangular strap mount with a base for the accordion body."
+ },
+ "90": {
+  "uk": "Колесо діаметром 35 для регулювання довжини ременя лівої руки.",
+  "en": "Wheel, diameter 35, for adjusting the length of the left-hand strap."
+ },
+ "91": {
+  "uk": "Кріплення для колеса регулювання ременя лівої руки.",
+  "en": "Mount for the left-hand strap adjustment wheel."
+ },
+ "93": {
+  "uk": "Гвинт для регулювання кріплення ременя лівої руки.",
+  "en": "Bolt for adjusting the left-hand strap mount."
+ },
+ "94": {
+  "uk": "Кріплення для гвинта ременя лівої руки.",
+  "en": "Mount for the left-hand strap bolt."
+ },
+ "343": {
+  "uk": "Колесо діаметром 30 для регулювання ременя лівої руки, внутрішній діаметр 4,5 мм.",
+  "en": "Wheel, diameter 30, for adjusting the left-hand strap, inner diameter 4.5 mm."
+ },
+ "344": {
+  "uk": "Колесо діаметром 40 для регулювання ременя лівої руки.",
+  "en": "Wheel, diameter 40, for adjusting the left-hand strap."
+ },
+ "345": {
+  "uk": "Чорне дюралюмінієве колесо діаметром 35 для регулювання ременя лівої руки.",
+  "en": "Black duralumin wheel, diameter 35, for adjusting the left-hand strap."
+ },
+ "346": {
+  "uk": "Чорне дюралюмінієве колесо діаметром 32 для регулювання ременя лівої руки.",
+  "en": "Black duralumin wheel, diameter 32, for adjusting the left-hand strap."
+ },
+ "41": {
+  "uk": "Пластмасова ніжка (опора) для корпусу акордеона розміром 22х13 мм.",
+  "en": "Plastic foot (support) for the accordion body, 22x13 mm."
+ },
+ "226": {
+  "uk": "Гумова ніжка (опора) для корпусу акордеона розміром 19х9 мм.",
+  "en": "Rubber foot (support) for the accordion body, 19x9 mm."
+ },
+ "163": {
+  "uk": "Сіточка з дюралюмінію, декоративна деталь корпусу.",
+  "en": "Duralumin mesh, a decorative part of the body."
+ },
+ "168": {
+  "uk": "Матеріал для виготовлення решітки-ажурки, декоративної деталі корпусу.",
+  "en": "Material for making an openwork grille, a decorative part of the body."
+ },
+ "169": {
+  "uk": "Матеріал для виготовлення решітки-ажурки, декоративної деталі корпусу.",
+  "en": "Material for making an openwork grille, a decorative part of the body."
+ },
+ "325": {
+  "uk": "Решітка-ажурка, декоративна деталь корпусу.",
+  "en": "Openwork grille, a decorative part of the body."
+ },
+ "324": {
+  "uk": "Декоративний напис «Made in Italy» для корпусу.",
+  "en": "Decorative \"Made in Italy\" lettering for the body."
+ },
+ "429": {
+  "uk": "Емблема Royal Standard, декоративна деталь корпусу.",
+  "en": "Royal Standard emblem, a decorative part of the body."
+ },
+ "430": {
+  "uk": "Емблема Royal Standard, декоративна деталь корпусу.",
+  "en": "Royal Standard emblem, a decorative part of the body."
+ },
+ "459": {
+  "uk": "Металевий напис ROYAL STANDARD розміром 12х130 мм, декоративна деталь корпусу.",
+  "en": "Metal ROYAL STANDARD lettering, 12x130 mm, a decorative part of the body."
+ },
+ "215": {
+  "uk": "Хромований гвинт розміром 9х15 для корпусу акордеона.",
+  "en": "Chrome-plated bolt, size 9x15, for the accordion body."
+ },
+ "216": {
+  "uk": "Латунний гвинт розміром 9х15 для корпусу акордеона.",
+  "en": "Brass bolt, size 9x15, for the accordion body."
+ },
+ "217": {
+  "uk": "Золотистий гвинт розміром 9х15 для корпусу акордеона.",
+  "en": "Gold-coloured bolt, size 9x15, for the accordion body."
+ },
+ "218": {
+  "uk": "Хромований гвинт розміром 9х20 для корпусу акордеона.",
+  "en": "Chrome-plated bolt, size 9x20, for the accordion body."
+ },
+ "219": {
+  "uk": "Хромований гвинт розміром 12х18 для корпусу акордеона.",
+  "en": "Chrome-plated bolt, size 12x18, for the accordion body."
+ },
+ "220": {
+  "uk": "Золотистий гвинт розміром 12х18 для корпусу акордеона.",
+  "en": "Gold-coloured bolt, size 12x18, for the accordion body."
+ },
+ "221": {
+  "uk": "Латунний гвинт розміром 12х18 для корпусу акордеона.",
+  "en": "Brass bolt, size 12x18, for the accordion body."
+ },
+ "222": {
+  "uk": "Латунний штуцер для корпусу акордеона.",
+  "en": "Brass fitting for the accordion body."
+ },
+ "223": {
+  "uk": "Хромований демпфер довжиною 64 мм для корпусу акордеона.",
+  "en": "Chrome-plated damper, 64 mm, for the accordion body."
+ },
+ "224": {
+  "uk": "Заглушка на вісь типу A-1 діаметром 10,4.",
+  "en": "Axle plug type A-1, diameter 10.4."
+ },
+ "225": {
+  "uk": "Заглушка на вісь типу A-1-З діаметром 10,4.",
+  "en": "Axle plug type A-1-З, diameter 10.4."
+ },
+ "227": {
+  "uk": "Внутрішня заглушка на вісь типу A-1.",
+  "en": "Internal axle plug type A-1."
+ },
+ "228": {
+  "uk": "Нікельована заглушка на вісь типу A-2.",
+  "en": "Nickel-plated axle plug type A-2."
+ },
+ "229": {
+  "uk": "Латунна заглушка на вісь типу A-2.",
+  "en": "Brass axle plug type A-2."
+ },
+ "230": {
+  "uk": "Золотиста заглушка на вісь типу A-2.",
+  "en": "Gold-coloured axle plug type A-2."
+ },
+ "231": {
+  "uk": "Нікельована заглушка на вісь типу A-2 Б.",
+  "en": "Nickel-plated axle plug type A-2 B."
+ },
+ "318": {
+  "uk": "Італійський регістровий механізм правої клавіатури на 11 регістрів.",
+  "en": "Italian register mechanism for the right-hand keyboard, 11 registers."
+ },
+ "331": {
+  "uk": "Італійський регістровий механізм правої клавіатури на 15 регістрів, постачається без регістрових клавіш.",
+  "en": "Italian register mechanism for the right-hand keyboard, 15 registers, supplied without register keys."
+ },
+ "351": {
+  "uk": "Регістровий механізм правої клавіатури на 5 клавіш для акордеона Weltmeister.",
+  "en": "Register mechanism for the right-hand keyboard, 5 keys, for the Weltmeister accordion."
+ },
+ "158": {
+  "uk": "Накладка на регістрову клавішу акордеона.",
+  "en": "Overlay for an accordion register key."
+ },
+ "159": {
+  "uk": "Накладка на регістрову клавішу акордеона.",
+  "en": "Overlay for an accordion register key."
+ },
+ "160": {
+  "uk": "Накладка на регістрову клавішу акордеона.",
+  "en": "Overlay for an accordion register key."
+ },
+ "161": {
+  "uk": "Основа регістрової клавіші акордеона.",
+  "en": "Base of an accordion register key."
+ },
+ "436": {
+  "uk": "Регістрова клавіша лівої клавіатури розміром 4х2,5 см.",
+  "en": "Register key for the left-hand keyboard, 4x2.5 cm."
+ },
+ "147": {
+  "uk": "Синтетичний голосовий клапан (залог) для голосів акордеона.",
+  "en": "Synthetic reed valve for accordion reeds."
+ },
+ "148": {
+  "uk": "Синтетичний голосовий клапан (залог) для голосів акордеона.",
+  "en": "Synthetic reed valve for accordion reeds."
+ },
+ "149": {
+  "uk": "Синтетичний голосовий клапан (залог) для голосів акордеона.",
+  "en": "Synthetic reed valve for accordion reeds."
+ },
+ "150": {
+  "uk": "Синтетичний голосовий клапан (залог) розміром 35х6 мм для голосів акордеона.",
+  "en": "Synthetic reed valve, 35x6 mm, for accordion reeds."
+ },
+ "152": {
+  "uk": "Синтетичний голосовий клапан (залог) розміром 45х6,5 мм для голосів акордеона.",
+  "en": "Synthetic reed valve, 45x6.5 mm, for accordion reeds."
+ },
+ "438": {
+  "uk": "Голосовий клапан (залог) розміром 53х8,5 мм для голосів акордеона.",
+  "en": "Reed valve, 53x8.5 mm, for accordion reeds."
+ },
+ "439": {
+  "uk": "Голосовий клапан (залог) розміром 58х9 мм для голосів акордеона.",
+  "en": "Reed valve, 58x9 mm, for accordion reeds."
+ },
+ "440": {
+  "uk": "Голосовий клапан (залог) для кнопкового акордеона (баяна) 92/120 V/V.",
+  "en": "Reed valve for a button accordion (bayan) 92/120 V/V."
+ },
+ "466": {
+  "uk": "Басовий голосовий клапан (залог) розміром 65х10 мм.",
+  "en": "Bass reed valve, 65x10 mm."
+ },
+ "467": {
+  "uk": "Басовий голосовий клапан (залог) розміром 75х10,5 мм.",
+  "en": "Bass reed valve, 75x10.5 mm."
+ },
+ "309": {
+  "uk": "Цільнопланковий акорд голосів з маркуванням 64/4 - 58/2.",
+  "en": "Full-plate reed set marked 64/4 - 58/2."
+ },
+ "99": {
+  "uk": "Ключ розміром 7 мм для регулювання клавіатури, інструмент для ремонту.",
+  "en": "Keyboard adjustment wrench, 7 mm, a repair tool."
+ },
+ "100": {
+  "uk": "Ключ розміром 8 мм для регулювання клавіатури, інструмент для ремонту.",
+  "en": "Keyboard adjustment wrench, 8 mm, a repair tool."
+ },
+ "101": {
+  "uk": "Ключ типу T для регулювання клавіатури, інструмент для ремонту.",
+  "en": "T-type keyboard adjustment wrench, a repair tool."
+ },
+ "503": {
+  "uk": "Мала ложка для заливання воском голосових планок, інструмент для ремонту.",
+  "en": "Small spoon for pouring wax onto reed plates, a repair tool."
+ },
+ "178": {
+  "uk": "Ремені з шкіри та велюру, типорозмір L7.",
+  "en": "Straps made of leather and velour, size L7."
+ },
+ "179": {
+  "uk": "Ремені з шкіри та велюру, типорозмір L8.",
+  "en": "Straps made of leather and velour, size L8."
+ },
+ "180": {
+  "uk": "Ремені серії «Фольк» зі шкіри та велюру, типорозмір L5,5.",
+  "en": "\"Folk\" series straps made of leather and velour, size L5.5."
+ },
+ "182": {
+  "uk": "Ремені серії «Фольк» зі шкіри та велюру, типорозмір L8.",
+  "en": "\"Folk\" series straps made of leather and velour, size L8."
+ },
+ "183": {
+  "uk": "Ремені зі шкіри та лайки, модель GSV.",
+  "en": "Straps made of leather and kid leather, model GSV."
+ },
+ "259": {
+  "uk": "Ремінь для лівої руки, типорозмір L 5,5.",
+  "en": "Left-hand strap, size L 5.5."
+ },
+ "261": {
+  "uk": "Ремінь для лівої руки, типорозмір L 6,5.",
+  "en": "Left-hand strap, size L 6.5."
+ },
+ "262": {
+  "uk": "Ремінь для лівої руки, типорозмір L 8.",
+  "en": "Left-hand strap, size L 8."
+ },
+ "312": {
+  "uk": "Ергономічні ремені для кнопкового та клавішного акордеона.",
+  "en": "Ergonomic straps for button and piano accordions."
+ },
+ "384": {
+  "uk": "Італійські ремені «Professional» зі шкіри та велюру, типорозмір L7, з фіксатором. Ширина 70 мм, довжина 780 + 400 мм (300), колір білий.",
+  "en": "Italian \"Professional\" straps made of leather and velour, size L7, with a lock. Width 70 mm, length 780 + 400 mm (300), colour white."
+ },
+ "385": {
+  "uk": "Італійські ремені «Professional» зі шкіри та велюру, типорозмір L7.",
+  "en": "Italian \"Professional\" straps made of leather and velour, size L7."
+ },
+ "450": {
+  "uk": "Українські ремені «Студіо» шириною 3,5 см.",
+  "en": "Ukrainian \"Studio\" straps, 3.5 cm wide."
+ },
+ "461": {
+  "uk": "Українські ремені «Професіонал», типорозмір L 7,5.",
+  "en": "Ukrainian \"Professional\" straps, size L 7.5."
+ },
+ "310": {
+  "uk": "Подвійний чохол для кнопкового акордеона JET-SET Cromatic.",
+  "en": "Double gig bag for the JET-SET Cromatic button accordion."
+ },
+ "311": {
+  "uk": "Подвійний італійський чохол для акордеона JET-SET Piano.",
+  "en": "Double Italian gig bag for the JET-SET Piano accordion."
+ },
+ "451": {
+  "uk": "Чохол для інструмента з візком на колесиках, розмір 50х24х45.",
+  "en": "Instrument gig bag with a wheeled trolley, size 50x24x45."
+ },
+ "452": {
+  "uk": "Чохол для інструмента з візком на колесиках, розмір 54х26х47.",
+  "en": "Instrument gig bag with a wheeled trolley, size 54x26x47."
+ },
+ "453": {
+  "uk": "Візок на колесиках для чохла інструмента.",
+  "en": "Wheeled trolley for an instrument gig bag."
+ },
+ "141": {
+  "uk": "Мікрофонна система моделі МТ-01, аксесуар для звукопідсилення інструмента.",
+  "en": "Microphone system, model MT-01, an accessory for amplifying the instrument."
+ },
+ "142": {
+  "uk": "Мікрофонна система моделі МТ-07N, аксесуар для звукопідсилення інструмента.",
+  "en": "Microphone system, model MT-07N, an accessory for amplifying the instrument."
+ },
+ "143": {
+  "uk": "Мікрофонна система Musictech моделі МТ-05DN, аксесуар для звукопідсилення інструмента.",
+  "en": "Musictech microphone system, model MT-05DN, an accessory for amplifying the instrument."
+ },
+ "144": {
+  "uk": "Мікрофонна система Musictech моделі МТ-05N, аксесуар для звукопідсилення інструмента.",
+  "en": "Musictech microphone system, model MT-05N, an accessory for amplifying the instrument."
+ },
+ "145": {
+  "uk": "Мікрофонна система Musictech моделі МТ-05ЕN, аксесуар для звукопідсилення інструмента.",
+  "en": "Musictech microphone system, model MT-05EN, an accessory for amplifying the instrument."
+ },
+ "146": {
+  "uk": "Мікрофонна система Musictech моделі МТ-06N, аксесуар для звукопідсилення інструмента.",
+  "en": "Musictech microphone system, model MT-06N, an accessory for amplifying the instrument."
+ },
+ "208": {
+  "uk": "Нейлонова захисна подушка прямокутної форми.",
+  "en": "Rectangular nylon protective pad."
+ },
+ "209": {
+  "uk": "Нейлонова захисна подушка з вирізом.",
+  "en": "Nylon protective pad with a cutout."
+ },
+ "210": {
+  "uk": "Нейлонова захисна подушка фігурної форми.",
+  "en": "Shaped nylon protective pad."
+ },
+ "211": {
+  "uk": "Захисна подушка з чорного оксамиту.",
+  "en": "Protective pad made of black velvet."
+ },
+ "212": {
+  "uk": "Захисна подушка з чорного оксамиту, з вирізом.",
+  "en": "Protective pad made of black velvet, with a cutout."
+ },
+ "213": {
+  "uk": "Захисна подушка з чорної прошитої замші.",
+  "en": "Protective pad made of black stitched suede."
+ },
+ "214": {
+  "uk": "Захисна подушка фігурної форми з чорної прошитої замші.",
+  "en": "Shaped protective pad made of black stitched suede."
+ },
+ "399": {
+  "uk": "Стяжки для міху акордеона та баяна з металевим кріпленням.",
+  "en": "Bellows straps for an accordion or bayan with a metal fastener."
+ },
+ "400": {
+  "uk": "Стяжки для міху акордеона та баяна з металевим кріпленням.",
+  "en": "Bellows straps for an accordion or bayan with a metal fastener."
+ },
+ "401": {
+  "uk": "Стяжки для міху акордеона та баяна з металевим кріпленням, 7,5 см.",
+  "en": "Bellows straps for an accordion or bayan with a metal fastener, 7.5 cm."
+ },
+ "402": {
+  "uk": "Стяжки для міху з металевим кріпленням, 8 см, чорного кольору.",
+  "en": "Bellows straps with a metal fastener, 8 cm, black."
+ },
+ "404": {
+  "uk": "Стяжки для міху з металевим кріпленням, 8 см, червоного кольору.",
+  "en": "Bellows straps with a metal fastener, 8 cm, red."
+ },
+ "405": {
+  "uk": "Стяжки для міху з металевим кріпленням, 8 см, білого кольору.",
+  "en": "Bellows straps with a metal fastener, 8 cm, white."
+ },
+ "422": {
+  "uk": "Стяжки для міху з металевим кріпленням, 8,5 см, чорного кольору.",
+  "en": "Bellows straps with a metal fastener, 8.5 cm, black."
+ },
+ "423": {
+  "uk": "Стяжки для міху з металевим кріпленням, 8,5 см, червоного кольору.",
+  "en": "Bellows straps with a metal fastener, 8.5 cm, red."
+ },
+ "424": {
+  "uk": "Стяжки для міху з металевим кріпленням, 8,5 см, білого кольору.",
+  "en": "Bellows straps with a metal fastener, 8.5 cm, white."
+ },
+ "446": {
+  "uk": "Стяжки для міху з металевим кріпленням, 9,0 см.",
+  "en": "Bellows straps with a metal fastener, 9.0 cm."
+ },
+ "447": {
+  "uk": "Стяжки для міху з металевим кріпленням, 9,0 см.",
+  "en": "Bellows straps with a metal fastener, 9.0 cm."
+ },
+ "289": {
+  "uk": "Кнопковий акордеон (баян) Pigini «Arabesque» зі стандартним басом, 82/96: 82 ґудзики правої клавіатури та 96 басів.",
+  "en": "Pigini \"Arabesque\" button accordion (bayan) with standard bass, 82/96: 82 treble buttons and 96 basses."
+ },
+ "291": {
+  "uk": "Кнопковий акордеон (баян) Pigini «Super Variete» зі стандартним басом, 92/117: 92 ґудзики правої клавіатури та 117 басів.",
+  "en": "Pigini \"Super Variete\" button accordion (bayan) with standard bass, 92/117: 92 treble buttons and 117 basses."
+ },
+ "297": {
+  "uk": "Кнопковий акордеон (баян) Pigini «Star Jazz-3» зі стандартним басом, 87/120: 87 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Pigini \"Star Jazz-3\" button accordion (bayan) with standard bass, 87/120: 87 treble buttons and 120 basses."
+ },
+ "268": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Convertor 42/B».",
+  "en": "Pigini \"Convertor 42/B\" button converter accordion."
+ },
+ "269": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Prestige Junior».",
+  "en": "Pigini \"Prestige Junior\" button converter accordion."
+ },
+ "278": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Prestige Junior Cassotto», 87/108, з тембровою камерою cassotto.",
+  "en": "Pigini \"Prestige Junior Cassotto\" button converter accordion, 87/108, with a cassotto tone chamber."
+ },
+ "279": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Convertor 55/B Senior C», 87/108: 87 ґудзиків правої клавіатури та 108 басів.",
+  "en": "Pigini \"Convertor 55/B Senior C\" button converter accordion, 87/108: 87 treble buttons and 108 basses."
+ },
+ "280": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Master 58/B De Luxe», 92/120: 92 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Pigini \"Master 58/B De Luxe\" button converter accordion, 92/120: 92 treble buttons and 120 basses."
+ },
+ "281": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «De Luxe», 92/120: 92 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Pigini \"De Luxe\" button converter accordion, 92/120: 92 treble buttons and 120 basses."
+ },
+ "282": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Sirius Compact», 101/120: 101 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Pigini \"Sirius Compact\" button converter accordion, 101/120: 101 treble buttons and 120 basses."
+ },
+ "294": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Sirius Milenium», 106/120: 106 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Pigini \"Sirius Milenium\" button converter accordion, 106/120: 106 treble buttons and 120 basses."
+ },
+ "301": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Nova», 106/120: 106 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Pigini \"Nova\" button converter accordion, 106/120: 106 treble buttons and 120 basses."
+ },
+ "313": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Master 58/B», 92/120: 92 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Pigini \"Master 58/B\" button converter accordion, 92/120: 92 treble buttons and 120 basses."
+ },
+ "314": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Caracter», 92/120: 92 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Pigini \"Caracter\" button converter accordion, 92/120: 92 treble buttons and 120 basses."
+ },
+ "315": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Studio B-2», 61/78: 61 ґудзиків правої клавіатури та 78 басів.",
+  "en": "Pigini \"Studio B-2\" button converter accordion, 61/78: 61 treble buttons and 78 basses."
+ },
+ "326": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Pigini «Concertino-2», 76/102: 76 ґудзиків правої клавіатури та 102 басів.",
+  "en": "Pigini \"Concertino-2\" button converter accordion, 76/102: 76 treble buttons and 102 basses."
+ },
+ "364": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Fisitalia «52.34-FB», 87/120: 87 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Fisitalia \"52.34-FB\" button converter accordion, 87/120: 87 treble buttons and 120 basses."
+ },
+ "365": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Fisitalia «58.46-FB», 87/120: 87 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Fisitalia \"58.46-FB\" button converter accordion, 87/120: 87 treble buttons and 120 basses."
+ },
+ "368": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Scandalli «C-342», 77/96: 77 ґудзиків правої клавіатури та 96 басів.",
+  "en": "Scandalli \"C-342\" button converter accordion, 77/96: 77 treble buttons and 96 basses."
+ },
+ "375": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Fisitalia «46.24-FB», 77/108: 77 ґудзиків правої клавіатури та 108 басів.",
+  "en": "Fisitalia \"46.24-FB\" button converter accordion, 77/108: 77 treble buttons and 108 basses."
+ },
+ "378": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Scandalli «C-442».",
+  "en": "Scandalli \"C-442\" button converter accordion."
+ },
+ "387": {
+  "uk": "Кнопковий готово-виборний акордеон (з конвертером) Fisitalia «B-61», 102/120: 102 ґудзиків правої клавіатури та 120 басів.",
+  "en": "Fisitalia \"B-61\" button converter accordion, 102/120: 102 treble buttons and 120 basses."
+ },
+ "283": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Pigini «Convertor 37/P3», 37/96: 37 клавіш і 96 басів.",
+  "en": "Pigini \"Convertor 37/P3\" piano converter accordion, 37/96: 37 keys and 96 basses."
+ },
+ "284": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Pigini «Convertor P37 Convertor», 37/120: 37 клавіш і 120 басів.",
+  "en": "Pigini \"Convertor P37 Convertor\" piano converter accordion, 37/120: 37 keys and 120 basses."
+ },
+ "285": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Pigini «Convertor 55/P Senior C», 41/120: 41 клавіш і 120 басів.",
+  "en": "Pigini \"Convertor 55/P Senior C\" piano converter accordion, 41/120: 41 keys and 120 basses."
+ },
+ "286": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Pigini «Convertor 55/P - 45», 45/120: 45 клавіш і 120 басів.",
+  "en": "Pigini \"Convertor 55/P - 45\" piano converter accordion, 45/120: 45 keys and 120 basses."
+ },
+ "287": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Pigini «58/P», 45/120: 45 клавіш і 120 басів.",
+  "en": "Pigini \"58/P\" piano converter accordion, 45/120: 45 keys and 120 basses."
+ },
+ "288": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Pigini «Super Sirius Piano», 47/120: 47 клавіш і 120 басів.",
+  "en": "Pigini \"Super Sirius Piano\" piano converter accordion, 47/120: 47 keys and 120 basses."
+ },
+ "290": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Pigini «Nova Piano», 47/120: 47 клавіш і 120 басів.",
+  "en": "Pigini \"Nova Piano\" piano converter accordion, 47/120: 47 keys and 120 basses."
+ },
+ "317": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Pigini «Convertor 55/P Junior», 41/120: 41 клавіш і 120 басів.",
+  "en": "Pigini \"Convertor 55/P Junior\" piano converter accordion, 41/120: 41 keys and 120 basses."
+ },
+ "321": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Pigini «Peter Pen Piano», 34/72: 34 клавіш і 72 басів.",
+  "en": "Pigini \"Peter Pen Piano\" piano converter accordion, 34/72: 34 keys and 72 basses."
+ },
+ "330": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) FisItalia «41.46 FB», 41/120: 41 клавіш і 120 басів.",
+  "en": "FisItalia \"41.46 FB\" piano converter accordion, 41/120: 41 keys and 120 basses."
+ },
+ "332": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) FisItalia «P-2», 45/120: 45 клавіш і 120 басів.",
+  "en": "FisItalia \"P-2\" piano converter accordion, 45/120: 45 keys and 120 basses."
+ },
+ "377": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Scandalli «BJP - 442 ST», 45/120: 45 клавіш і 120 басів.",
+  "en": "Scandalli \"BJP - 442 ST\" piano converter accordion, 45/120: 45 keys and 120 basses."
+ },
+ "454": {
+  "uk": "Клавішний готово-виборний акордеон (з конвертером) Scandalli «BJP - 442 T», 41/120: 41 клавіш і 120 басів.",
+  "en": "Scandalli \"BJP - 442 T\" piano converter accordion, 41/120: 41 keys and 120 basses."
+ },
+ "352": {
+  "uk": "Цифровий акордеон MusicTech «DUAL LINK DIGITAL BOX», італійського виробництва.",
+  "en": "MusicTech \"DUAL LINK DIGITAL BOX\" digital accordion, made in Italy."
+ },
+ "358": {
+  "uk": "Кнопковий акордеон-мюзет (баян-мюзет) FisItalia, модель «42.45 – TC».",
+  "en": "FisItalia musette button accordion (bayan-musette), model \"42.45 – TC\"."
+ },
+ "277": {
+  "uk": "Акордеон Galotta (Німеччина) 41/120: 41 клавіша і 120 басів. Продається через комісійний відділ.",
+  "en": "Galotta accordion (Germany) 41/120: 41 keys and 120 basses. Sold through the commission department."
+ },
+ "442": {
+  "uk": "Правий напівкорпус кнопкового акордеона (баяна) «Атлант», вживана комплектуюча деталь.",
+  "en": "Right half-body of the \"Atlant\" button accordion (bayan), a used component."
+ },
+ "469": {
+  "uk": "Сувенірний значок «Акордеон» розміром 15х24 мм.",
+  "en": "Souvenir badge \"Accordion\", 15x24 mm."
+ },
+ "470": {
+  "uk": "Сувенірний значок «Кнопковий акордеон» (баян) розміром 15х20 мм.",
+  "en": "Souvenir badge \"Button accordion\" (bayan), 15x20 mm."
+ }
+}
