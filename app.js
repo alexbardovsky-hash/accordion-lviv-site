@@ -432,7 +432,7 @@
           ${p.price ? `<p class="p-price">${money(p.price)}</p>` : `<p class="p-price" style="font-size:1.4rem">${L.askPrice}</p>`}
           ${p.buy ? `<div class="buy">
               <div class="qty"><button data-step="-1" aria-label="${L.less}"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button><input id="qty" type="number" min="1" max="999" value="1" aria-label="${L.qty}"><button data-step="1" aria-label="${L.more}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
-              <button class="btn" id="buy">${L.addToCart}</button>
+              <button class="btn" id="buy">${L.addToCart}</button>${window.ACC_CHAT?.enabled ? `<button class="btn ghost p-ask" id="askP" type="button">${window.ACC_CHAT.t.askProduct}</button>` : ''}
             </div>`
             : `<div class="buy"><a class="btn" href="tel:${PHONE}">${L.callPh(PHONE_TEXT)}</a></div><p class="p-note">${L.toOrder}</p>`}
           <ul class="p-facts">
@@ -450,6 +450,7 @@
       const s = e.target.closest('[data-step]');
       if (s && $('#qty')) { const i = $('#qty'); i.value = Math.max(1, Math.min(999, (+i.value || 1) + +s.dataset.step)); }
       if (e.target.id === 'buy') add(p.id, Math.max(1, +$('#qty').value || 1));
+      if (e.target.id === 'askP') window.ACC_CHAT.open({ topic: window.ACC_CHAT.t.productTopic(p.name), productId: p.id });
     };
   }
 
@@ -470,8 +471,10 @@
             <label><input type="radio" name="delivery" value="pickup"><span><b>${L.pickup}</b><br>${L.pickupNote}</span></label></div></div>
           <div class="field" id="np"><label for="f-city">${L.fCity}</label><input id="f-city" name="city" autocomplete="address-level2"></div>
           <div class="field"><label for="f-note">${L.fNote}</label><textarea id="f-note" name="note" rows="3" placeholder="${L.fNotePh}"></textarea></div>
+          <div class="ask-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
+          <p class="err" id="orderErr" role="alert" hidden></p>
           <button class="btn" type="submit">${L.send}</button>
-          <p class="p-note">${L.proto(MAIL)}</p>
+          ${window.ACC_CHAT?.enabled ? '' : `<p class="p-note">${L.proto(MAIL)}</p>`}
         </form>
         <aside class="summary" aria-label="${L.yourOrder}"><h2>${L.yourOrder}</h2>
           ${lines.map(l => `<div class="sum-line"><span>${esc(l.p.name)} × ${l.q}</span><b>${l.p.price ? money(l.p.price * l.q) : ''}</b></div>`).join('')}
@@ -489,9 +492,23 @@
       if (first) { first.focus(); return; }
       const body = [`Замовлення з сайту`, '', ...lines.map(l => `${l.p.uk}${l.p.ref ? ` (арт. ${l.p.ref})` : ''} × ${l.q}${l.p.price ? ` = ${UK.money(l.p.price * l.q)}` : ''}`), '', `Разом: ${UK.money(cartTotal())}`, '',
         `Ім'я: ${d.name}`, `Телефон: ${d.phone}`, `Доставка: ${UK[d.delivery]}${d.delivery === 'np' && d.city ? `, ${d.city}` : ''}`, d.note ? `Коментар: ${d.note}` : '', lang === 'en' ? 'Покупець користувався англійською версією сайту.' : ''].filter((x, i, a) => x || a[i - 1]).join('\n');
-      location.href = `mailto:${MAIL}?subject=${encodeURIComponent('Замовлення з сайту')}&body=${encodeURIComponent(body)}`;
-      view.innerHTML = `<div class="wrap empty"><h1>${L.sentH}</h1><p>${L.sentP(PHONE_TEXT)}</p><a class="btn" href="tel:${PHONE}">${L.call}</a></div>`;
+      const viaMail = () => {
+        location.href = `mailto:${MAIL}?subject=${encodeURIComponent('Замовлення з сайту')}&body=${encodeURIComponent(body)}`;
+        view.innerHTML = `<div class="wrap empty"><h1>${L.sentH}</h1><p>${L.sentP(PHONE_TEXT)}</p><a class="btn" href="tel:${PHONE}">${L.call}</a></div>`;
+      };
+      const CH = window.ACC_CHAT;
+      if (!CH?.enabled) return viaMail();
+      // Замовлення йде в CRM; якщо сервер недоступний, лишається старий шлях через лист.
+      const btn = form.querySelector('[type=submit]'), err = $('#orderErr');
+      btn.disabled = true; err.hidden = true;
+      CH.sendOrder({ name: d.name, phone: d.phone, delivery: d.delivery, city: d.city, note: d.note, website: d.website, items: lines.map(l => ({ id: l.p.id, q: l.q })) })
+        .then(r => {
+          cart = {}; saveCart();
+          view.innerHTML = `<div class="wrap empty"><h1>${esc(CH.t.orderOk(r.id))}</h1><p>${esc(CH.t.orderOkP(PHONE_TEXT))}</p><a class="btn" href="tel:${PHONE}">${L.call}</a></div>`;
+        })
+        .catch(x => { if (x.net) return viaMail(); err.textContent = CH.errText(x); err.hidden = false; btn.disabled = false; });
     });
+    window.ACC_CHAT?.mark?.();
   }
 
   const PAGES = {
@@ -499,9 +516,9 @@
     service: [L.repairFull, `${L.pages.service}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
     contacts: [L.contacts, `<p><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>
       <p><a class="contact-big" style="font-size:1.4rem" href="mailto:${MAIL}">${MAIL}</a></p>
-      <h2>${L.footTitle}</h2>${L.pages.contacts}`],
+      <h2>${L.footTitle}</h2>${L.pages.contacts}<div id="letterBox"></div>`],
   };
-  function page(key) { const [h, body] = PAGES[key]; title(h); view.innerHTML = `${crumbs([{ name: h }])}<article class="wrap page"><h1>${h}</h1>${body}</article>`; }
+  function page(key) { const [h, body] = PAGES[key]; title(h); view.innerHTML = `${crumbs([{ name: h }])}<article class="wrap page"><h1>${h}</h1>${body}</article>`; if (key === 'contacts') window.ACC_CHAT?.mountLetter($('#letterBox')); }
   function notFound() { title(L.nfTitle); view.innerHTML = `<div class="wrap empty"><h1>${L.nfH}</h1><p>${L.nfP}</p><a class="btn" href="#/">${L.toCatalog}</a></div>`; }
 
   /* ── Маршрути ── */

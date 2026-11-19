@@ -1,0 +1,45 @@
+/* Чат з магазином (chat.js). Світла тема сайту з glass.css. */
+.ask-fab { position: fixed; right: 18px; bottom: 18px; z-index: 60; display: inline-flex; align-items: center; gap: 8px; min-height: 50px; padding: 0 20px 0 16px; border-radius: 999px; border: 0;
+  background: #17201b; color: #f3f6f1; font: inherit; font-weight: 500; cursor: pointer; box-shadow: 0 14px 30px -12px rgba(23, 32, 27, .55); transition: background .2s; }
+.ask-fab:hover { background: var(--red, #c41d38); }
+.ask-fab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linejoin: round; }
+.ask-badge { background: #e9b949; color: #17201b; border-radius: 999px; min-width: 1.5em; padding: 0 .45em; font-size: .78rem; text-align: center; line-height: 1.5; }
+.ask { position: fixed; right: 18px; bottom: 80px; z-index: 61; width: min(400px, calc(100vw - 24px)); max-height: min(640px, calc(100dvh - 110px)); display: flex; flex-direction: column;
+  background: #f5f7f4; color: #17201b; border-radius: 18px; box-shadow: 0 30px 70px -20px rgba(23, 32, 27, .5); overflow: hidden; }
+.ask-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px 12px 20px; background: #17201b; color: #f3f6f1; }
+.ask-head h2 { margin: 0; font-size: 1rem; font-family: Unbounded, sans-serif; font-weight: 500; }
+.ask-x { background: none; border: 0; color: inherit; font-size: 1.6rem; line-height: 1; cursor: pointer; padding: 2px 6px; }
+.ask-body { padding: 16px 18px 18px; overflow: auto; display: flex; flex-direction: column; gap: 10px; min-height: 0; flex: 1; }
+.ask-note { margin: 0; color: #4d5a53; font-size: .92rem; }
+.ask-form { display: grid; gap: 10px; }
+.ask-field label { display: block; font-weight: 500; font-size: .9rem; margin-bottom: 4px; }
+.ask-field input, .ask-field textarea, .ask-reply textarea { width: 100%; padding: 10px 12px; border: 1.5px solid rgba(23, 32, 27, .18); border-radius: 10px; background: #fff; font: inherit; color: inherit; }
+.ask-field input:focus, .ask-field textarea:focus, .ask-reply textarea:focus { border-color: #17201b; outline: none; }
+.ask-field textarea { resize: vertical; min-height: 96px; }
+.ask-left { display: block; text-align: right; color: #6b7a71; font-size: .8rem; min-height: 1em; }
+.ask-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.ask-err { margin: 0; color: var(--red, #c41d38); font-size: .9rem; }
+.ask-ok { margin: 0; font-size: 1rem; }
+.ask-link { background: none; border: 0; padding: 0; color: #1f5a3c; cursor: pointer; font: inherit; text-align: left; justify-self: start; }
+.ask-list { list-style: none; margin: 0 0 6px; padding: 0; display: grid; gap: 6px; }
+.ask-list button { width: 100%; display: flex; justify-content: space-between; gap: 10px; align-items: center; text-align: left; padding: 12px 14px; border: 0; border-radius: 12px; background: #fff; font: inherit; color: inherit; cursor: pointer; }
+.ask-list button:hover { background: #e7ece6; }
+.ask-topic { margin: 0; font-size: .95rem; font-family: Unbounded, sans-serif; font-weight: 500; }
+.ask-msgs { display: flex; flex-direction: column; gap: 8px; overflow: auto; min-height: 120px; flex: 1; }
+.ask-msg { max-width: 86%; padding: 8px 12px; border-radius: 14px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .95rem; }
+.ask-msg.client { align-self: flex-end; background: #17201b; color: #f3f6f1; border-bottom-right-radius: 4px; }
+.ask-msg.admin { align-self: flex-start; background: #fff; border-bottom-left-radius: 4px; }
+.ask-who { display: block; font-size: .75rem; opacity: .65; }
+.ask-msg time { display: block; font-size: .72rem; opacity: .55; margin-top: 2px; }
+.ask-reply { display: flex; gap: 8px; align-items: flex-end; }
+.ask-reply textarea { resize: none; min-height: 48px; max-height: 140px; }
+.ask-reply .btn { min-height: 48px; padding: 0 18px; }
+.ask .btn.wide { width: 100%; }
+.letter-form { max-width: 560px; margin-top: 28px; }
+.letter-form h2 { margin: 0 0 4px; }
+.p-ask { margin-top: 10px; }
+@media (max-width: 560px) {
+  .ask-fab { right: 12px; bottom: 12px; min-height: 46px; padding: 0 16px 0 13px; }
+  .ask { right: 8px; left: 8px; bottom: 66px; width: auto; max-height: calc(100dvh - 84px); }
+}
+@media (prefers-reduced-motion: reduce) { .ask-fab { transition: none; } }
