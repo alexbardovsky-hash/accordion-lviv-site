@@ -78,50 +78,90 @@
 
   /* ── Вітрина: стіна підсвічених полиць, на кожній інструмент. Клік знімає інструмент з полиці й ставить
      великим планом на постамент із назвою та ціною; стрілки гортають, Esc або кнопка повертає на стіну. ── */
-  // Сцени: секція висотою n екранів, сцена всередині прилипає; частка прогортаного вибирає активну сцену.
+  // Сцени (Алекс 19.11): сторінка гортається як звичайно, кожна сцена — свій екран у потоці, нічого не прилипає.
+  // Кадр сцени йде за гортанням: поки сцена проїжджає крізь екран, анімація програється від початку до кінця.
+  // Кадри — картинки на canvas (tools/scene_frames.py), бо перемотка <video> на телефоні смикається;
+  // між сусідніми кадрами змішуємо, а позицію згладжуємо, тож рух плавний навіть при різкому свайпі.
   function reelInit() {
     const sec = $('#reel');
     if (!sec) return;
-    const vids = $$('.reel-vid', sec), cards = $$('.reel-card', sec), dots = $$('.reel-dots li', sec), hint = $('.reel-hint', sec);
-    const n = vids.length, calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let cur = -1, raf = 0;
-    const play = v => { if (calm) return; v.playbackRate = 1; const p = v.play(); if (p) p.catch(() => {}); };
-    const set = i => {
-      if (i === cur) return;
-      cur = i;
-      vids.forEach((v, k) => { v.classList.toggle('is-on', k === i); if (k === i) { v.preload = 'auto'; if (!v.hasAttribute('data-scrub')) play(v); } else v.pause(); });
-      cards.forEach((c, k) => { c.classList.toggle('is-on', k === i); c.toggleAttribute('aria-hidden', k !== i); c.inert = k !== i; });
-      dots.forEach((d, k) => d.classList.toggle('is-on', k === i));
-      if (vids[i + 1]) vids[i + 1].preload = 'auto';
-    };
-    const frame = () => {
+    const FR = window.SCENE_FRAMES || {}, calm = matchMedia('(prefers-reduced-motion: reduce)').matches, hint = $('.reel-hint', sec);
+    const clamp = x => Math.min(1, Math.max(0, x));
+    const stages = $$('.reel-stage', sec).map((el, i) => {
+      const cv = $('canvas', el), key = el.dataset.key;
+      return { el, i, key, cv, ctx: cv.getContext('2d'), n: FR[key] || 0, imgs: [], p: -1, target: 0, drawn: -2, started: false, card: $('.reel-card', el) };
+    });
+    const src = (s, i) => `scenes/frames/${s.key}/${String(i + 1).padStart(3, '0')}.webp?v=1`;
+    // Спершу кожен 8-й кадр, потім щільніше: сцена оживає одразу, а дрібні кадри догружаються.
+    function load(s) {
+      if (s.started || !s.n) return;
+      s.started = true;
+      const seen = new Set(), order = [];
+      for (const step of [8, 4, 2, 1]) for (let i = 0; i < s.n; i += step) if (!seen.has(i)) { seen.add(i); order.push(i); }
+      let k = 0, busy = 0;
+      const next = () => {
+        while (busy < 6 && k < order.length) {
+          const i = order[k++], im = new Image(); busy++;
+          im.decoding = 'async';
+          im.onload = () => { s.imgs[i] = im; busy--; s.drawn = -2; ask(); next(); };
+          im.onerror = () => { busy--; next(); };
+          im.src = src(s, i);
+        }
+      };
+      next();
+    }
+    const near = (s, i) => { for (let d = 0; d < s.n; d++) { if (s.imgs[i - d]) return [s.imgs[i - d], i - d]; if (s.imgs[i + d]) return [s.imgs[i + d], i + d]; } return [null, -1]; };
+    function draw(s) {
+      const box = s.cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+      const W = Math.round(box.width * dpr), H = Math.round(box.height * dpr);
+      if (!W || !H) return;
+      if (s.cv.width !== W || s.cv.height !== H) { s.cv.width = W; s.cv.height = H; }
+      const f = s.p * (s.n - 1), i = Math.floor(f), t = f - i;
+      const [a, ai] = near(s, i);
+      if (!a) return;
+      const k = Math.max(W / a.naturalWidth, H / a.naturalHeight), dw = a.naturalWidth * k, dh = a.naturalHeight * k;
+      const fx = s.cv.hasAttribute('data-scrub') || innerWidth > 960 ? .5 : .58, x = (W - dw) * fx, y = (H - dh) / 2;
+      const c = s.ctx;
+      c.globalAlpha = 1; c.drawImage(a, x, y, dw, dh);
+      const b = ai === i && t > .02 && s.imgs[i + 1];
+      if (b) { c.globalAlpha = t; c.drawImage(b, x, y, dw, dh); c.globalAlpha = 1; }
+      s.cv.classList.add('is-drawn');
+    }
+    let raf = 0;
+    function tick() {
       raf = 0;
       if (!document.body.contains(sec)) return removeEventListener('scroll', ask);
-      const r = sec.getBoundingClientRect(), total = r.height - innerHeight;
-      const t = total > 0 ? Math.min(.999, Math.max(0, -r.top / total)) : 0;
-      set(Math.floor(t * n));
-      // Сцена з міхом не грає сама: гортання розтискає інструмент (на початку сцени стиснутий, ближче до кінця розкритий).
-      const v = vids[cur];
-      if (v && v.hasAttribute('data-scrub') && v.duration) {
-        const local = Math.min(1, Math.max(0, (t * n - cur - .05) / .8));
-        const at = local * (v.duration - .05);
-        if (Math.abs(v.currentTime - at) > .02) v.currentTime = at;
+      const vh = innerHeight;
+      let more = false;
+      for (const s of stages) {
+        const box = s.el.getBoundingClientRect();
+        if (box.top < vh * 2.2 && box.bottom > -vh) load(s);              // наступну сцену вантажимо заздалегідь
+        if (box.bottom < 0 || box.top > vh) continue;
+        // перша сцена: від верху сторінки, поки не проїде; решта: від появи знизу до зникнення вгорі
+        s.target = s.i === 0 ? clamp(-box.top / (box.height * .8)) : clamp((vh - box.top) / (vh + box.height));
+        const d = s.target - s.p;
+        s.p = calm || s.p < 0 || Math.abs(d) < .0008 ? s.target : s.p + d * .14;
+        if (s.p !== s.target) more = true;
+        if (!calm) {
+          // глибина: картинка трохи відстає від сторінки
+          const off = Math.max(-1, Math.min(1, (box.top + box.height / 2 - vh / 2) / vh)) * box.height * -.08;
+          s.cv.style.setProperty('--py', `${off.toFixed(1)}px`);
+        }
+        if (Math.abs(s.drawn - s.p) > .0004 || s.drawn === -2) { draw(s); s.drawn = s.p; }
       }
-      hint.style.opacity = t > .02 ? 0 : '';
-    };
-    const ask = () => { if (!raf) raf = requestAnimationFrame(frame); };
+      if (hint) hint.style.opacity = scrollY > 20 ? 0 : '';
+      if (more) raf = requestAnimationFrame(tick);
+    }
+    const ask = () => { if (!raf) raf = requestAnimationFrame(tick); };
     addEventListener('scroll', ask, { passive: true });
-    // Перемотування потребує, щоб сервер віддавав відео частинами (Range); простий сервер так не вміє.
-    // Тож сцену з гортанням завантажуємо цілком і граємо з пам'яті: так перемотка працює будь-де.
-    vids.forEach(v => {
-      if (!v.hasAttribute('data-scrub')) return;
-      v.addEventListener('loadedmetadata', ask);
-      const srcs = [...v.querySelectorAll('source')];
-      const pick = srcs.find(x => v.canPlayType(x.type)) || srcs[srcs.length - 1];
-      fetch(pick.src).then(r => r.blob()).then(b => { v.src = URL.createObjectURL(b); v.load(); }).catch(() => {});
-    });
-    addEventListener('resize', ask);
-    frame();
+    addEventListener('resize', () => { stages.forEach(s => { s.drawn = -2; }); ask(); });
+    // Текст сцени виринає, коли сама сцена вже на екрані.
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      const s = stages.find(x => x.el === e.target);
+      if (e.isIntersecting) { s.card.classList.add('is-on'); s.card.removeAttribute('aria-hidden'); s.card.inert = false; }
+    }), { threshold: .35 });
+    stages.forEach(s => io.observe(s.el));
+    tick();
   }
 
   // Перший екран: велика назва, поруч один інструмент із вітрини, що змінюється сам.
@@ -271,16 +311,13 @@
       cat.get(BUTTONS) && { key: 'buttons', html: `<h2>${L.reelBtnH}</h2><p>${L.reelBtnP(goods(count(BUTTONS)), money(minIn(BUTTONS)))}</p><div class="hero-cta"><a class="btn" href="#/c/${BUTTONS}">${L.reelBtnCta}</a></div>` },
     ].filter(Boolean);
     view.innerHTML = `
-      <section class="reel" id="reel" style="--n:${scenes.length}">
-        <div class="reel-stage">
-          ${scenes.map((sc, i) => `<video class="reel-vid${i ? '' : ' is-on'}" data-i="${i}"${sc.scrub ? ' data-scrub' : ' loop'} muted playsinline preload="${i ? 'metadata' : 'auto'}" poster="scenes/web/${sc.key}.jpg?v=23"><source src="scenes/web/${sc.key}.webm?v=23" type="video/webm"><source src="scenes/web/${sc.key}.mp4?v=23" type="video/mp4"></video>`).join('')}
+      <section class="reel" id="reel">
+        ${scenes.map((sc, i) => `<div class="reel-stage" data-key="${sc.key}">
+          <canvas class="reel-vid is-on"${sc.scrub ? ' data-scrub' : ''} aria-hidden="true" style="background-image:url(scenes/web/${sc.key}.jpg?v=23)"></canvas>
           <div class="reel-shade" aria-hidden="true"></div>
-          <div class="wrap reel-in">
-            ${scenes.map((sc, i) => `<div class="reel-card${i ? '' : ' is-on'}" data-i="${i}"${i ? ' aria-hidden="true"' : ''}>${sc.html}</div>`).join('')}
-          </div>
-          <ol class="reel-dots" aria-hidden="true">${scenes.map((sc, i) => `<li${i ? '' : ' class="is-on"'}><i></i></li>`).join('')}</ol>
-          <div class="reel-hint" aria-hidden="true"><span>${L.reelHint}</span><i></i></div>
-        </div>
+          <div class="wrap reel-in"><div class="reel-card${i ? '' : ' is-on'}"${i ? ' aria-hidden="true"' : ''}>${sc.html}</div></div>
+          ${i ? '' : `<div class="reel-hint" aria-hidden="true"><span>${L.reelHint}</span><i></i></div>`}
+        </div>`).join('')}
       </section>
       <section class="section wrap wall" id="wall">
         <div class="section-head"><h2>${L.wallTitle}</h2><p>${L.wallLead}</p></div>

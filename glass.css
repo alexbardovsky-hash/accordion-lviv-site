@@ -201,3 +201,17 @@ body::after {
 /* Слоган першого екрана (Алекс, 2026-11-19): окремий рядок над описом */
 .reel-card .slogan { display: block; margin-bottom: .7em; font-family: Unbounded, "Arial Black", sans-serif; font-weight: 500; font-size: 1.12em; line-height: 1.35; color: #17201b; }
 .cat-lead { max-width: 66ch; margin: -6px 0 18px; font-size: 1.02rem; line-height: 1.55; color: #3c4a42; }
+
+/* Сцени у звичайному потоці (Алекс 19.11): нічого не прилипає, сторінка гортається, кадр іде за гортанням (app.js reelInit). */
+.reel { height: auto; }
+.reel-stage { position: relative; top: auto; height: 100svh; }
+.reel-stage + .reel-stage { margin-top: -1px; }
+canvas.reel-vid { opacity: 1; transform: translate3d(0, var(--py, 0px), 0) scale(1.06); transition: none; will-change: transform;
+  background-size: cover; background-position: 50% 50%; background-repeat: no-repeat; }
+canvas.reel-vid:not([data-scrub]) { inset: -9% 0; height: 118%; }
+canvas.reel-vid.is-drawn { background-image: none !important; }
+@media (max-width: 960px) {
+  canvas.reel-vid:not([data-scrub]) { background-position: 58% 50%; }
+  canvas.reel-vid[data-scrub] { transform: translate3d(0, var(--py, 0px), 0); }
+}
+@media (prefers-reduced-motion: reduce) { canvas.reel-vid { transform: none; } }
