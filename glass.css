@@ -215,3 +215,10 @@ canvas.reel-vid.is-drawn { background-image: none !important; }
   canvas.reel-vid[data-scrub] { transform: translate3d(0, var(--py, 0px), 0); }
 }
 @media (prefers-reduced-motion: reduce) { canvas.reel-vid { transform: none; } }
+
+/* Телефон: над сценою, що змінюється щокадру, розмиття скла і зерно перераховуються щокадру — це й смикало. */
+@media (max-width: 960px) {
+  .reel-card { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(236, 240, 235, .9); }
+  .reel-stage::after { display: none; }
+  canvas.reel-vid:not([data-scrub]) { background-position: 58% 50%; }
+}

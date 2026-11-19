@@ -91,7 +91,9 @@
       const cv = $('canvas', el), key = el.dataset.key;
       return { el, i, key, cv, ctx: cv.getContext('2d'), n: FR[key] || 0, imgs: [], p: -1, target: 0, drawn: -2, started: false, card: $('.reel-card', el) };
     });
-    const src = (s, i) => `scenes/frames/${s.key}/${String(i + 1).padStart(3, '0')}.webp?v=1`;
+    // Телефон бере вузьку вертикальну смугу кадру в рідній якості (tools/scene_frames.py): легше й плавніше.
+    const SET = innerWidth <= 960 ? 'm' : 'd';
+    const src = (s, i) => `scenes/frames2/${s.key}/${SET}/${String(i + 1).padStart(3, '0')}.webp?v=1`;
     // Спершу кожен 8-й кадр, потім щільніше: сцена оживає одразу, а дрібні кадри догружаються.
     function load(s) {
       if (s.started || !s.n) return;
@@ -103,7 +105,8 @@
         while (busy < 6 && k < order.length) {
           const i = order[k++], im = new Image(); busy++;
           im.decoding = 'async';
-          im.onload = () => { s.imgs[i] = im; busy--; s.drawn = -2; ask(); next(); };
+          const ready = () => { s.imgs[i] = im; busy--; s.drawn = -2; ask(); next(); };
+          im.onload = () => (im.decode ? im.decode().then(ready, ready) : ready());
           im.onerror = () => { busy--; next(); };
           im.src = src(s, i);
         }
@@ -120,7 +123,7 @@
       const [a, ai] = near(s, i);
       if (!a) return;
       const k = Math.max(W / a.naturalWidth, H / a.naturalHeight), dw = a.naturalWidth * k, dh = a.naturalHeight * k;
-      const fx = s.cv.hasAttribute('data-scrub') || innerWidth > 960 ? .5 : .58, x = (W - dw) * fx, y = (H - dh) / 2;
+      const x = (W - dw) / 2, y = (H - dh) / 2;
       const c = s.ctx;
       c.globalAlpha = 1; c.drawImage(a, x, y, dw, dh);
       const b = ai === i && t > .02 && s.imgs[i + 1];
@@ -135,12 +138,12 @@
       let more = false;
       for (const s of stages) {
         const box = s.el.getBoundingClientRect();
-        if (box.top < vh * 2.2 && box.bottom > -vh) load(s);              // наступну сцену вантажимо заздалегідь
+        if (box.top < vh * 4 && box.bottom > -vh) load(s);                // наступні сцени вантажимо заздалегідь
         if (box.bottom < 0 || box.top > vh) continue;
         // перша сцена: від верху сторінки, поки не проїде; решта: від появи знизу до зникнення вгорі
         s.target = s.i === 0 ? clamp(-box.top / (box.height * .8)) : clamp((vh - box.top) / (vh + box.height));
         const d = s.target - s.p;
-        s.p = calm || s.p < 0 || Math.abs(d) < .0008 ? s.target : s.p + d * .14;
+        s.p = calm || s.p < 0 || Math.abs(d) < .0008 ? s.target : s.p + d * .22;
         if (s.p !== s.target) more = true;
         if (!calm) {
           // глибина: картинка трохи відстає від сторінки
