@@ -93,7 +93,7 @@
     });
     // Телефон бере вузьку вертикальну смугу кадру в рідній якості (tools/scene_frames.py): легше й плавніше.
     const SET = innerWidth <= 960 ? 'm' : 'd';
-    const src = (s, i) => `scenes/frames2/${s.key}/${SET}/${String(i + 1).padStart(3, '0')}.webp?v=3`;
+    const src = (s, i) => `scenes/frames2/${s.key}/${SET}/${String(i + 1).padStart(3, '0')}.webp?v=4`;
     // Спершу кожен 8-й кадр, потім щільніше: сцена оживає одразу, а дрібні кадри догружаються.
     function load(s) {
       if (s.started || !s.n) return;
@@ -316,7 +316,7 @@
     view.innerHTML = `
       <section class="reel" id="reel">
         ${scenes.map((sc, i) => `<div class="reel-stage" data-key="${sc.key}">
-          <canvas class="reel-vid is-on"${sc.scrub ? ' data-scrub' : ''} aria-hidden="true" style="background-image:url(scenes/web/${sc.key}.jpg?v=25)"></canvas>
+          <canvas class="reel-vid is-on"${sc.scrub ? ' data-scrub' : ''} aria-hidden="true" style="background-image:url(scenes/web/${sc.key}.jpg?v=26)"></canvas>
           <div class="reel-shade" aria-hidden="true"></div>
           <div class="wrap reel-in"><div class="reel-card${i ? '' : ' is-on'}"${i ? ' aria-hidden="true"' : ''}>${sc.html}</div></div>
           ${i ? '' : `<div class="reel-hint" aria-hidden="true"><span>${L.reelHint}</span><i></i></div>`}
