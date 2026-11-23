@@ -43,7 +43,9 @@
   /* ── Спільне ── */
   async function call(path, body) {
     let r;
-    try { r = await fetch(API + path, body === undefined ? {} : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); }
+    // Увійшов у кабінет (account.js) — сервер упізнає за токеном: чати видно з будь-якого пристрою.
+    const tok = window.ACC_ACCOUNT?.token, auth = tok ? { Authorization: `Bearer ${tok}` } : {};
+    try { r = await fetch(API + path, body === undefined ? { headers: auth } : { method: 'POST', headers: { 'Content-Type': 'application/json', ...auth }, body: JSON.stringify(body) }); }
     catch { throw Object.assign(new Error('net'), { net: true }); }
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw Object.assign(new Error(d.error || 'other'), { data: d });
@@ -120,12 +122,19 @@
   function toggle(on, opts) {
     panel.hidden = !on; fab.setAttribute('aria-expanded', String(on));
     if (!on) { es?.close(); es = null; current = null; fab.focus(); return; }
-    if (opts?.topic) newForm(opts); else if (store.chats.length) list(); else newForm();
+    if (opts?.chat) thread(opts.chat); else if (opts?.topic) newForm(opts); else if (logged() || store.chats.length) list(); else newForm();
   }
 
-  function list() {
+  const logged = () => !!window.ACC_ACCOUNT?.token;
+  /* Увійшов — список з сервера (історія з усіх пристроїв), інакше — чати, збережені в цьому браузері. */
+  async function chatList() {
+    if (!logged()) return store.chats;
+    try { const l = await call('/api/me/chats'); l.forEach(c => { unread[c.id] = c.id === current ? 0 : c.unread || 0; }); paintBadge(); return l; } catch { return store.chats; }
+  }
+  async function list() {
     es?.close(); es = null; current = null;
-    const chats = store.chats;
+    const chats = await chatList();
+    if (!chats.length) return newForm();
     body.replaceChildren(
       h('ul.ask-list', chats.map(c => h('li', h('button', { type: 'button', onclick: () => thread(c) }, h('span', c.topic), unread[c.id] ? h('b.ask-badge', unread[c.id]) : null)))),
       h('button.btn.wide', { type: 'button', onclick: () => newForm() }, T.newQ));
@@ -141,19 +150,18 @@
     const err = h('p.ask-err', { role: 'alert', hidden: true });
     const btn = h('button.btn.wide', { type: 'submit' }, T.send);
     const form = h('form.ask-form', { novalidate: true },
-      store.chats.length ? h('button.ask-link', { type: 'button', onclick: list }, T.back) : null,
-      h('p.ask-note', T.intro), field(T.topic, topic, LIM.topic), field(T.name, name, LIM.name), field(T.contact, contact, LIM.contact), field(T.message, message, LIM.message), honeypot(), err, btn);
+      logged() || store.chats.length ? h('button.ask-link', { type: 'button', onclick: list }, T.back) : null,
+      h('p.ask-note', T.intro), field(T.topic, topic, LIM.topic), logged() ? null : [field(T.name, name, LIM.name), field(T.contact, contact, LIM.contact)], field(T.message, message, LIM.message), honeypot(), err, btn);
     form.addEventListener('submit', async e => {
       e.preventDefault(); err.hidden = true;
       const v = { topic: topic.value.trim(), name: name.value.trim(), contact: contact.value.trim(), message: message.value.trim() };
-      if (!v.topic || v.name.length < 2 || !v.message) return show(err, T.err.required);
-      if (!/\S+@\S+\.\S+/.test(v.contact) && v.contact.replace(/\D/g, '').length < 9) return show(err, T.err.contact);
+      if (!v.topic || (!logged() && v.name.length < 2) || !v.message) return show(err, T.err.required);
+      if (!logged() && !/\S+@\S+\.\S+/.test(v.contact) && v.contact.replace(/\D/g, '').length < 9) return show(err, T.err.contact);
       btn.disabled = true; btn.textContent = T.sending;
       try {
         const r = await call('/api/chats', { ...v, productId: opts.productId, lang, website: form.website.value, elapsed: Date.now() - opened, pow: await pow() });
-        store.me = { name: v.name, contact: v.contact };
         const c = { id: r.id, token: r.token, topic: v.topic };
-        store.chats = [c, ...store.chats];
+        if (!logged()) { store.me = { name: v.name, contact: v.contact }; store.chats = [c, ...store.chats]; }
         thread(c, true);
       } catch (x) { show(err, errText(x)); warm(); btn.disabled = false; btn.textContent = T.send; }
     });
@@ -180,18 +188,20 @@
     form.addEventListener('submit', async e => {
       e.preventDefault(); err.hidden = true; const v = ta.value.trim(); if (!v) return;
       btn.disabled = true;
-      try { add(await call(`/api/chats/${c.id}/messages`, { token: c.token, body: v })); ta.value = ''; }
+      try { add(await call(`/api/chats/${c.id}/messages`, { token: c.token || '', body: v })); ta.value = ''; }
       catch (x) { show(err, errText(x)); }
       btn.disabled = false; ta.focus();
     });
     ta.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !matchMedia('(pointer: coarse)').matches) { e.preventDefault(); form.requestSubmit(); } });
     body.replaceChildren(h('button.ask-link', { type: 'button', onclick: list }, T.back), h('h3.ask-topic', c.topic), box, note, err, form);
     try {
-      const d = await call(`/api/chats/${c.id}?token=${encodeURIComponent(c.token)}`);
+      const d = await call(`/api/chats/${c.id}?token=${encodeURIComponent(c.token || '')}`);
       if (current !== c.id) return;
       d.messages.forEach(add);
       if (d.status === 'closed') { note.hidden = false; note.textContent = T.closed; }
-      es = new EventSource(`${API}/api/chats/${c.id}/stream?token=${encodeURIComponent(c.token)}`);
+      // EventSource не шле заголовків: для акаунта токен входу йде параметром.
+      const tok = window.ACC_ACCOUNT?.token;
+      es = new EventSource(`${API}/api/chats/${c.id}/stream?token=${encodeURIComponent(c.token || '')}${tok ? `&auth=${encodeURIComponent(tok)}` : ''}`);
       es.addEventListener('message', e => add(JSON.parse(e.data)));
       es.addEventListener('status', e => { if (JSON.parse(e.data).status === 'closed') { note.hidden = false; note.textContent = T.closed; } });
     } catch (x) {
@@ -208,7 +218,9 @@
     const b = fab.querySelector('.ask-badge'); b.hidden = !n; b.textContent = n;
   }
   async function poll() {
-    const chats = store.chats; if (!chats.length || document.hidden) return;
+    if (document.hidden) return;
+    if (logged()) return void chatList();
+    const chats = store.chats; if (!chats.length) return;
     try {
       const r = await call('/api/chats/unread', { chats: chats.map(c => ({ id: c.id, token: c.token })) });
       for (const c of chats) unread[c.id] = c.id === current ? 0 : r[c.id]?.unread || 0;

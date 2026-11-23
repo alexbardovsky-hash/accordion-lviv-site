@@ -59,9 +59,19 @@
   /* ── Шматки розмітки ── */
   const pic = (p, cls = '') => p.img ? `<img ${cls} src="${esc(p.img)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'">` : '<span class="ph"></span>';
   const priceTag = p => p.price ? `<span class="price">${money(p.price)}</span>` : `<span class="price ask">${L.askPrice}</span>`;
+  /* Обране й порівняння (account.js): сердечко й терези на картці та сторінці товару. */
+  const ACC = window.ACC_ACCOUNT, AT = ACC?.t || {};
+  const ICON = {
+    fav: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"/></svg>',
+    cmp: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"/></svg>',
+    user: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-4 4.3-6 8-6s6.8 2 8 6"/></svg>',
+  };
+  const acts = p => ACC ? `<div class="card-acts">
+      <button class="act" data-fav="${p.id}" aria-pressed="${ACC.isFav(p.id)}" aria-label="${esc(AT.favAdd)}" title="${esc(AT.favAdd)}">${ICON.fav}</button>
+      <button class="act" data-cmp="${p.id}" aria-pressed="${ACC.inCmp(p.id)}" aria-label="${esc(AT.cmpAdd)}" title="${esc(AT.cmpAdd)}">${ICON.cmp}</button></div>` : '';
   const card = p => `
     <article class="card">
-      <div class="card-img">${pic(p)}</div>
+      <div class="card-img">${pic(p)}${acts(p)}</div>
       <a class="card-name" href="#/p/${p.id}">${esc(p.name)}</a>
       ${p.ref ? `<span class="card-meta">${L.sku} ${esc(p.ref)}</span>` : ''}
       <div class="card-foot">${priceTag(p)}
@@ -476,6 +486,9 @@
               <button class="btn" id="buy">${L.addToCart}</button>${window.ACC_CHAT?.enabled ? `<button class="btn ghost p-ask" id="askP" type="button">${window.ACC_CHAT.t.askProduct}</button>` : ''}
             </div>`
             : `<div class="buy"><a class="btn" href="tel:${PHONE}">${L.callPh(PHONE_TEXT)}</a></div><p class="p-note">${L.toOrder}</p>`}
+          ${ACC ? `<div class="p-acts">
+            <button class="chip act-chip" data-fav="${p.id}" aria-pressed="${ACC.isFav(p.id)}">${ICON.fav}<span>${esc(AT.favH)}</span></button>
+            <button class="chip act-chip" data-cmp="${p.id}" aria-pressed="${ACC.inCmp(p.id)}">${ICON.cmp}<span>${esc(AT.cmpAdd)}</span></button></div>` : ''}
           <ul class="p-facts">
             <li><b>${L.factDeliveryL}</b> ${L.factDelivery}</li>
             <li><b>${L.factCompat}</b> <a href="tel:${PHONE}">${PHONE_TEXT}</a></li>
@@ -505,8 +518,8 @@
         <form class="form" id="order" novalidate>
           <h1>${L.checkout}</h1>
           <p class="note">${L.checkoutNote}</p>
-          <div class="field"><label for="f-name">${L.fName}</label><input id="f-name" name="name" autocomplete="name" required><p class="err" hidden>${L.fNameErr}</p></div>
-          <div class="field"><label for="f-phone">${L.fPhone}</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380" required><p class="err" hidden>${L.fPhoneErr}</p></div>
+          <div class="field"><label for="f-name">${L.fName}</label><input id="f-name" name="name" autocomplete="name" required value="${esc(ACC?.user?.name || '')}"><p class="err" hidden>${L.fNameErr}</p></div>
+          <div class="field"><label for="f-phone">${L.fPhone}</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380" required value="${esc(ACC?.user?.phone || '')}"><p class="err" hidden>${L.fPhoneErr}</p></div>
           <div class="field"><span class="sr" id="del-l">${L.fDelivery}</span><div class="radio" role="radiogroup" aria-labelledby="del-l">
             <label><input type="radio" name="delivery" value="np" checked><span><b>${L.np}</b><br>${L.npNote}</span></label>
             <label><input type="radio" name="delivery" value="pickup"><span><b>${L.pickup}</b><br>${L.pickupNote}</span></label></div></div>
@@ -544,13 +557,56 @@
       btn.disabled = true; err.hidden = true;
       CH.sendOrder({ name: d.name, phone: d.phone, delivery: d.delivery, city: d.city, note: d.note, website: d.website, items: lines.map(l => ({ id: l.p.id, q: l.q })) })
         .then(r => {
-          cart = {}; saveCart();
+          cart = {}; saveCart(); ACC?.rememberOrder(r);
           view.innerHTML = `<div class="wrap empty"><h1>${esc(CH.t.orderOk(r.id))}</h1><p>${esc(CH.t.orderOkP(PHONE_TEXT))}</p><a class="btn" href="tel:${PHONE}">${L.call}</a></div>`;
         })
         .catch(x => { if (x.net) return viaMail(); err.textContent = CH.errText(x); err.hidden = false; btn.disabled = false; });
     });
     window.ACC_CHAT?.mark?.();
   }
+
+  function favorites() {
+    title(AT.favH);
+    const list = ACC.favs().map(id => prod.get(id)).filter(Boolean);
+    view.innerHTML = `${crumbs([{ name: AT.favH }])}<div class="wrap"><div class="cat-head"><h1>${esc(AT.favH)}</h1><small>${goods(list.length)}</small></div>
+      ${!ACC.user && ACC.enabled && list.length ? `<p class="acc-keep"><a href="#/login">${esc(AT.loginToKeep)}</a></p>` : ''}
+      ${list.length ? `<div class="grid">${list.map(card).join('')}</div>` : `<div class="empty"><p>${esc(AT.favEmpty)}</p><a class="btn" href="#/">${L.toCatalog}</a></div>`}</div>`;
+  }
+  /* Порівняння: товари стовпчиками, рядки — ціна, виробник, артикул, розділ і всі характеристики, що є хоч в одного. */
+  function compare(query) {
+    title(AT.cmpH);
+    const list = ACC.cmp().map(id => prod.get(id)).filter(Boolean);
+    const diff = query.get('diff') === '1';
+    const keys = [...new Set(list.flatMap(p => p.features.map(f => f[0])))];
+    const feat = (p, k) => p.features.find(f => f[0] === k)?.[1] || '';
+    const rows = [
+      [AT.rowPrice, p => p.price ? money(p.price) : L.askPrice],
+      [AT.rowBrand, p => esc(p.brand || '')],
+      [AT.rowRef, p => esc(p.ref || '')],
+      [AT.rowCat, p => cat.get(p.cat) ? `<a href="#/c/${p.cat}">${esc(cat.get(p.cat).name)}</a>` : ''],
+      ...keys.map(k => [esc(k), p => esc(feat(p, k))]),
+      [AT.rowDesc, p => esc(p.desc || p.short || '')],
+    ].filter(([, f]) => list.some(p => f(p)) && (!diff || new Set(list.map(f)).size > 1));
+    view.innerHTML = `${crumbs([{ name: AT.cmpH }])}<div class="wrap cmp">
+      <div class="cat-head"><h1>${esc(AT.cmpH)}</h1><small>${goods(list.length)}</small></div>
+      ${!list.length ? `<div class="empty"><p>${esc(AT.cmpEmpty(ACC.COMPARE_MAX))}</p><a class="btn" href="#/">${L.toCatalog}</a></div>` : `
+      <div class="cmp-tools">${list.length > 1 ? `<a class="chip" href="#/compare${diff ? '' : '?diff=1'}" aria-pressed="${diff}">${esc(AT.cmpDiff)}</a>` : `<p class="p-note">${esc(AT.cmpOne)}</p>`}
+        <button class="chip" id="cmpClear">${esc(AT.cmpClear)}</button></div>
+      <div class="cmp-scroll"><table class="cmp-table" style="--n:${list.length}">
+        <thead><tr><th scope="row"></th>${list.map(p => `<th scope="col"><div class="cmp-card">
+          <button class="cmp-x" data-cmp="${p.id}" aria-label="${esc(AT.cmpDel)}: ${esc(p.name)}">×</button>
+          <a class="cmp-img" href="#/p/${p.id}">${pic(p)}</a><a class="cmp-name" href="#/p/${p.id}">${esc(p.name)}</a>
+          ${p.buy ? `<button class="btn cmp-buy" data-add="${p.id}">${L.addToCart}</button>` : `<a class="btn ghost cmp-buy" href="tel:${PHONE}">${L.call}</a>`}</div></th>`).join('')}</tr></thead>
+        <tbody>${rows.map(([name, f]) => `<tr><th scope="row">${name}</th>${list.map(p => `<td>${f(p) || '—'}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table></div>`}</div>`;
+    $('#cmpClear')?.addEventListener('click', () => { ACC.cmp().slice().forEach(id => ACC.toggleCmp(id)); compare(query); });
+  }
+  // Для сторінок кабінету (account.js): спільні шматки сайту.
+  const accCtx = {
+    title, prod: id => prod.get(id), money,
+    thumb: p => { const d = document.createElement('span'); d.className = 'acc-thumb'; d.innerHTML = pic(p); return d; },
+    crumbsEl: name => { const d = document.createElement('div'); d.innerHTML = crumbs([{ name }]); return d.firstElementChild; },
+  };
 
   const PAGES = {
     delivery: [L.delivery, L.pages.delivery],
@@ -572,6 +628,9 @@
     else if (seg[0] === 'p') product(+seg[1]);
     else if (seg[0] === 'search') results(query);
     else if (seg[0] === 'checkout') checkout();
+    else if (ACC && seg[0] === 'favorites') favorites();
+    else if (ACC && seg[0] === 'compare') compare(query);
+    else if (ACC?.route(view, seg, accCtx)) { /* кабінет */ }
     else if (PAGES[seg[0]]) page(seg[0]);
     else notFound();
     $('#peek').classList.remove('is-on');
@@ -624,6 +683,15 @@
   document.addEventListener('click', e => {
     if (e.target.closest('[data-close]')) closePanels();
     const a = e.target.closest('[data-add]'); if (a) add(+a.dataset.add);
+    const fv = e.target.closest('[data-fav]');
+    if (fv && ACC) { const on = ACC.toggleFav(+fv.dataset.fav); toast(on ? AT.favAdded : AT.favDel, on ? AT.favH : null, () => { location.hash = '#/favorites'; }); if (!on && location.hash === '#/favorites') favorites(); }
+    const cm = e.target.closest('[data-cmp]');
+    if (cm && ACC) {
+      const r = ACC.toggleCmp(+cm.dataset.cmp);
+      if (r.full) toast(r.text, AT.cmpOpen, () => { location.hash = '#/compare'; });
+      else if (location.hash.startsWith('#/compare')) route();
+      else toast(r.on ? AT.cmpAdded : AT.cmpDel, r.on && ACC.cmp().length > 1 ? AT.cmpOpen : null, () => { location.hash = '#/compare'; });
+    }
     if (!e.target.closest('.top')) { $('#mega').hidden = true; $('#megaBtn').setAttribute('aria-expanded', 'false'); }
     if (!e.target.closest('.search')) hideSuggest();
   });
@@ -677,6 +745,28 @@
     const t = $('#toast'); t.innerHTML = `<span>${esc(text)}</span>${action ? `<button>${esc(action)}</button>` : ''}`;
     if (action) $('button', t).onclick = () => { t.classList.remove('is-on'); fn(); };
     t.classList.add('is-on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('is-on'), 4000);
+  }
+
+  /* Шапка: сердечко, терези й кабінет; лічильники й позначки на картках оновлюються, щойно щось змінилось (і після входу). */
+  function paintAcc() {
+    if (!ACC) return;
+    const f = ACC.favs().length, c = ACC.cmp().length;
+    $('#favCount').hidden = !f; $('#favCount').textContent = f;
+    $('#cmpCount').hidden = !c; $('#cmpCount').textContent = c; $('#cmpBtn').hidden = !c;
+    const u = ACC.user, ab = $('#accBtn');
+    ab.href = u ? '#/account' : '#/login'; ab.setAttribute('aria-label', u ? AT.account : AT.login); ab.title = u ? (u.name || u.email) : AT.login;
+    ab.classList.toggle('is-in', !!u);
+    $$('[data-fav]').forEach(b => b.setAttribute('aria-pressed', ACC.isFav(+b.dataset.fav)));
+    $$('[data-cmp]').forEach(b => b.setAttribute('aria-pressed', ACC.inCmp(+b.dataset.cmp)));
+  }
+  if (ACC) {
+    btns.cart.insertAdjacentHTML('beforebegin', `
+      <a class="icon-btn hdr-act" id="cmpBtn" href="#/compare" aria-label="${esc(AT.cmpH)}" title="${esc(AT.cmpH)}" hidden>${ICON.cmp}<b id="cmpCount" hidden></b></a>
+      <a class="icon-btn hdr-act" id="favBtn" href="#/favorites" aria-label="${esc(AT.favH)}" title="${esc(AT.favH)}">${ICON.fav}<b id="favCount" hidden></b></a>
+      <a class="icon-btn hdr-act" id="accBtn" href="#/login">${ICON.user}</a>`);
+    $$('#drawer .plain').at(-1)?.insertAdjacentHTML('afterbegin', `<a href="#/account">${esc(AT.account)}</a><a href="#/favorites">${esc(AT.favH)}</a><a href="#/compare">${esc(AT.cmpH)}</a>`);
+    ACC.subscribe(paintAcc);
+    paintAcc();
   }
 
   addEventListener('scroll', () => $('#top').classList.toggle('is-stuck', scrollY > 8), { passive: true });
