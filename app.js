@@ -93,7 +93,7 @@
     });
     // Телефон бере вузьку вертикальну смугу кадру в рідній якості (tools/scene_frames.py): легше й плавніше.
     const SET = innerWidth <= 960 ? 'm' : 'd';
-    const src = (s, i) => `scenes/frames2/${s.key}/${SET}/${String(i + 1).padStart(3, '0')}.webp?v=4`;
+    const src = (s, i) => `scenes/frames2/${s.key}/${SET}/${String(i + 1).padStart(3, '0')}.webp?v=5`;
     // Спершу кожен 8-й кадр, потім щільніше: сцена оживає одразу, а дрібні кадри догружаються.
     function load(s) {
       if (s.started || !s.n) return;
@@ -139,6 +139,7 @@
       for (const s of stages) {
         const box = s.el.getBoundingClientRect();
         if (box.top < vh * 4 && box.bottom > -vh) load(s);                // наступні сцени вантажимо заздалегідь
+        else if (s.started && (box.top > vh * 6 || box.bottom < -vh * 3)) { s.started = false; s.imgs = []; s.drawn = -2; }   // далекі сцени відпускаємо: телефону бракує памʼяті на всі кадри
         if (box.bottom < 0 || box.top > vh) continue;
         // перша сцена: від верху сторінки, поки не проїде; решта: від появи знизу до зникнення вгорі
         s.target = s.i === 0 ? clamp(-box.top / (box.height * .8)) : clamp((vh - box.top) / (vh + box.height));
