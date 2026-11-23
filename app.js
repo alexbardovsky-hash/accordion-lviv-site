@@ -558,7 +558,9 @@
       CH.sendOrder({ name: d.name, phone: d.phone, delivery: d.delivery, city: d.city, note: d.note, website: d.website, items: lines.map(l => ({ id: l.p.id, q: l.q })) })
         .then(r => {
           cart = {}; saveCart(); ACC?.rememberOrder(r);
-          view.innerHTML = `<div class="wrap empty"><h1>${esc(CH.t.orderOk(r.id))}</h1><p>${esc(CH.t.orderOkP(PHONE_TEXT))}</p><a class="btn" href="tel:${PHONE}">${L.call}</a></div>`;
+          view.innerHTML = `<div class="wrap empty"><h1>${esc(CH.t.orderOk(r.id))}</h1><p>${esc(CH.t.orderOkP(PHONE_TEXT))}</p><a class="btn ${r.payable ? 'ghost' : ''}" href="tel:${PHONE}">${L.call}</a></div>`;
+          if (r.payable && ACC?.payButton) $('.empty h1', view).nextElementSibling.after(ACC.payButton(r.id));
+          scrollTo({ top: 0 });
         })
         .catch(x => { if (x.net) return viaMail(); err.textContent = CH.errText(x); err.hidden = false; btn.disabled = false; });
     });

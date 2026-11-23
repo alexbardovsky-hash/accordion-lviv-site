@@ -16,6 +16,11 @@
       orders: 'Замовлення', chats: 'Питання', favorites: 'Обране', compare: 'Порівняння', profile: 'Профіль', logout: 'Вийти',
       hello: n => `Вітаємо, ${n}`, noOrders: 'Замовлень ще немає.', noChats: 'Питань ще не було.', toCatalog: 'До каталогу', ask: 'Поставити питання',
       order: (n, d) => `Замовлення №${n} від ${d}`, total: 'Разом', np: 'Нова Пошта', pickup: 'Самовивіз у Львові',
+      payNow: 'Оплатити онлайн', payNote: 'Карткою, Apple Pay чи Google Pay на захищеній сторінці LiqPay від ПриватБанку.', payTest: 'Тестовий режим: гроші не списуються.',
+      payH: n => `Оплата замовлення №${n}`, paidH: 'Дякуємо, оплату отримано', paidP: n => `Замовлення №${n} оплачено. Ми звʼяжемося з вами щодо доставки.`,
+      payWait: 'Перевіряємо оплату…', payWaitP: 'Підтвердження від банку зазвичай приходить за кілька секунд. Якщо ви не оплатили, можна повернутись і спробувати ще раз.',
+      payFail: 'Оплата не пройшла. Гроші не списано. Спробуйте ще раз або зателефонуйте нам.', payPaid: 'Оплачено онлайн', payRetry: 'Спробувати ще раз',
+      payClosed: 'Онлайн-оплата для цього замовлення зараз недоступна. Ми звʼяжемося з вами щодо оплати.', payToAcc: 'Мої замовлення', payToShop: 'До каталогу',
       status: { new: 'Прийнято', processing: 'Обробляємо', paid: 'Оплачено', sent: 'Відправлено', done: 'Виконано', cancelled: 'Скасовано' },
       chatOpen: 'Відкрите', chatClosed: 'Закрите', you: 'Ви: ', shop: 'Магазин: ', newAnswer: 'нова відповідь',
       save: 'Зберегти', saved: 'Збережено', pwChanged: 'Пароль змінено. На інших пристроях треба увійти знову.', changePw: 'Змінити пароль', setPwH: 'Пароль для входу поштою',
@@ -29,6 +34,7 @@
       cmpOne: 'Додайте ще хоча б один товар, щоб було з чим порівнювати.', cmpDiff: 'Лише відмінності', cmpClear: 'Очистити', remove: 'Прибрати',
       rowPrice: 'Ціна', rowBrand: 'Виробник', rowRef: 'Артикул', rowCat: 'Розділ', rowDesc: 'Опис', loginToKeep: 'Увійдіть, щоб обране було на всіх пристроях', signIn: 'Увійти',
       err: {
+        paid: 'Замовлення вже оплачено.', not_payable: 'Онлайн-оплата для цього замовлення недоступна.', not_found: 'Замовлення не знайдено. Відкрийте посилання ще раз.',
         login: 'Неправильна пошта або пароль.', exists: 'Кабінет з цією поштою вже є. Увійдіть або відновіть пароль.', email: 'Перевірте адресу пошти.',
         weak: n => `Пароль коротший за ${n} символів.`, required: 'Заповніть усі поля.', code: 'Код неправильний або застарів.', contact: 'Перевірте номер телефону.',
         rate: s => `Забагато спроб. Спробуйте за ${Math.max(1, Math.ceil(s / 60))} хв.`, auth: 'Сесія закінчилась, увійдіть знову.', compare_full: n => `У порівнянні вже ${n} товари. Приберіть один.`,
@@ -47,6 +53,11 @@
       orders: 'Orders', chats: 'Questions', favorites: 'Favourites', compare: 'Compare', profile: 'Profile', logout: 'Sign out',
       hello: n => `Hello, ${n}`, noOrders: 'No orders yet.', noChats: 'No questions yet.', toCatalog: 'Browse the catalogue', ask: 'Ask a question',
       order: (n, d) => `Order #${n}, ${d}`, total: 'Total', np: 'Nova Poshta', pickup: 'Pickup in Lviv',
+      payNow: 'Pay online', payNote: 'By card, Apple Pay or Google Pay on the secure LiqPay page of PrivatBank.', payTest: 'Test mode: no money is charged.',
+      payH: n => `Payment for order #${n}`, paidH: 'Thank you, payment received', paidP: n => `Order #${n} is paid. We will contact you about delivery.`,
+      payWait: 'Checking the payment…', payWaitP: 'The bank usually confirms within a few seconds. If you did not pay, you can go back and try again.',
+      payFail: 'The payment did not go through. No money was taken. Try again or call us.', payPaid: 'Paid online', payRetry: 'Try again',
+      payClosed: 'Online payment is not available for this order right now. We will contact you about payment.', payToAcc: 'My orders', payToShop: 'Browse the catalogue',
       status: { new: 'Received', processing: 'Processing', paid: 'Paid', sent: 'Shipped', done: 'Completed', cancelled: 'Cancelled' },
       chatOpen: 'Open', chatClosed: 'Closed', you: 'You: ', shop: 'Shop: ', newAnswer: 'new reply',
       save: 'Save', saved: 'Saved', pwChanged: 'Password changed. Other devices will need to sign in again.', changePw: 'Change password', setPwH: 'Password for email sign-in',
@@ -60,6 +71,7 @@
       cmpOne: 'Add at least one more item to have something to compare with.', cmpDiff: 'Differences only', cmpClear: 'Clear', remove: 'Remove',
       rowPrice: 'Price', rowBrand: 'Maker', rowRef: 'SKU', rowCat: 'Section', rowDesc: 'Description', loginToKeep: 'Sign in to keep favourites on every device', signIn: 'Sign in',
       err: {
+        paid: 'This order is already paid.', not_payable: 'Online payment is not available for this order.', not_found: 'Order not found. Open the link again.',
         login: 'Wrong email or password.', exists: 'There is already an account with this email. Sign in or reset the password.', email: 'Check the email address.',
         weak: n => `The password is shorter than ${n} characters.`, required: 'Please fill in every field.', code: 'The code is wrong or expired.', contact: 'Check the phone number.',
         rate: s => `Too many attempts. Try again in ${Math.max(1, Math.ceil(s / 60))} min.`, auth: 'Your session has ended, please sign in again.', compare_full: n => `There are already ${n} items in comparison. Remove one first.`,
@@ -106,7 +118,7 @@
   function signedOut() { auth = null; ls.del('bac-auth'); emit(); }
   /* Що гість назбирав на цьому пристрої — віддаємо в кабінет при вході. */
   const guestStuff = () => ({ chats: ls.get('bac-chats', []).map(c => ({ id: c.id, token: c.token })), orders: ls.get('bac-orders', []), favorites: favs, compare: cmp });
-  const afterLogin = d => { apply(d); ls.set('bac-orders', []); };
+  const afterLogin = d => { apply(d); ls.set('bac-orders', ls.get('bac-orders', []).filter(o => o.pay)); };   // посилання на оплату від менеджера лишаємо
 
   // Свіжий стан з сервера при кожному відкритті сайту: обране, змінене на іншому пристрої, підтягнеться.
   if (auth && API) call('/api/me').then(apply).catch(() => { /* офлайн: лишаємо збережене */ });
@@ -246,6 +258,52 @@
     });
   }
 
+  /* ── Оплата LiqPay: сервер підписує платіж, браузер іде на сторінку LiqPay, повертається на #/paid/N ── */
+  const orderCred = id => { const o = ls.get('bac-orders', []).find(x => x.id === +id); return o ? { token: o.token, pay: o.pay } : {}; };
+  const keepOrder = (id, extra) => { const all = ls.get('bac-orders', []), o = all.find(x => x.id === +id); if (o) Object.assign(o, extra); else all.unshift({ id: +id, ...extra }); ls.set('bac-orders', all.slice(0, 50)); };
+  async function goPay(id) {
+    const r = await call(`/api/orders/${id}/pay`, orderCred(id));
+    const f = h('form', { method: 'POST', action: r.action, 'accept-charset': 'utf-8', hidden: true },
+      h('input', { type: 'hidden', name: 'data', value: r.data }), h('input', { type: 'hidden', name: 'signature', value: r.signature }));
+    document.body.append(f); f.submit();
+  }
+  function payButton(id, label = T.payNow) {
+    const err = h('p.acc-err', { role: 'alert', hidden: true });
+    const b = h('button.btn', { type: 'button', onclick: () => { err.hidden = true; withBusy(b, () => goPay(id).catch(x => show(err, errText(x)))); } }, label);
+    const box = h('div.pay-box', b, h('p.acc-hint', T.payNote), err);
+    getConfig().then(c => { if (c.sandbox) box.append(h('p.acc-hint.pay-test', T.payTest)); });
+    return box;
+  }
+  const payItems = (o, ctx) => h('ul.pay-items', o.items.map(i => { const pr = ctx.prod(i.id); return h('li', pr ? ctx.thumb(pr) : h('span.ph'), h('span', pr?.name || i.name, ` × ${i.q}`), h('b', i.price ? ctx.money(i.price * i.q) : '')); }),
+    h('li.pay-total', h('span'), h('span', T.total), h('b', ctx.money(o.total))));
+  /* #/pay/N/код — посилання від менеджера */
+  function payPage(view, id, code, ctx) {
+    ctx.title(T.payH(id));
+    if (code) keepOrder(id, { pay: code });
+    const body = h('div.pay-card', { 'aria-busy': 'true' });
+    view.replaceChildren(ctx.crumbsEl(T.payH(id)), h('div.wrap.pay-wrap', h('h1', T.payH(id)), body));
+    call(`/api/orders/${id}/state`, orderCred(id)).then(o => {
+      body.removeAttribute('aria-busy');
+      if (o.pay === 'success') return body.replaceChildren(h('p.acc-ok', T.paidP(o.id)), payItems(o, ctx));
+      body.replaceChildren(payItems(o, ctx), o.payable ? payButton(o.id) : h('p', T.payClosed));
+    }).catch(x => body.replaceChildren(h('p.acc-err', errText(x))));
+  }
+  /* #/paid/N — сюди LiqPay повертає покупця. Чекаємо підтвердження від сервера (він питає LiqPay сам). */
+  function paidPage(view, id, ctx) {
+    ctx.title(T.payWait);
+    const body = h('div.pay-card', { 'aria-live': 'polite' }, h('h1', T.payWait), h('p', T.payWaitP));
+    const links = h('p.pay-links', h('a.btn.ghost', { href: auth ? '#/account/orders' : '#/' }, auth ? T.payToAcc : T.payToShop));
+    view.replaceChildren(h('div.wrap.pay-wrap', body, links));
+    let n = 0;
+    const tick = () => call(`/api/orders/${id}/state`, orderCred(id)).then(o => {
+      if (!view.contains(body)) return;
+      if (o.pay === 'success') { ctx.title(T.paidH); return body.replaceChildren(h('h1', T.paidH), h('p', T.paidP(o.id)), payItems(o, ctx)); }
+      if (o.pay === 'failure' || ++n >= 8) return body.replaceChildren(h('h1', T.payH(o.id)), h('p', o.pay === 'failure' ? T.payFail : T.payWaitP), o.payable ? payButton(o.id, T.payRetry) : null);
+      setTimeout(tick, 2500);
+    }).catch(x => body.replaceChildren(h('p.acc-err', errText(x))));
+    tick();
+  }
+
   /* ── #/account[/orders|chats|profile] ── */
   function accountPage(view, tab, ctx) {
     if (!auth) { location.hash = '#/login'; return; }
@@ -265,7 +323,8 @@
       body.replaceChildren(h('h2', T.orders), ...list.map(o => h('article.acc-order',
         h('header', h('h3', T.order(o.id, date(o.created_at))), h(`span.acc-status.s-${o.status}`, T.status[o.status] || o.status)),
         h('ul', o.items.map(i => { const pr = ctx.prod(i.id); return h('li', pr ? ctx.thumb(pr) : h('span.ph'), h('a', { href: `#/p/${i.id}` }, pr?.name || i.name), h('span', `× ${i.q}`), h('b', i.price ? ctx.money(i.price * i.q) : '')); })),
-        h('footer', h('span', o.delivery === 'pickup' ? T.pickup : `${T.np}${o.city ? `, ${o.city}` : ''}`), h('b', `${T.total}: ${ctx.money(o.total)}`)))));
+        h('footer', h('span', o.delivery === 'pickup' ? T.pickup : `${T.np}${o.city ? `, ${o.city}` : ''}`), h('b', `${T.total}: ${ctx.money(o.total)}`)),
+        o.pay === 'success' ? h('p.acc-ok.pay-done', T.payPaid) : o.payable ? payButton(o.id) : null)));
     }).catch(fail);
     if (tab === 'chats') call('/api/me/chats').then(list => {
       body.removeAttribute('aria-busy');
@@ -308,11 +367,14 @@
     favs: () => favs, cmp: () => cmp,
     isFav: id => favs.includes(id), inCmp: id => cmp.includes(id),
     toggleFav, toggleCmp, subscribe: f => subs.add(f),
+    payButton, payable: o => !!o?.payable,
     rememberOrder: o => { if (!auth && o?.token) ls.set('bac-orders', [{ id: o.id, token: o.token }, ...ls.get('bac-orders', [])].slice(0, 50)); },
     route(view, seg, ctx) {
       if (seg[0] === 'login' || seg[0] === 'register') { loginPage(view, seg[0], ctx); return true; }
       if (seg[0] === 'reset') { resetPage(view, ctx); return true; }
       if (seg[0] === 'account') { accountPage(view, seg[1], ctx); return true; }
+      if (API && seg[0] === 'pay' && +seg[1]) { payPage(view, +seg[1], seg[2], ctx); return true; }
+      if (API && seg[0] === 'paid' && +seg[1]) { paidPage(view, +seg[1], ctx); return true; }
       return false;
     },
   };
