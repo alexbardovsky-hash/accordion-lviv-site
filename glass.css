@@ -222,3 +222,10 @@ canvas.reel-vid.is-drawn { background-image: none !important; }
   .reel-stage::after { display: none; }
   canvas.reel-vid:not([data-scrub]) { background-position: 58% 50%; }
 }
+
+/* Клавіші на телефоні (Алекс 23.11): не на весь екран, а смугою над карткою — видно вдвічі більше клавіатури,
+   а кадр (квадрат 1080 з tools/scene_frames.py BAND) майже не розтягується, тож лишається різким. */
+@media (max-width: 960px) {
+  canvas.reel-vid[data-band] { inset: 13svh 0 auto 0; height: min(46svh, 118vw); background-position: 10% 50%;
+    -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 86%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 86%, transparent); }
+}

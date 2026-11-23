@@ -103,7 +103,7 @@
     });
     // Телефон бере вузьку вертикальну смугу кадру в рідній якості (tools/scene_frames.py): легше й плавніше.
     const SET = innerWidth <= 960 ? 'm' : 'd';
-    const src = (s, i) => `scenes/frames2/${s.key}/${SET}/${String(i + 1).padStart(3, '0')}.webp?v=5`;
+    const src = (s, i) => `scenes/frames2/${s.key}/${SET}/${String(i + 1).padStart(3, '0')}.webp?v=6`;
     // Спершу кожен 8-й кадр, потім щільніше: сцена оживає одразу, а дрібні кадри догружаються.
     function load(s) {
       if (s.started || !s.n) return;
@@ -321,13 +321,13 @@
     const scenes = [
       { key: 'open', scrub: true, html: `<h1 class="reel-name">${L.mast.map(w => `<span><i>${w}</i></span>`).join('')}</h1><p>${L.mastLead(goods(C.products.length), money(cheapest))}</p><div class="hero-cta">${partsRoot ? `<a class="btn" href="#/c/${partsRoot.id}">${L.parts}</a>` : ''}${instRoot ? `<a class="btn ghost" href="#/c/${instRoot.id}">${L.instruments}</a>` : ''}</div>` },
       cat.get(BELLOWS) && { key: 'bellows', html: `<h2>${L.reelOpenH}</h2><p>${L.reelOpenP(goods(count(BELLOWS)), money(minIn(BELLOWS)))}</p><div class="hero-cta"><a class="btn" href="#/c/${BELLOWS}">${L.reelOpenCta}</a></div>` },
-      cat.get(KEYS) && { key: 'keys', html: `<h2>${L.reelKeysH}</h2><p>${L.reelKeysP(goods(count(KEYS)), money(minIn(KEYS)))}</p><div class="hero-cta"><a class="btn" href="#/c/${KEYS}">${L.reelKeysCta}</a></div>` },
+      cat.get(KEYS) && { key: 'keys', band: true, html: `<h2>${L.reelKeysH}</h2><p>${L.reelKeysP(goods(count(KEYS)), money(minIn(KEYS)))}</p><div class="hero-cta"><a class="btn" href="#/c/${KEYS}">${L.reelKeysCta}</a></div>` },
       cat.get(BUTTONS) && { key: 'buttons', html: `<h2>${L.reelBtnH}</h2><p>${L.reelBtnP(goods(count(BUTTONS)), money(minIn(BUTTONS)))}</p><div class="hero-cta"><a class="btn" href="#/c/${BUTTONS}">${L.reelBtnCta}</a></div>` },
     ].filter(Boolean);
     view.innerHTML = `
       <section class="reel" id="reel">
         ${scenes.map((sc, i) => `<div class="reel-stage" data-key="${sc.key}">
-          <canvas class="reel-vid is-on"${sc.scrub ? ' data-scrub' : ''} aria-hidden="true" style="background-image:url(scenes/web/${sc.key}.jpg?v=26)"></canvas>
+          <canvas class="reel-vid is-on"${sc.scrub ? ' data-scrub' : ''}${sc.band ? ' data-band' : ''} aria-hidden="true" style="background-image:url(scenes/web/${sc.key}.jpg?v=26)"></canvas>
           <div class="reel-shade" aria-hidden="true"></div>
           <div class="wrap reel-in"><div class="reel-card${i ? '' : ' is-on'}"${i ? ' aria-hidden="true"' : ''}>${sc.html}</div></div>
           ${i ? '' : `<div class="reel-hint" aria-hidden="true"><span>${L.reelHint}</span><i></i></div>`}
