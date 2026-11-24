@@ -278,6 +278,6 @@ canvas.reel-vid[style*="--po"] { background-image: var(--po); }
 @media (min-width: 961px) and (max-width: 1180px) { .top .phone span { display: none; } }
 /* Дуже низький телефон: без рядка про бренди, щоб кнопки лишились на першому екрані й не ховались під «Запитати» */
 @media (max-width: 960px) and (max-height: 700px) {
-  .reel-stage:first-child .reel-card p { font-size: 0; }
+  .reel-stage:first-child .reel-card p { font-size: 0; max-width: none; }
   .reel-stage:first-child .reel-card .slogan { font-size: min(1rem, 4.1vw); margin: 0; }
 }
