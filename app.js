@@ -105,7 +105,7 @@
   // Кадр сцени йде за гортанням: поки сцена проїжджає крізь екран, анімація програється від початку до кінця.
   // Кадри — картинки на canvas (tools/scene_frames.py), бо перемотка <video> на телефоні смикається;
   // між сусідніми кадрами змішуємо, а позицію згладжуємо, тож рух плавний навіть при різкому свайпі.
-  const poster = k => `--po:url(scenes/web/${k}.jpg?v=26);--pom:url(scenes/web/${k}-m.webp?v=1)`;
+  const poster = k => `--po:url(scenes/web/${k}.jpg?v=26);--pom:url(scenes/web/${k === 'open' ? 'open-sq' : `${k}-m`}.webp?v=1)`;
   function reelInit() {
     const sec = $('#reel');
     if (!sec) return;
@@ -117,7 +117,7 @@
     });
     // Телефон бере вузьку вертикальну смугу кадру в рідній якості (tools/scene_frames.py): легше й плавніше.
     const SET = innerWidth <= 960 ? 'm' : 'd';
-    const src = (s, i) => `scenes/frames2/${s.key}/${SET}/${String(i + 1).padStart(3, '0')}.webp?v=6`;
+    const src = (s, i) => `scenes/frames2/${s.key}/${SET === 'm' && s.key === 'open' ? 'm2' : SET}/${String(i + 1).padStart(3, '0')}.webp?v=7`;
     // Спершу кожен 8-й кадр, потім щільніше: сцена оживає одразу, а дрібні кадри догружаються.
     // Поки людина не торкнулась сторінки, беремо лише рідкі кадри першої сцени: хто зайшов і пішов, не качає десятки мегабайтів.
     let touched = false;
@@ -141,7 +141,7 @@
     }
     const near = (s, i) => { for (let d = 0; d < s.n; d++) { if (s.imgs[i - d]) return [s.imgs[i - d], i - d]; if (s.imgs[i + d]) return [s.imgs[i + d], i + d]; } return [null, -1]; };
     function draw(s) {
-      const box = s.cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+      const box = s.cv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1, s.cv.hasAttribute("data-scrub") && SET === "m" ? Math.max(1, 1080 / box.width) : 9);   // більше за сам кадр малювати нема сенсу
       const W = Math.round(box.width * dpr), H = Math.round(box.height * dpr);
       if (!W || !H) return;
       if (s.cv.width !== W || s.cv.height !== H) { s.cv.width = W; s.cv.height = H; }
@@ -339,7 +339,7 @@
     const minIn = id => { const v = (inCat.get(id) || []).filter(p => p.price).map(p => p.price); return v.length ? Math.min(...v) : 0; };
     const KEYS = 6, BUTTONS = 5, BELLOWS = 11;
     const scenes = [
-      { key: 'open', scrub: true, html: `<h1 class="reel-name">${L.mast.map(w => `<span><i>${w}</i></span>`).join('')}</h1><p>${L.mastLead(goods(C.products.length), money(cheapest))}</p><div class="hero-cta">${partsRoot ? `<a class="btn" href="${url(`/c/${partsRoot.id}`)}">${L.parts}</a>` : ''}${instRoot ? `<a class="btn ghost" href="${url(`/c/${instRoot.id}`)}">${L.instruments}</a>` : ''}</div>` },
+      { key: 'open', scrub: true, html: `<h1 class="reel-name">${L.mast.map(w => `<span><i>${w}</i></span>`).join('')}</h1><p>${L.mastLead(goods(C.products.length), money(cheapest))}</p><div class="hero-cta">${instRoot ? `<a class="btn" href="${url(`/c/${instRoot.id}`)}">${L.instruments}</a>` : ''}${partsRoot ? `<a class="btn ghost" href="${url(`/c/${partsRoot.id}`)}">${L.parts}</a>` : ''}</div>` },
       cat.get(BELLOWS) && { key: 'bellows', html: `<h2>${L.reelOpenH}</h2><p>${L.reelOpenP(goods(count(BELLOWS)), money(minIn(BELLOWS)))}</p><div class="hero-cta"><a class="btn" href="${url(`/c/${BELLOWS}`)}">${L.reelOpenCta}</a></div>` },
       cat.get(KEYS) && { key: 'keys', band: true, html: `<h2>${L.reelKeysH}</h2><p>${L.reelKeysP(goods(count(KEYS)), money(minIn(KEYS)))}</p><div class="hero-cta"><a class="btn" href="${url(`/c/${KEYS}`)}">${L.reelKeysCta}</a></div>` },
       cat.get(BUTTONS) && { key: 'buttons', html: `<h2>${L.reelBtnH}</h2><p>${L.reelBtnP(goods(count(BUTTONS)), money(minIn(BUTTONS)))}</p><div class="hero-cta"><a class="btn" href="${url(`/c/${BUTTONS}`)}">${L.reelBtnCta}</a></div>` },
