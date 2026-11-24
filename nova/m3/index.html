@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><base href="/accordion-lviv-site/"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">
+<title>Макет 3 «Стрічка» — Акордеон Центр</title>
+<link rel="stylesheet" href="fonts.css"><link rel="stylesheet" href="nova/common.css">
+<style>
+/* Стрічка: інструменти на кольорових картках пливуть повз, їх можна тягнути. Під ними — «розгорнутий міх» розділів. */
+.top { height: 100svh; min-height: 640px; display: grid; grid-template-rows: 1fr auto; padding-top: 84px; overflow: clip; }
+.strip { display: flex; align-items: center; gap: clamp(14px, 1.8vw, 28px); overflow-x: auto; scrollbar-width: none; padding: 20px 8vw; cursor: grab; perspective: 1400px; } .strip.drag { cursor: grabbing; } .strip.drag a { pointer-events: none; }
+.cd { position: relative; flex: 0 0 clamp(250px, 27vw, 430px); height: min(58svh, 560px); border-radius: 30px; background: var(--tone); overflow: clip; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; transform: rotateY(var(--r, 0deg)) translateY(var(--y, 0)); transition: box-shadow .3s; isolation: isolate; user-select: none; } .cd:hover { box-shadow: 0 30px 70px -20px color-mix(in srgb, var(--tone) 80%, #fff); }
+.cd::before { content: ""; position: absolute; z-index: -1; inset: 0; background: radial-gradient(60% 50% at 50% 38%, rgba(255, 255, 255, .38), transparent 72%); }
+.cd img { position: absolute; left: 50%; top: 42%; translate: -50% -50%; width: 92%; height: 64%; object-fit: contain; filter: drop-shadow(0 22px 22px rgba(0, 0, 0, .42)); transition: scale .6s cubic-bezier(.2, .8, .2, 1); } .cd:hover img { scale: 1.07; }
+.cd b { font: 600 clamp(1.3rem, 1.9vw, 1.9rem)/1.05 var(--d); letter-spacing: -.045em; } .cd span { display: flex; justify-content: space-between; gap: 12px; margin-top: 6px; color: rgba(255, 255, 255, .86); }
+.ttl { padding: 0 var(--pad) clamp(20px, 3svh, 34px); display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; } .ttl h1 { font: 700 clamp(2.6rem, 8.1vw, 8.6rem)/.86 var(--d); letter-spacing: -.07em; } .ttl p { max-width: 17em; font: 500 1.02rem/1.4 var(--d); padding-bottom: 6px; }
+.fold { display: flex; height: 88svh; min-height: 560px; gap: 3px; padding: 0 clamp(8px, 1vw, 16px); } .fold a { position: relative; flex: 1; overflow: clip; transition: flex .7s cubic-bezier(.2, .8, .2, 1); isolation: isolate; border-radius: 20px; background: #241d1e; } .fold a.on { flex: 5.2; }
+.fold video, .fold img { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; object-fit: cover; } .fold a::after { content: ""; position: absolute; z-index: -1; inset: 0; background: linear-gradient(rgba(10, 7, 8, .1) 40%, rgba(10, 7, 8, .86)); transition: .4s; } .fold a:not(.on)::after { background: rgba(10, 7, 8, .55); }
+.fold .w { background: var(--red); } .fold .w::after { display: none; }
+.fold h3 { position: absolute; left: 50%; bottom: 26px; writing-mode: vertical-rl; rotate: 180deg; translate: -50% 0; font: 600 clamp(1rem, 1.35vw, 1.4rem)/1 var(--d); letter-spacing: -.03em; white-space: nowrap; transition: opacity .25s; } .fold a.on h3 { opacity: 0; }
+.fold div { position: absolute; left: clamp(18px, 2.4vw, 38px); bottom: clamp(18px, 2.4vw, 38px); width: min(460px, 56vw); opacity: 0; transition: opacity .3s; } .fold a.on div { opacity: 1; transition-delay: .25s; } .fold div b { display: block; font: 700 clamp(1.9rem, 4vw, 4.2rem)/.96 var(--d); letter-spacing: -.06em; } .fold div span { display: block; margin-top: 8px; color: rgba(255, 255, 255, .86); }
+@media (max-width: 860px) { .ttl { flex-direction: column; align-items: flex-start; gap: 14px; } .ttl h1 { font-size: 14.4vw; } .cd { flex-basis: 72vw; height: 50svh; } .top { padding-top: 70px; } .strip { padding-inline: 15vw; scroll-snap-type: x mandatory; } .cd { scroll-snap-align: center; } .fold { flex-direction: column; height: 130svh; } .fold h3 { writing-mode: horizontal-tb; rotate: none; translate: none; left: 22px; bottom: 50%; transform: translateY(50%); } .fold a.on { flex: 3.6; } }
+</style></head><body>
+<section class="top"><div class="strip" id="st" aria-label="Інструменти" tabindex="0"></div><div class="ttl"><h1>Акордеон<br>Центр</h1><p>Добрий акордеон гарно звучить у будь-яких руках. У руках майстра він творить досконалу музику.</p></div></section>
+<section class="fold" id="fd" aria-label="Розділи"></section>
+<script src="data/slugs.js"></script><script src="site.js"></script><script src="i18n.js"></script><script src="data/catalog.js"></script><script src="data/catalog-i18n.js"></script><script src="data/specs.js"></script><script src="nova/common.js"></script>
+<script>
+{ const { $, $$, el, I, cat, vids, calm, url, inCat, L } = PROTO, st = $('#st');
+  for (const x of I) { const a = el('a', { className: 'cd', href: x.url, draggable: false }, el('img', { src: x.src, alt: '', draggable: false }), el('b', {}, `${x.b} ${x.n}`), el('span', {}, x.price)); a.style.setProperty('--tone', x.tone); st.append(a); }
+  const al = el('a', { className: 'cd', href: url('/c/43') }, el('b', {}, 'Усі інструменти'), el('span', {}, L.goods(inCat(43).length))); al.style.setProperty('--tone', '#c41d35'); st.append(al);
+  const tilt = () => $$('.cd', st).forEach(c => { const b = c.getBoundingClientRect(), k = (b.left + b.width / 2 - innerWidth / 2) / innerWidth; c.style.setProperty('--r', `${(-k * 26).toFixed(1)}deg`); c.style.setProperty('--y', `${(Math.abs(k) * 26).toFixed(1)}px`); });
+  st.addEventListener('scroll', tilt, { passive: true }); addEventListener('resize', tilt); tilt();
+  /* повільний дрейф, поки людина не торкнулась; далі — тягнемо мишею або пальцем */
+  let drift = !calm && matchMedia('(hover: hover)').matches, px = 0; const go = () => { if (!drift) return; px += .45; if (px > st.scrollWidth - st.clientWidth) px = 0; st.scrollLeft = px; requestAnimationFrame(go); }; requestAnimationFrame(go);
+  let sx, sl, down = false; const stop = () => { drift = false; }; for (const e of ['pointerdown', 'wheel', 'touchstart', 'focusin']) st.addEventListener(e, stop, { passive: true });
+  st.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; sx = e.clientX; sl = st.scrollLeft; }); addEventListener('pointermove', e => { if (!down) return; if (Math.abs(e.clientX - sx) > 6) st.classList.add('drag'); st.scrollLeft = sl - (e.clientX - sx); }); addEventListener('pointerup', () => { down = false; setTimeout(() => st.classList.remove('drag')); });
+  const F = [[3, 'buttons', 'Запчастини', 'клавіатура й механіка, міх, корпус, регістри, голоси'], [11, 'bellows', 'Міх'], [6, 'keys', 'Клавіші'], ['/service', null, 'Ремонт', 'Міх, голоси, механіка, регістри. Деталі з каталогу під рукою.'], [48, 'img', 'Комісійний відділ']];
+  F.forEach(([id, v, t, d], i) => { const c = typeof id === 'number' ? cat(id) : null, a = el('a', { href: c ? c.url : url(id), className: v ? '' : 'w' });
+    if (v === 'img') a.append(el('img', { src: c.items[0]?.img || '', alt: '' })); else if (v) { const vd = el('video', { src: `scenes/web/${v === 'bellows' ? 'bellows_macro' : v}.webm`, poster: `scenes/web/${v}-m.webp`, muted: true, loop: true, preload: 'none' }); vd.setAttribute('playsinline', ''); a.append(vd); }
+    a.append(el('h3', {}, t), el('div', {}, el('b', {}, t), el('span', {}, [c?.goods, d].filter(Boolean).join(': ')))); const on = () => $$('#fd a').forEach(x => x.classList.toggle('on', x === a)); a.onmouseenter = a.onfocus = on; a.addEventListener('click', e => { if (!a.classList.contains('on')) { e.preventDefault(); on(); } }); $('#fd').append(a); if (!i) a.classList.add('on'); }); vids(); }
+</script></body></html>

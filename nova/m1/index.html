@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><base href="/accordion-lviv-site/"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">
+<title>Макет 1 «Кіно» — Акордеон Центр</title>
+<link rel="stylesheet" href="fonts.css"><link href="https://fonts.googleapis.com/css2?family=Prata&display=swap" rel="stylesheet"><link rel="stylesheet" href="nova/common.css">
+<style>
+/* Кіно: головна як початкові титри фільму. Світло ковзає по міху, шрифт тонкий, інструменти — «у ролях». */
+:root { --night: #0d0a0b; --d: Prata, Georgia, serif; --ftd: Prata, Georgia, serif; }
+.open { position: relative; height: 100svh; min-height: 620px; overflow: clip; display: grid; place-items: center; text-align: center; isolation: isolate; }
+.open video { position: absolute; z-index: -2; inset: -6%; width: 112%; height: 112%; object-fit: cover; filter: brightness(.95) contrast(1.08); }
+.open::before { content: ""; position: absolute; z-index: -1; inset: 0; background: radial-gradient(60% 55% at 50% 46%, rgba(13, 10, 11, .62), rgba(13, 10, 11, .3)), linear-gradient(transparent 66%, var(--night)); }
+.open h1 { font: 400 clamp(2.5rem, 6vw, 6.4rem)/1.08 var(--d); letter-spacing: -.015em; max-width: 15em; padding-inline: var(--pad); text-wrap: balance; }
+.open p { margin: 22px auto 30px; color: var(--dim); font-size: 1.1rem; }
+.cast { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); min-height: 100svh; align-items: center; padding: 90px var(--pad); gap: 4vw; }
+.cast h2 { font: 400 1.15rem/1 var(--t); color: var(--dim); margin-bottom: 26px; }
+.cast li a { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 20px; padding: clamp(8px, 1.3svh, 16px) 0; opacity: .42; transition: opacity .3s, translate .4s cubic-bezier(.2, .8, .2, 1); }
+.cast li a.on { opacity: 1; translate: 12px 0; } .cast li b { font: 400 clamp(2.1rem, 4.4vw, 4.5rem)/1 var(--d); letter-spacing: -.02em; } .cast li span { color: var(--dim); white-space: nowrap; }
+.pic { position: relative; height: min(76svh, 720px); } .pic::before { content: ""; position: absolute; inset: 6% 0; background: radial-gradient(closest-side, color-mix(in srgb, var(--tone, #7d1528) 88%, #fff), transparent); opacity: 1; transition: background .6s; }
+.pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; scale: .95; transition: opacity .55s, scale .9s cubic-bezier(.2, .8, .2, 1); filter: drop-shadow(0 40px 40px rgba(0, 0, 0, .6)); } .pic img.on { opacity: 1; scale: 1; }
+.all { display: inline-block; margin-top: 26px; text-decoration: underline; text-underline-offset: 6px; }
+.reel { display: grid; gap: clamp(10px, 1.2vw, 18px); padding: 0 clamp(10px, 1.2vw, 18px) 20px; grid-template-columns: repeat(3, 1fr); }
+.fr { position: relative; aspect-ratio: 3 / 4; overflow: clip; isolation: isolate; } .fr video { position: absolute; z-index: -1; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: scale 1.2s cubic-bezier(.2, .8, .2, 1); } .fr:hover video { scale: 1.06; } .fr::after { content: ""; position: absolute; z-index: -1; inset: 50% 0 0; background: linear-gradient(transparent, rgba(0, 0, 0, .82)); }
+.fr div { position: absolute; inset: auto 0 0; padding: clamp(16px, 2.4vw, 36px); } .fr b { display: block; font: 400 clamp(1.7rem, 3.1vw, 3.2rem)/1 var(--d); } .fr span { color: rgba(255, 255, 255, .8); }
+.end { text-align: center; padding: clamp(80px, 12vw, 170px) var(--pad); } .end h2 { font: 400 clamp(1.9rem, 4vw, 4rem)/1.16 var(--d); max-width: 20em; margin: 0 auto 30px; text-wrap: balance; }
+@media (max-width: 860px) { .cast { grid-template-columns: 1fr; padding-top: 80px; } .pic { order: -1; height: 44svh; } .reel { grid-template-columns: 1fr; } .fr { aspect-ratio: 16 / 11; } .cast li a { padding: 9px 0; } .cast li a.on { translate: none; } .cast li a i { display: none; } }
+</style></head><body>
+<section class="open"><video src="scenes/web/bellows_macro.webm" poster="scenes/web/bellows-m.webp" muted loop playsinline preload="metadata"></video><div><h1>Добрий акордеон гарно звучить у будь-яких руках</h1><p>У руках майстра він творить досконалу музику.</p><a class="btn" data-u="/c/43">Обрати інструмент</a></div></section>
+<section class="cast"><div><h2>У головних ролях</h2><ul id="ls"></ul><a class="all" data-u="/c/43" id="all"></a></div><div class="pic" id="pic"></div></section>
+<section class="reel" id="reel"></section>
+<section class="end"><h2>Ремонтуємо міх, голоси, механіку й регістри. Деталі з каталогу є під рукою.</h2><a class="btn" data-u="/service">Майстерня</a></section>
+<script src="data/slugs.js"></script><script src="site.js"></script><script src="i18n.js"></script><script src="data/catalog.js"></script><script src="data/catalog-i18n.js"></script><script src="data/specs.js"></script><script src="nova/common.js"></script>
+<script>
+{ const { $, $$, el, I, cat, L, inCat, vids } = PROTO, list = [I[0], I[1], I[2], I[3], I[5], I[7]].filter(Boolean);
+  list.forEach((x, i) => { const a = el('a', { href: x.url }, el('b', {}, x.b), el('span', {}, el('i', { style: 'font-style:normal' }, `${x.n}, `), x.price)); a.onmouseenter = a.onfocus = () => on(i); a.addEventListener('click', e => { if (!a.classList.contains('on') && matchMedia('(hover: none)').matches) { e.preventDefault(); on(i); } }); $('#ls').append(el('li', {}, a)); $('#pic').append(el('img', { src: x.src, alt: `${x.b} ${x.n}` })); });
+  const on = i => { $$('#ls a').forEach((a, k) => a.classList.toggle('on', k === i)); $$('#pic img').forEach((m, k) => m.classList.toggle('on', k === i)); $('#pic').style.setProperty('--tone', list[i].tone); }; on(0);
+  $('#all').textContent = `Усі ${L.goods(inCat(43).length)}`;
+  for (const [id, v, p] of [[5, 'buttons', 'buttons'], [11, 'bellows', 'bellows'], [6, 'keys', 'keys']]) { const c = cat(id), vd = el('video', { src: `scenes/web/${v}.webm`, poster: `scenes/web/${p}-m.webp`, muted: true, loop: true, preload: 'none' }); vd.setAttribute('playsinline', ''); $('#reel').append(el('a', { className: 'fr', href: c.url }, vd, el('div', {}, el('b', {}, c.name), el('span', {}, c.goods)))); } vids(); }
+</script></body></html>
