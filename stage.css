@@ -1,0 +1,53 @@
+/* «Чорна сцена» (Алекс 25.11): верх і вітрина — темний концертний зал із підсвіченим інструментом, решта сайту світла й спокійна.
+   Лягає поверх glass.css. Повернути шавлієве скло: прибрати підключення stage.css і взяти glass.css з коміту c1328fa3. */
+:root, .sheet {
+  --bg: #efefee; --ink: #141112; --on-ink: #f6f1ea; --ink-soft: #383234; --muted: #5a5455; --red: #c01a33; --red-deep: #8f1226;
+  --line: rgba(20, 17, 18, .13); --line-soft: rgba(20, 17, 18, .2);
+  --glass: #fff; --glass-hi: #fff; --glass-edge: rgba(20, 17, 18, .07); --glass-blur: none; --glass-shadow: none;
+  --tile: #fff; --paper: #fff; --plate: #fff; --foot: #120f10;
+  --night: #151112; --night-ink: #f6f1ea; --night-muted: #b9afaa;
+}
+html { background: var(--bg); }
+body::before { background: var(--bg); }
+body::after { display: none; }
+.sheet { background: none; border: 0; box-shadow: none; }
+.top-row { background: rgba(255, 255, 255, .94); box-shadow: 0 10px 30px -18px rgba(20, 17, 18, .35); }
+.search input { background: #f1f0f0; }
+.mega, .suggest { background: #fff; box-shadow: 0 24px 60px -30px rgba(20, 17, 18, .45); }
+.cat, .sheet .cat, .help a, .show a, .sheet .show a { background: #fff; }
+.cat:hover, .show a:hover, .sheet .cat:hover, .sheet .show a:hover, .card:hover .card-img, .sheet .card:hover .card-img { background: #fff; box-shadow: 0 18px 40px -24px rgba(20, 17, 18, .4); }
+.filters input, .toolbar select { background: #fff; }
+
+/* Перший екран */
+.reel-stage { background: var(--night); }
+.reel-stage::after { display: none; }
+.reel-stage:first-child { background: radial-gradient(46% 62% at 68% 48%, #6a5a55, #3a302e 46%, var(--night) 88%); }
+.reel-stage:first-child .reel-shade { background: none; }
+.reel-stage:not(:first-child) .reel-shade { background: linear-gradient(90deg, rgba(20, 16, 17, .82), rgba(20, 16, 17, .12) 55%, transparent); }
+.reel-stage .reel-card, .reel-stage .reel-card h2, .reel-stage .reel-name, .reel-stage .reel-card .slogan { color: var(--night-ink); }
+.reel-stage .reel-card p { color: rgba(246, 241, 234, .82); }
+.reel-stage:not(:first-child) .reel-card { background: rgba(20, 16, 17, .8); border-color: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: none; }
+.reel-stage .reel-card .btn { background: var(--red); border-color: var(--red); color: #fff; }
+.reel-stage .reel-card .btn:hover { background: #d8223e; border-color: #d8223e; }
+.reel-stage .reel-card .btn.ghost { background: transparent; color: var(--night-ink); border: 1.5px solid rgba(246, 241, 234, .5); box-shadow: none; }
+.reel-stage .reel-card .btn.ghost:hover { background: var(--night-ink); color: var(--ink); border-color: var(--night-ink); }
+.reel-hint { color: rgba(246, 241, 234, .7); }
+.reel-hint i { background: linear-gradient(#f6f1ea, transparent); }
+
+/* Вітрина */
+.section.wall { width: 100%; max-width: none; margin: 0; padding: clamp(48px, 6vw, 84px) max(clamp(16px, 3vw, 48px), calc((100% - var(--wrap)) / 2)); background: var(--night); color: var(--night-ink); --ink: #f6f1ea; --muted: #b9afaa; }
+.wall .wall-shelves { background: none; border-color: rgba(246, 241, 234, .16); }
+.wall-item { background: radial-gradient(60% 78% at 50% 34%, rgba(255, 240, 225, .34), transparent 72%); }
+.wall-item:hover, .wall-item:focus-visible { background: radial-gradient(66% 86% at 50% 36%, color-mix(in srgb, var(--tone) 46%, rgba(255, 240, 225, .5)), transparent 74%); }
+.wall .wall-tag { background: rgba(20, 16, 17, .75); border-color: transparent; color: var(--night-muted); }
+.wall .wall-tag b, .wall .wall-all { color: var(--night-ink); }
+.wall .wall-all { background: none; }
+.wall-focus { --ink: #141112; --muted: #5a5455; color: #141112; }
+.wall-bg { background: radial-gradient(46% 60% at 34% 56%, color-mix(in srgb, var(--tone) 34%, transparent), transparent 72%), rgba(239, 239, 238, .94); }
+.partners { margin-top: 0; padding-top: clamp(24px, 4vw, 56px); }
+@media (max-width: 960px) {
+  .reel-stage:first-child { background: radial-gradient(90% 46% at 50% 26%, #6a5a55, #3a302e 46%, var(--night) 88%); }
+  .reel-stage:first-child .reel-card::before { background: linear-gradient(rgba(21, 17, 18, 0), rgba(21, 17, 18, .86) 109px, #151112 185px); }
+  .reel-stage:not(:first-child) .reel-shade { background: linear-gradient(0deg, rgba(20, 16, 17, .85), transparent 55%); }
+  .reel-stage:not(:first-child) .reel-card { background: rgba(20, 16, 17, .92); }
+}

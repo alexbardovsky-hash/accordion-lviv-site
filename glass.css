@@ -2,26 +2,26 @@
    матові скляні панелі (розмиття того, що позаду, тонкий світлий край, легка тінь). Шар лягає поверх styles.css:
    щоб повернути темну версію, достатньо прибрати підключення glass.css в index.html і повернути logo-light.png. */
 :root {
-  --bg: #d4dad2;
-  --ink: #17201b;
-  --on-ink: #f3f6f1;
-  --ink-soft: #2f3b35;
-  --muted: #48544d;
+  --bg: #efefee;
+  --ink: #141112;
+  --on-ink: #f6f1ea;
+  --ink-soft: #383234;
+  --muted: #5a5455;
   --red: #c41d38;
   --red-deep: #8f1428;
   --brass: #8d6d2c;
   --brass-hi: #d9bb78;
-  --line: rgba(23, 32, 27, .14);
-  --line-soft: rgba(23, 32, 27, .2);
+  --line: rgba(20, 17, 18, .14);
+  --line-soft: rgba(20, 17, 18, .2);
   --glass: rgba(255, 255, 255, .34);
   --glass-hi: rgba(255, 255, 255, .55);
   --glass-edge: rgba(255, 255, 255, .7);
   --glass-blur: blur(22px) saturate(1.7);
-  --glass-shadow: 0 1px 0 rgba(255, 255, 255, .75) inset, 0 -1px 0 rgba(23, 32, 27, .05) inset, 0 18px 40px -22px rgba(23, 32, 27, .35);
+  --glass-shadow: 0 1px 0 rgba(255, 255, 255, .75) inset, 0 -1px 0 rgba(20, 17, 18, .05) inset, 0 18px 40px -22px rgba(20, 17, 18, .35);
   --tile: var(--glass);
   --paper: var(--glass-hi);
   --plate: rgba(255, 255, 255, .5);
-  --foot: #17201b;
+  --foot: #141112;
 }
 html { color-scheme: light; background: var(--bg); }
 body { background: transparent; position: relative; isolation: isolate; }
@@ -56,35 +56,35 @@ body::after {
 .search input:focus { background: rgba(255, 255, 255, .75); border-color: var(--ink); }
 .lang { box-shadow: none; }
 .nav-info a:hover, .nav-info a[aria-current="page"], .icon-btn:hover { background: var(--glass-hi); }
-.mega { top: calc(100% + 8px); left: clamp(16px, 3vw, 48px); right: clamp(16px, 3vw, 48px); border-radius: 28px; background: rgba(236, 241, 235, .78); }
-.suggest { background: rgba(240, 244, 239, .9); }
+.mega { top: calc(100% + 8px); left: clamp(16px, 3vw, 48px); right: clamp(16px, 3vw, 48px); border-radius: 28px; background: rgba(255, 255, 255, .78); }
+.suggest { background: rgba(255, 255, 255, .9); }
 .suggest a:hover, .suggest a.is-active { background: rgba(255, 255, 255, .6); }
 
 /* Перший екран: позаду інструмента — його ж розмите світло */
 .mast::before { background: none; }
 .mast-amb { position: absolute; z-index: -1; right: -6%; bottom: -10%; width: min(70%, 1100px); height: 90%; object-fit: contain; filter: blur(80px) saturate(1.8); opacity: .55; pointer-events: none; transition: opacity .6s; }
 .mast-glow { background: radial-gradient(closest-side, rgba(255, 255, 255, .7), transparent); filter: blur(20px); opacity: .8; }
-.mast-pic img { filter: drop-shadow(0 34px 26px rgba(23, 32, 27, .35)); }
+.mast-pic img { filter: drop-shadow(0 34px 26px rgba(20, 17, 18, .35)); }
 .mast-cap { padding: 10px 14px; border-radius: 16px; background: var(--glass); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-edge); box-shadow: var(--glass-shadow); color: var(--muted); }
 
 /* Вітрина: скляна шафа, скляні полиці */
 .wall-shelves { border-radius: 28px; background: rgba(255, 255, 255, .22); }
 .wall-item { background: radial-gradient(60% 78% at 50% 0, rgba(255, 255, 255, .55), transparent 72%); }
 .wall-item::before { background: #fff; box-shadow: 0 0 22px 6px rgba(255, 255, 255, .9); }
-.wall-item::after { background: linear-gradient(180deg, rgba(255, 255, 255, .95) 0 1.5px, rgba(255, 255, 255, .45) 1.5px 9px, rgba(23, 32, 27, .14) 9px 10px, rgba(23, 32, 27, .06) 10px, transparent); }
-.wall-item img { filter: drop-shadow(0 16px 12px rgba(23, 32, 27, .3)); }
+.wall-item::after { background: linear-gradient(180deg, rgba(255, 255, 255, .95) 0 1.5px, rgba(255, 255, 255, .45) 1.5px 9px, rgba(20, 17, 18, .14) 9px 10px, rgba(20, 17, 18, .06) 10px, transparent); }
+.wall-item img { filter: drop-shadow(0 16px 12px rgba(20, 17, 18, .3)); }
 .wall-item:hover, .wall-item:focus-visible { background: radial-gradient(64% 86% at 50% 0, color-mix(in srgb, var(--tone) 30%, rgba(255, 255, 255, .6)), transparent 74%); }
-.wall-item:hover img, .wall-item:focus-visible img { filter: drop-shadow(0 26px 18px rgba(23, 32, 27, .38)); }
+.wall-item:hover img, .wall-item:focus-visible img { filter: drop-shadow(0 26px 18px rgba(20, 17, 18, .38)); }
 .wall-tag { color: var(--muted); }
-.wall-bg { background: radial-gradient(46% 60% at 34% 56%, color-mix(in srgb, var(--tone) 34%, transparent), transparent 72%), rgba(214, 220, 211, .72);
+.wall-bg { background: radial-gradient(46% 60% at 34% 56%, color-mix(in srgb, var(--tone) 34%, transparent), transparent 72%), rgba(239, 239, 238, .72);
   -webkit-backdrop-filter: blur(30px) saturate(1.5); backdrop-filter: blur(30px) saturate(1.5); }
-.wall-big { filter: drop-shadow(0 40px 30px rgba(23, 32, 27, .35)); }
+.wall-big { filter: drop-shadow(0 40px 30px rgba(20, 17, 18, .35)); }
 .wall-disc { background: radial-gradient(closest-side, rgba(255, 255, 255, .85), rgba(255, 255, 255, .3) 60%, transparent); box-shadow: none; }
 .wall-info small { color: color-mix(in srgb, var(--tone) 70%, var(--ink)); }
 .wall-close:hover, .wall-arrow:hover { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
 
 /* Полотно товарів тепер не потрібне окремим кольором: усе сторінка світла. Лишаємо його склом. */
-.sheet { --bg: transparent; --ink: #17201b; --on-ink: #f3f6f1; --ink-soft: #2f3b35; --muted: #48544d; --tile: var(--glass); --paper: var(--glass-hi); --plate: rgba(255, 255, 255, .5); --line: rgba(23, 32, 27, .14); --line-soft: rgba(23, 32, 27, .2);
+.sheet { --bg: transparent; --ink: #141112; --on-ink: #f6f1ea; --ink-soft: #383234; --muted: #5a5455; --tile: var(--glass); --paper: var(--glass-hi); --plate: rgba(255, 255, 255, .5); --line: rgba(20, 17, 18, .14); --line-soft: rgba(20, 17, 18, .2);
   background: rgba(255, 255, 255, .18); border: 1px solid rgba(255, 255, 255, .55); box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset; }
 .sheet .cat:hover, .sheet .show a:hover, .sheet .card:hover .card-img, .cat:hover, .show a:hover { background: var(--glass-hi); }
 .cat img, .show img, .card-img img, .gallery-main img, .thumbs img { mix-blend-mode: multiply; background: none; }
@@ -98,60 +98,60 @@ body::after {
 .help a:hover { border-color: var(--red); }
 
 /* Кошик, меню */
-.scrim { background: rgba(23, 32, 27, .28); backdrop-filter: blur(6px); }
-.cart, .drawer { background: rgba(226, 232, 224, .82); -webkit-backdrop-filter: blur(30px) saturate(1.6); backdrop-filter: blur(30px) saturate(1.6); border-left: 1px solid var(--glass-edge); }
+.scrim { background: rgba(20, 17, 18, .28); backdrop-filter: blur(6px); }
+.cart, .drawer { background: rgba(239, 239, 238, .82); -webkit-backdrop-filter: blur(30px) saturate(1.6); backdrop-filter: blur(30px) saturate(1.6); border-left: 1px solid var(--glass-edge); }
 .peek { background: rgba(255, 255, 255, .7); backdrop-filter: blur(16px); }
 
 /* Підвал лишається темним: опора для світлої сторінки */
-.foot { color: #c9d1cc; }
-.foot-lead, .foot h2 { color: #8f9b94; }
-.foot-grid { border-color: #2c3731; }
+.foot { color: #cbc8c8; }
+.foot-lead, .foot h2 { color: #948e8e; }
+.foot-grid { border-color: #2b2627; }
 
 @media (max-width: 960px) {
   .top-row { margin: 8px 10px 0; width: auto; border-radius: 26px; padding: 8px 10px; }
   .mega { left: 10px; right: 10px; }
-  .wall-bg { background: radial-gradient(80% 44% at 50% 36%, color-mix(in srgb, var(--tone) 30%, transparent), transparent 72%), rgba(214, 220, 211, .9); }
+  .wall-bg { background: radial-gradient(80% 44% at 50% 36%, color-mix(in srgb, var(--tone) 30%, transparent), transparent 72%), rgba(239, 239, 238, .9); }
   .wall-arrow { background: var(--glass-hi); }
   .mast-amb { width: 120%; right: -10%; bottom: 10%; height: 60%; }
 }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .top-row, .cat, .show a, .card-img, .help a, .mega, .suggest { background: rgba(238, 242, 237, .92); }
+  .top-row, .cat, .show a, .card-img, .help a, .mega, .suggest { background: rgba(250, 250, 249, .92); }
 }
 
 /* Фото зняті на білому й зливаються з карткою через multiply, а multiply не проходить крізь напівпрозоре скло
    (воно ізолює шар). Тому картки з фото — суцільний матовий колір того самого відтінку, скло лишається в краї й тіні. */
 .cat, .show a, .show a:first-child, .card-img, .gallery-main, .thumbs button, .sheet .card-img {
-  background: #e7ebe5; -webkit-backdrop-filter: none; backdrop-filter: none; }
-.cat:hover, .show a:hover, .sheet .cat:hover, .sheet .show a:hover, .card:hover .card-img, .sheet .card:hover .card-img { background: #eff2ed; }
+  background: #ffffff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+.cat:hover, .show a:hover, .sheet .cat:hover, .sheet .show a:hover, .card:hover .card-img, .sheet .card:hover .card-img { background: #ffffff; }
 .cat img, .sheet .cat img { background: none; padding: 0; border-radius: 0; }
 .sheet { z-index: auto; background: transparent; border: 0; box-shadow: none; }
 /* Світло за інструментом: колір самого інструмента, а не розмита фотографія (темні інструменти давали брудну хмару). */
 .mast-amb { display: none; }
 .mast-glow { width: 120%; bottom: -6%; background: radial-gradient(closest-side, color-mix(in srgb, var(--tone) 42%, #fff), color-mix(in srgb, var(--tone) 18%, transparent) 55%, transparent); filter: blur(40px); opacity: .85; }
-.sheet { --tile: #e7ebe5; --paper: #eff2ed; --plate: #e7ebe5; }
+.sheet { --tile: #ffffff; --paper: #ffffff; --plate: #ffffff; }
 
 /* ── Сцени першого екрана: відео на весь екран, скляна панель зліва ── */
 .reel { position: relative; height: calc(var(--n) * 100svh); margin-top: -82px; }
-.reel-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; background: #141815; isolation: isolate; }
+.reel-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; background: #151112; isolation: isolate; }
 .reel-vid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity 1s var(--ease), transform 2.4s var(--ease); }
 .reel-vid.is-on { opacity: 1; transform: none; }
-.reel-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(12, 16, 14, .55), rgba(12, 16, 14, .1) 55%, transparent), linear-gradient(0deg, rgba(12, 16, 14, .45), transparent 30%); }
+.reel-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(20, 16, 17, .55), rgba(20, 16, 17, .1) 55%, transparent), linear-gradient(0deg, rgba(20, 16, 17, .45), transparent 30%); }
 .reel-in { position: relative; z-index: 2; height: 100%; display: grid; align-items: center; padding-top: 70px; }
-.reel-card { grid-area: 1 / 1; justify-self: start; display: grid; gap: clamp(16px, 2.2vh, 24px); justify-items: start; width: min(660px, 100%); padding: clamp(24px, 3vw, 40px); border-radius: 32px; color: #f3f6f1;
-  background: rgba(24, 30, 27, .32); -webkit-backdrop-filter: blur(26px) saturate(1.6); backdrop-filter: blur(26px) saturate(1.6);
+.reel-card { grid-area: 1 / 1; justify-self: start; display: grid; gap: clamp(16px, 2.2vh, 24px); justify-items: start; width: min(660px, 100%); padding: clamp(24px, 3vw, 40px); border-radius: 32px; color: #f6f1ea;
+  background: rgba(20, 16, 17, .32); -webkit-backdrop-filter: blur(26px) saturate(1.6); backdrop-filter: blur(26px) saturate(1.6);
   border: 1px solid rgba(255, 255, 255, .22); box-shadow: 0 1px 0 rgba(255, 255, 255, .25) inset, 0 30px 60px -30px rgba(0, 0, 0, .6);
   opacity: 0; transform: translateY(26px); pointer-events: none; transition: opacity .5s var(--ease), transform .7s var(--ease); }
 .reel-card.is-on { opacity: 1; transform: none; pointer-events: auto; transition-delay: .15s; }
 .reel-card h2 { font: 700 clamp(2.4rem, 5vw, 4.6rem)/.95 var(--display); letter-spacing: -0.06em; }
-.reel-card p { max-width: 40ch; color: rgba(243, 246, 241, .82); font-size: clamp(1rem, 1.2vw, 1.15rem); }
+.reel-card p { max-width: 40ch; color: rgba(246, 241, 234, .82); font-size: clamp(1rem, 1.2vw, 1.15rem); }
 .reel-name { font: 700 clamp(2.6rem, 5.4vw, 5.4rem)/.88 var(--display); letter-spacing: -0.07em; }
 .reel-name span { display: block; overflow: hidden; padding-bottom: .05em; }
 .reel-name i { display: block; font-style: normal; animation: rise 1s var(--ease) both; }
 .reel-name span + span i { animation-delay: .1s; }
-.reel-card .btn { background: #f3f6f1; border-color: #f3f6f1; color: #17201b; }
+.reel-card .btn { background: #f6f1ea; border-color: #f6f1ea; color: #141112; }
 .reel-card .btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
-.reel-card .btn.ghost { background: rgba(255, 255, 255, .12); color: #f3f6f1; border-color: rgba(255, 255, 255, .4); box-shadow: none; }
-.reel-card .btn.ghost:hover { background: #f3f6f1; color: #17201b; }
+.reel-card .btn.ghost { background: rgba(255, 255, 255, .12); color: #f6f1ea; border-color: rgba(255, 255, 255, .4); box-shadow: none; }
+.reel-card .btn.ghost:hover { background: #f6f1ea; color: #141112; }
 .reel-dots { position: absolute; z-index: 2; right: clamp(16px, 3vw, 48px); top: 50%; translate: 0 -50%; display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .reel-dots i { display: block; width: 4px; height: 28px; border-radius: 4px; background: rgba(255, 255, 255, .3); transition: height .4s var(--ease), background .4s; }
 .reel-dots .is-on i { height: 56px; background: #fff; }
@@ -164,7 +164,7 @@ body::after {
   .reel { margin-top: -132px; }
   .reel-in { align-items: end; padding: 0 0 72px; }
   .reel-card { border-radius: 26px; padding: 22px; }
-  .reel-shade { background: linear-gradient(0deg, rgba(12, 16, 14, .6), transparent 60%); }
+  .reel-shade { background: linear-gradient(0deg, rgba(20, 16, 17, .6), transparent 60%); }
   .reel-vid { object-position: 58% 50%; }
   .reel-dots { top: auto; bottom: 24px; right: 50%; translate: 50% 0; grid-auto-flow: column; }
   .reel-dots i { width: 28px; height: 4px; } .reel-dots .is-on i { width: 56px; height: 4px; }
@@ -173,24 +173,24 @@ body::after {
 @media (prefers-reduced-motion: reduce) { .reel-vid, .reel-card { transition: none; } .reel-name i { animation: none; } }
 
 /* Сцени на тлі сайту (Алекс, 2026-11-17: не біле, а наш блідий сіро-зелений); панель — світле скло з темним текстом. */
-.reel-stage { background: #d4dad2; }
-.reel-shade { background: linear-gradient(90deg, rgba(212, 218, 210, .7), rgba(212, 218, 210, .12) 50%, transparent 70%); }
+.reel-stage { background: #efefee; }
+.reel-shade { background: linear-gradient(90deg, rgba(239, 239, 238, .7), rgba(239, 239, 238, .12) 50%, transparent 70%); }
 /* те саме зерно, що й на всьому сайті, поверх відео */
 .reel-stage::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .5; mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45  0 0 0 0 .5  0 0 0 0 .47  0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 .reel-card { color: var(--ink); background: rgba(255, 255, 255, .42); border-color: rgba(255, 255, 255, .8);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, .9) inset, 0 30px 60px -34px rgba(23, 32, 27, .35); }
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .9) inset, 0 30px 60px -34px rgba(20, 17, 18, .35); }
 .reel-card p { color: var(--ink-soft); }
 .reel-card .btn { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
-.reel-card .btn.ghost { background: rgba(255, 255, 255, .5); color: var(--ink); border-color: rgba(23, 32, 27, .25); }
+.reel-card .btn.ghost { background: rgba(255, 255, 255, .5); color: var(--ink); border-color: rgba(20, 17, 18, .25); }
 .reel-card .btn.ghost:hover { background: var(--ink); color: var(--on-ink); }
-.reel-dots i { background: rgba(23, 32, 27, .2); }
+.reel-dots i { background: rgba(20, 17, 18, .2); }
 .reel-dots .is-on i { background: var(--ink); }
 .reel-hint { color: var(--muted); }
 .reel-hint i { background: linear-gradient(var(--ink), transparent); }
 .top-row { background: rgba(255, 255, 255, .5); }
 @media (max-width: 960px) {
-  .reel-shade { background: linear-gradient(0deg, rgba(212, 218, 210, .85), transparent 55%); }
+  .reel-shade { background: linear-gradient(0deg, rgba(239, 239, 238, .85), transparent 55%); }
 }
 /* Телефон: сцена, що розтискається, ширша за екран; показуємо її меншою над карткою, щоб інструмент було видно цілим. */
 @media (max-width: 960px) {
@@ -199,8 +199,8 @@ body::after {
 }
 
 /* Слоган першого екрана (Алекс, 2026-11-19): окремий рядок над описом */
-.reel-card .slogan { display: block; margin-bottom: .7em; font-family: Unbounded, "Arial Black", sans-serif; font-weight: 500; font-size: 1.12em; line-height: 1.35; color: #17201b; }
-.cat-lead { max-width: 66ch; margin: -6px 0 18px; font-size: 1.02rem; line-height: 1.55; color: #3c4a42; }
+.reel-card .slogan { display: block; margin-bottom: .7em; font-family: Unbounded, "Arial Black", sans-serif; font-weight: 500; font-size: 1.12em; line-height: 1.35; color: #141112; }
+.cat-lead { max-width: 66ch; margin: -6px 0 18px; font-size: 1.02rem; line-height: 1.55; color: #3f393a; }
 
 /* Сцени у звичайному потоці (Алекс 19.11): нічого не прилипає, сторінка гортається, кадр іде за гортанням (app.js reelInit). */
 .reel { height: auto; }
@@ -218,7 +218,7 @@ canvas.reel-vid.is-drawn { background-image: none !important; }
 
 /* Телефон: над сценою, що змінюється щокадру, розмиття скла і зерно перераховуються щокадру — це й смикало. */
 @media (max-width: 960px) {
-  .reel-card { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(236, 240, 235, .9); }
+  .reel-card { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgba(250, 250, 249, .9); }
   .reel-stage::after { display: none; }
   canvas.reel-vid:not([data-scrub]) { background-position: 58% 50%; }
 }
@@ -239,7 +239,7 @@ canvas.reel-vid[style*="--po"] { background-image: var(--po); }
 .filters input { width: 108px; height: 40px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--glass); color: inherit; }
 .filters label + input { margin-left: -8px; }
 .filters-n { color: var(--muted); font-size: .92rem; margin-left: auto; }
-.side { scrollbar-width: thin; scrollbar-color: rgba(23, 32, 27, .3) transparent; }
+.side { scrollbar-width: thin; scrollbar-color: rgba(20, 17, 18, .3) transparent; }
 @media (max-width: 960px) {
   .toolbar select, .filters input, .toolbar .chip, .chips .chip { min-height: 44px; }
   .filters-n { margin-left: 0; width: 100%; }
@@ -265,7 +265,7 @@ canvas.reel-vid[style*="--po"] { background-image: var(--po); }
   .reel-stage:first-child .reel-in { align-items: end; padding: 0 0 88px; }
   .reel-stage:first-child .reel-card { position: relative; isolation: isolate; padding: 0 4px; gap: 12px; }
   .reel-stage:first-child .reel-card::before { content: ""; position: absolute; z-index: -1; left: -100vw; right: -100vw; top: -130px; bottom: -300px; pointer-events: none;
-    background: linear-gradient(rgba(212, 218, 210, 0), rgba(212, 218, 210, .85) 109px, #d4dad2 185px); }
+    background: linear-gradient(rgba(239, 239, 238, 0), rgba(239, 239, 238, .85) 109px, #efefee 185px); }
   .reel-stage:first-child .reel-name { font-size: clamp(2.6rem, 12.5vw, 5rem); }
   .reel-stage:first-child .reel-card p { font-size: .97rem; }
   .reel-stage:first-child .reel-card .slogan { font-size: min(1rem, 4.1vw); margin: 0 0 .4em; }

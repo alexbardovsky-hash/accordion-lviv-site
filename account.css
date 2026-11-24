@@ -13,7 +13,7 @@
 .card-img { position: relative; }
 .card-acts { position: absolute; top: 8px; right: 8px; z-index: 2; display: grid; gap: 6px; }
 .act { width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .82); color: var(--ink);
-  box-shadow: 0 4px 14px -6px rgba(23, 32, 27, .45); cursor: pointer; transition: background .2s, color .2s, transform .25s var(--ease); }
+  box-shadow: 0 4px 14px -6px rgba(20, 17, 18, .45); cursor: pointer; transition: background .2s, color .2s, transform .25s var(--ease); }
 .act svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
 .act:hover { transform: scale(1.08); }
 .act[data-fav][aria-pressed="true"] { color: var(--red); }
@@ -79,10 +79,10 @@
 .acc-order footer b { color: var(--ink); }
 .acc-thumb, .acc-order .ph { width: 48px; height: 48px; border-radius: 10px; background: var(--plate); overflow: hidden; display: grid; place-items: center; }
 .acc-thumb img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
-.acc-status { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: .82rem; font-weight: 500; font-style: normal; background: rgba(23, 32, 27, .08); }
+.acc-status { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: .82rem; font-weight: 500; font-style: normal; background: rgba(20, 17, 18, .08); }
 .acc-status.s-new, .acc-status.s-processing { background: #f1e2b6; color: #5c4610; }
 .acc-status.s-paid, .acc-status.s-sent { background: #cfe3d6; color: #1f5a3c; }
-.acc-status.s-done { background: rgba(23, 32, 27, .08); color: var(--muted); }
+.acc-status.s-done { background: rgba(20, 17, 18, .08); color: var(--muted); }
 .acc-status.s-cancelled { background: #f2d3d8; color: #8f1428; }
 
 .acc-chats { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }

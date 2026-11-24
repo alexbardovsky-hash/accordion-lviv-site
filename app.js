@@ -105,7 +105,7 @@
   // Кадр сцени йде за гортанням: поки сцена проїжджає крізь екран, анімація програється від початку до кінця.
   // Кадри — картинки на canvas (tools/scene_frames.py), бо перемотка <video> на телефоні смикається;
   // між сусідніми кадрами змішуємо, а позицію згладжуємо, тож рух плавний навіть при різкому свайпі.
-  const poster = k => `--po:url(scenes/web/${k}.jpg?v=26);--pom:url(scenes/web/${k === 'open' ? 'open-sq' : `${k}-m`}.webp?v=1)`;
+  const poster = k => k === 'open' ? '--po:url(scenes/web/open-da.webp?v=1);--pom:url(scenes/web/open-ma.webp?v=1)' : `--po:url(scenes/web/${k}.jpg?v=26);--pom:url(scenes/web/${k}-m.webp?v=1)`;
   function reelInit() {
     const sec = $('#reel');
     if (!sec) return;
@@ -117,7 +117,7 @@
     });
     // Телефон бере вузьку вертикальну смугу кадру в рідній якості (tools/scene_frames.py): легше й плавніше.
     const SET = innerWidth <= 960 ? 'm' : 'd';
-    const src = (s, i) => `scenes/frames2/${s.key}/${SET === 'm' && s.key === 'open' ? 'm2' : SET}/${String(i + 1).padStart(3, '0')}.webp?v=7`;
+    const src = (s, i) => `scenes/frames2/${s.key}/${s.key === 'open' ? `${SET}a` : SET}/${String(i + 1).padStart(3, '0')}.webp?v=8`;
     // Спершу кожен 8-й кадр, потім щільніше: сцена оживає одразу, а дрібні кадри догружаються.
     // Поки людина не торкнулась сторінки, беремо лише рідкі кадри першої сцени: хто зайшов і пішов, не качає десятки мегабайтів.
     let touched = false;
@@ -151,6 +151,7 @@
       const k = Math.max(W / a.naturalWidth, H / a.naturalHeight), dw = a.naturalWidth * k, dh = a.naturalHeight * k;
       const x = (W - dw) / 2, y = (H - dh) / 2;
       const c = s.ctx;
+      if (s.key === 'open') c.clearRect(0, 0, W, H);   // ці кадри прозорі: тло під ними малює CSS
       c.globalAlpha = 1; c.drawImage(a, x, y, dw, dh);
       const b = ai === i && t > .02 && s.imgs[i + 1];
       if (b) { c.globalAlpha = t; c.drawImage(b, x, y, dw, dh); c.globalAlpha = 1; }
