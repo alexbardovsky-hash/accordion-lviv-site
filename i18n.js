@@ -9,7 +9,7 @@
     metaDesc: 'Комплектуючі для ремонту кнопкових (баян) і клавішних акордеонів, ремені, чохли, нові інструменти Pigini, Scandalli, Fisitalia. Доставка Новою Поштою по Україні, самовивіз у Львові.',
     money: n => `${num(n, 'uk-UA')} грн`,
     goods: n => `${n} ${plural(n, 'товар', 'товари', 'товарів')}`,
-    skip: 'Перейти до вмісту', openCatalog: 'Відкрити каталог', brandHome: 'Акордеон Центр, на головну', langLabel: 'Мова сайту',
+    skip: 'Перейти до вмісту', callAria: 'Зателефонувати 099 333 98 90', openCatalog: 'Відкрити каталог', brandHome: 'Акордеон Центр, на головну', langLabel: 'Мова сайту',
     catalog: 'Каталог', searchLabel: 'Пошук товарів', searchPh: 'Ґудзик, ледерин, ремені, Pigini…',
     forBuyers: 'Покупцям', repair: 'Ремонт', delivery: 'Доставка й оплата', contacts: 'Контакти', cart: 'Кошик',
     footLead: 'Не знаєте, яка деталь потрібна? Зателефонуйте, підберемо за моделлю інструмента.',
@@ -42,6 +42,7 @@
     search: 'Пошук', searchTitle: q => `Пошук: ${q}`, quote: q => `«${q}»`,
     emptySearch: (q, ph) => `За запитом «${q}» нічого не знайшлося. Спробуйте коротше слово або артикул, чи зателефонуйте ${ph}.`,
     emptyH: 'Тут поки порожньо', toCatalog: 'До каталогу',
+    fPrice: 'Ціна, грн', fFrom: 'від', fTo: 'до', fBass: 'Баси', fWeight: 'Вага', fAny: 'усі', fUpTo: n => `до ${n} кг`, fClear: 'Скинути фільтри', fNone: 'За такими фільтрами нічого немає. Розширте ціну або скиньте один із них.', makerData: 'За даними виробника. Вага й розміри можуть трохи відрізнятися.',
     sort: 'Сортувати', sortDefault: 'як у каталозі', sortCheap: 'спершу дешевші', sortDear: 'спершу дорожчі', sortName: 'за назвою', maker: 'Виробник',
     showMore: (a, b) => `Показати ще ${a} з ${b}`,
     photo: n => `Фото ${n}`, less: 'Менше', more: 'Більше', qty: 'Кількість', qtyOf: n => `Кількість: ${n}`,
@@ -88,7 +89,7 @@
     metaDesc: 'Parts for button and piano accordion repair, straps, cases, new Pigini, Scandalli and Fisitalia instruments. Nova Poshta delivery across Ukraine, pick-up in Lviv.',
     money: n => `${num(n, 'en-US')} UAH`,
     goods: n => `${n} ${n === 1 ? 'item' : 'items'}`,
-    skip: 'Skip to content', openCatalog: 'Open catalogue', brandHome: 'Accordion Centre, home page', langLabel: 'Site language',
+    skip: 'Skip to content', callAria: 'Call 099 333 98 90', openCatalog: 'Open catalogue', brandHome: 'Accordion Centre, home page', langLabel: 'Site language',
     catalog: 'Catalogue', searchLabel: 'Search products', searchPh: 'Button, bellows tape, straps, Pigini…',
     forBuyers: 'Customer info', repair: 'Repairs', delivery: 'Delivery and payment', contacts: 'Contacts', cart: 'Cart',
     footLead: 'Not sure which part you need? Call us and we will match it to your instrument model.',
@@ -121,6 +122,7 @@
     search: 'Search', searchTitle: q => `Search: ${q}`, quote: q => `“${q}”`,
     emptySearch: (q, ph) => `Nothing found for “${q}”. Try a shorter word or an item number, or call ${ph}.`,
     emptyH: 'Nothing here yet', toCatalog: 'Back to catalogue',
+    fPrice: 'Price, UAH', fFrom: 'from', fTo: 'to', fBass: 'Bass buttons', fWeight: 'Weight', fAny: 'any', fUpTo: n => `up to ${n} kg`, fClear: 'Clear filters', fNone: 'Nothing matches these filters. Try widening the price or clearing one of them.', makerData: 'According to the manufacturer. Weight and dimensions may vary slightly.',
     sort: 'Sort', sortDefault: 'as in catalogue', sortCheap: 'cheapest first', sortDear: 'most expensive first', sortName: 'by name', maker: 'Brand',
     showMore: (a, b) => `Show ${a} more of ${b}`,
     photo: n => `Photo ${n}`, less: 'Fewer', more: 'More', qty: 'Quantity', qtyOf: n => `Quantity: ${n}`,
@@ -161,9 +163,6 @@
     showAll: g => `Show all ${g}`, noneFound: 'Nothing found. Try a shorter word or an item number.',
   };
 
-  let lang = 'uk';
-  try { lang = new URLSearchParams(location.search).get('lang') || localStorage.getItem('bac-lang') || 'uk'; } catch { /* приватний режим */ }
-  if (lang !== 'en') lang = 'uk';
-  try { localStorage.setItem('bac-lang', lang); } catch { /* приватний режим */ }
+  const lang = window.SITE.lang;   // мова — це адреса: /en/… або без нього
   window.I18N = { lang, L: lang === 'en' ? en : uk, uk };
 })();

@@ -2,11 +2,14 @@
 (() => {
   const C = window.CATALOG || { cats: [], products: [], featured: [] };
   const { lang, L, uk: UK } = window.I18N;
+  const { url, go, here, links } = window.SITE;
   // Переклад каталогу накладаємо на дані: українська назва лишається в p.uk для листа із замовленням.
   const TR = window.CATALOG_I18N || {};
   for (const c of C.cats) { c.uk = TR.uk?.cats[c.id] || c.name; c.name = TR[lang]?.cats[c.id] || c.uk; }
   // Слово «баян» зі сторінок прибране, але в пошуку й у <title> лишається як синонім: люди шукають саме його.
   for (const x of C.products) { const u = TR.uk?.products[x.id] || {}; x.orig = x.name; x.uk = u.name || x.name; Object.assign(x, u, TR[lang]?.products[x.id]); }
+  // Характеристики з сайтів виробників (data/specs.js) — лише там, де в каталозі їх немає.
+  for (const x of C.products) { const s = window.SPECS?.[x.id]; if (s && x.features.length < 3) { x.features = s[lang]; x.maker = true; } }
   const BAYAN_CATS = new Set([44, 45, 56]);
   const seoName = (name, id) => lang === 'uk' && BAYAN_CATS.has(id) && !/баян/i.test(name) ? `${name} (баян)` : name;
   // Перезняті фото (білий фон, тінь) лежать у photos/web/; список готових id у data/photos.js. Решта лишається з сайту.
@@ -58,6 +61,10 @@
 
   /* ── Шматки розмітки ── */
   const pic = (p, cls = '') => p.img ? `<img ${cls} src="${esc(p.img)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'">` : '<span class="ph"></span>';
+  // Телефон бере легшу копію головного фото (tools/web_sizes.py).
+  const srcsetOf = u => /^photos\/web5\/\d+(-o)?\.jpg$/.test(u) ? `${u.replace('.jpg', '-m.webp')} 800w, ${u} 1200w` : '';
+  const thumb = u => srcsetOf(u) ? u.replace('.jpg', '-m.webp') : u.replace('thickbox_default', 'cart_default');
+  const srcset = u => srcsetOf(u) ? ` srcset="${srcsetOf(u)}" sizes="(max-width: 960px) 92vw, 1200px"` : '';
   const priceTag = p => p.price ? `<span class="price">${money(p.price)}</span>` : `<span class="price ask">${L.askPrice}</span>`;
   /* Обране й порівняння (account.js): сердечко й терези на картці та сторінці товару. */
   const ACC = window.ACC_ACCOUNT, AT = ACC?.t || {};
@@ -72,17 +79,23 @@
   const card = p => `
     <article class="card">
       <div class="card-img">${pic(p)}${acts(p)}</div>
-      <a class="card-name" href="#/p/${p.id}">${esc(p.name)}</a>
+      <a class="card-name" href="${url(`/p/${p.id}`)}">${esc(p.name)}</a>
       ${p.ref ? `<span class="card-meta">${L.sku} ${esc(p.ref)}</span>` : ''}
       <div class="card-foot">${priceTag(p)}
         ${p.buy ? `<button class="add" data-add="${p.id}" aria-label="${esc(L.addAria(p.name))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>` : ''}
       </div>
     </article>`;
-  const crumbs = (items) => `<nav class="crumbs wrap" aria-label="${L.youAreHere}"><a href="#/">${L.homeCrumb}</a>${items.map(i => `<i>/</i>${i.href ? `<a href="${i.href}">${esc(i.name)}</a>` : `<span>${esc(i.name)}</span>`}`).join('')}</nav>`;
-  const tree = (ids, depth = 0, current) => `<ul>${ids.filter(id => count(id)).map(id => { const c = cat.get(id); return `<li><a href="#/c/${id}"${id === current ? ' aria-current="page"' : ''}>${esc(c.name)}<span>${count(id)}</span></a>${c.children.length && depth < 2 ? tree(c.children, depth + 1, current) : ''}</li>`; }).join('')}</ul>`;
+  const crumbs = (items) => `<nav class="crumbs wrap" aria-label="${L.youAreHere}"><a href="${url(`/`)}">${L.homeCrumb}</a>${items.map(i => `<i>/</i>${i.href ? `<a href="${i.href}">${esc(i.name)}</a>` : `<span>${esc(i.name)}</span>`}`).join('')}</nav>`;
+  const tree = (ids, depth = 0, current) => `<ul>${ids.filter(id => count(id)).map(id => { const c = cat.get(id); return `<li><a href="${url(`/c/${id}`)}"${id === current ? ' aria-current="page"' : ''}>${esc(c.name)}<span>${count(id)}</span></a>${c.children.length && depth < 2 ? tree(c.children, depth + 1, current) : ''}</li>`; }).join('')}</ul>`;
 
   /* ── Сторінки ── */
   const view = $('#view');
+  // Готова сторінка вже має ту саму розмітку: тоді не перемальовуємо, щоб картинка не блимала.
+  let fresh = true;
+  const out = { set html(v) {
+    if (fresh && view.firstElementChild) { const t = document.createElement('template'); t.innerHTML = v; fresh = false; if (t.innerHTML.trim() === view.innerHTML.trim()) return; }
+    fresh = false; view.innerHTML = v;
+  } };
   const title = t => { document.title = t ? `${t} — ${L.brand}` : L.titleHome; };
 
 
@@ -92,6 +105,7 @@
   // Кадр сцени йде за гортанням: поки сцена проїжджає крізь екран, анімація програється від початку до кінця.
   // Кадри — картинки на canvas (tools/scene_frames.py), бо перемотка <video> на телефоні смикається;
   // між сусідніми кадрами змішуємо, а позицію згладжуємо, тож рух плавний навіть при різкому свайпі.
+  const poster = k => `--po:url(scenes/web/${k}.jpg?v=26);--pom:url(scenes/web/${k}-m.webp?v=1)`;
   function reelInit() {
     const sec = $('#reel');
     if (!sec) return;
@@ -99,23 +113,25 @@
     const clamp = x => Math.min(1, Math.max(0, x));
     const stages = $$('.reel-stage', sec).map((el, i) => {
       const cv = $('canvas', el), key = el.dataset.key;
-      return { el, i, key, cv, ctx: cv.getContext('2d'), n: FR[key] || 0, imgs: [], p: -1, target: 0, drawn: -2, started: false, card: $('.reel-card', el) };
+      return { el, i, key, cv, ctx: cv.getContext('2d'), n: FR[key] || 0, imgs: [], p: -1, target: 0, drawn: -2, level: 0, asked: new Set(), card: $('.reel-card', el) };
     });
     // Телефон бере вузьку вертикальну смугу кадру в рідній якості (tools/scene_frames.py): легше й плавніше.
     const SET = innerWidth <= 960 ? 'm' : 'd';
     const src = (s, i) => `scenes/frames2/${s.key}/${SET}/${String(i + 1).padStart(3, '0')}.webp?v=6`;
     // Спершу кожен 8-й кадр, потім щільніше: сцена оживає одразу, а дрібні кадри догружаються.
-    function load(s) {
-      if (s.started || !s.n) return;
-      s.started = true;
-      const seen = new Set(), order = [];
-      for (const step of [8, 4, 2, 1]) for (let i = 0; i < s.n; i += step) if (!seen.has(i)) { seen.add(i); order.push(i); }
+    // Поки людина не торкнулась сторінки, беремо лише рідкі кадри першої сцени: хто зайшов і пішов, не качає десятки мегабайтів.
+    let touched = false;
+    function load(s, level) {
+      if (s.level >= level || !s.n) return;
+      s.level = level;
+      const order = [], imgs = s.imgs;
+      for (const step of level > 1 ? [8, 4, 2, 1] : [8]) for (let i = 0; i < s.n; i += step) if (!s.asked.has(i)) { s.asked.add(i); order.push(i); }
       let k = 0, busy = 0;
       const next = () => {
-        while (busy < 6 && k < order.length) {
+        while (busy < 6 && k < order.length && s.imgs === imgs) {   // сцену відпустили — решту її кадрів уже не просимо
           const i = order[k++], im = new Image(); busy++;
           im.decoding = 'async';
-          const ready = () => { s.imgs[i] = im; busy--; s.drawn = -2; ask(); next(); };
+          const ready = () => { imgs[i] = im; busy--; s.drawn = -2; ask(); next(); };
           im.onload = () => (im.decode ? im.decode().then(ready, ready) : ready());
           im.onerror = () => { busy--; next(); };
           im.src = src(s, i);
@@ -148,8 +164,10 @@
       let more = false;
       for (const s of stages) {
         const box = s.el.getBoundingClientRect();
-        if (box.top < vh * 4 && box.bottom > -vh) load(s);                // наступні сцени вантажимо заздалегідь
-        else if (s.started && (box.top > vh * 6 || box.bottom < -vh * 3)) { s.started = false; s.imgs = []; s.drawn = -2; }   // далекі сцени відпускаємо: телефону бракує памʼяті на всі кадри
+        if (touched && s.i > 1 && box.top < vh * 3 && !s.cv.style.backgroundImage) s.cv.style.backgroundImage = innerWidth <= 960 ? `url(scenes/web/${s.key}-m.webp?v=1)` : `url(scenes/web/${s.key}.jpg?v=26)`;
+        if (!touched) { if (!s.i) load(s, 1); }
+        else if (box.top < vh * 2.5 && box.bottom > -vh) load(s, box.top < vh * 1.5 ? 2 : 1);   // наступну сцену вантажимо заздалегідь, дальшу — рідко
+        else if (s.level && (box.top > vh * 6 || box.bottom < -vh * 3)) { s.level = 0; s.asked = new Set(); s.imgs = []; s.drawn = -2; }   // далекі сцени відпускаємо: телефону бракує памʼяті на всі кадри
         if (box.bottom < 0 || box.top > vh) continue;
         // перша сцена: від верху сторінки, поки не проїде; решта: від появи знизу до зникнення вгорі
         s.target = s.i === 0 ? clamp(-box.top / (box.height * .8)) : clamp((vh - box.top) / (vh + box.height));
@@ -175,6 +193,8 @@
       if (e.isIntersecting) { s.card.classList.add('is-on'); s.card.removeAttribute('aria-hidden'); s.card.inert = false; }
     }), { threshold: .35 });
     stages.forEach(s => io.observe(s.el));
+    const wake = () => { if (touched) return; touched = true; ask(); };
+    for (const ev of ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown']) addEventListener(ev, wake, { passive: true, once: true });
     tick();
   }
 
@@ -193,7 +213,7 @@
       const p = list[i];
       const out = img.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(-6%) scale(.96)' }], { duration: 380, easing: 'ease-in', fill: 'forwards' });
       await out.finished.catch(() => {});
-      img.src = `img/stage2/${p.id}.webp`; img.alt = p.name; a.href = `#/p/${p.id}`;
+      img.src = `img/stage2/${p.id}.webp`; img.alt = p.name; a.href = url(`/p/${p.id}`);
       const amb = $('#mastAmb'); if (amb) amb.src = img.src;
       a.style.setProperty('--tone', p.tone);
       cap.innerHTML = `<b>${esc(p.brandName)}</b><span>${money(p.price)}</span>`;
@@ -217,7 +237,7 @@
       const p = list[i], text = clip(p.short);
       big.src = `img/stage2/${p.id}.webp`; big.alt = p.name;
       focus.style.setProperty('--tone', p.tone);
-      info.innerHTML = `<small>${esc(p.brandName)}<i>${L.stageOf(i + 1, n)}</i></small><h2>${esc(p.name)}</h2>${text && text !== p.name ? `<p>${esc(text)}</p>` : ''}<span class="price">${money(p.price)}</span><div class="wall-actions"><a class="btn" href="#/p/${p.id}">${L.stageView}</a>${p.buy ? `<button class="add" data-add="${p.id}" aria-label="${esc(L.addAria(p.name))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>` : ''}</div>`;
+      info.innerHTML = `<small>${esc(p.brandName)}<i>${L.stageOf(i + 1, n)}</i></small><h2>${esc(p.name)}</h2>${text && text !== p.name ? `<p>${esc(text)}</p>` : ''}<span class="price">${money(p.price)}</span><div class="wall-actions"><a class="btn" href="${url(`/p/${p.id}`)}">${L.stageView}</a>${p.buy ? `<button class="add" data-add="${p.id}" aria-label="${esc(L.addAria(p.name))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>` : ''}</div>`;
     };
     // Переліт: великий план стартує з місця й розміру інструмента на полиці.
     const fly = (i, back) => {
@@ -236,7 +256,7 @@
       const go2 = () => { fly(i); requestAnimationFrame(() => focus.classList.add('is-open')); };
       if (big.complete && big.naturalWidth) go2(); else big.addEventListener('load', go2, { once: true });
       closeBtn.focus({ preventScroll: true });
-      addEventListener('hashchange', unlock, { once: true });
+      addEventListener('sitenav', unlock, { once: true });
     };
     const close = () => {
       if (cur < 0 || busy) return;
@@ -319,15 +339,15 @@
     const minIn = id => { const v = (inCat.get(id) || []).filter(p => p.price).map(p => p.price); return v.length ? Math.min(...v) : 0; };
     const KEYS = 6, BUTTONS = 5, BELLOWS = 11;
     const scenes = [
-      { key: 'open', scrub: true, html: `<h1 class="reel-name">${L.mast.map(w => `<span><i>${w}</i></span>`).join('')}</h1><p>${L.mastLead(goods(C.products.length), money(cheapest))}</p><div class="hero-cta">${partsRoot ? `<a class="btn" href="#/c/${partsRoot.id}">${L.parts}</a>` : ''}${instRoot ? `<a class="btn ghost" href="#/c/${instRoot.id}">${L.instruments}</a>` : ''}</div>` },
-      cat.get(BELLOWS) && { key: 'bellows', html: `<h2>${L.reelOpenH}</h2><p>${L.reelOpenP(goods(count(BELLOWS)), money(minIn(BELLOWS)))}</p><div class="hero-cta"><a class="btn" href="#/c/${BELLOWS}">${L.reelOpenCta}</a></div>` },
-      cat.get(KEYS) && { key: 'keys', band: true, html: `<h2>${L.reelKeysH}</h2><p>${L.reelKeysP(goods(count(KEYS)), money(minIn(KEYS)))}</p><div class="hero-cta"><a class="btn" href="#/c/${KEYS}">${L.reelKeysCta}</a></div>` },
-      cat.get(BUTTONS) && { key: 'buttons', html: `<h2>${L.reelBtnH}</h2><p>${L.reelBtnP(goods(count(BUTTONS)), money(minIn(BUTTONS)))}</p><div class="hero-cta"><a class="btn" href="#/c/${BUTTONS}">${L.reelBtnCta}</a></div>` },
+      { key: 'open', scrub: true, html: `<h1 class="reel-name">${L.mast.map(w => `<span><i>${w}</i></span>`).join('')}</h1><p>${L.mastLead(goods(C.products.length), money(cheapest))}</p><div class="hero-cta">${partsRoot ? `<a class="btn" href="${url(`/c/${partsRoot.id}`)}">${L.parts}</a>` : ''}${instRoot ? `<a class="btn ghost" href="${url(`/c/${instRoot.id}`)}">${L.instruments}</a>` : ''}</div>` },
+      cat.get(BELLOWS) && { key: 'bellows', html: `<h2>${L.reelOpenH}</h2><p>${L.reelOpenP(goods(count(BELLOWS)), money(minIn(BELLOWS)))}</p><div class="hero-cta"><a class="btn" href="${url(`/c/${BELLOWS}`)}">${L.reelOpenCta}</a></div>` },
+      cat.get(KEYS) && { key: 'keys', band: true, html: `<h2>${L.reelKeysH}</h2><p>${L.reelKeysP(goods(count(KEYS)), money(minIn(KEYS)))}</p><div class="hero-cta"><a class="btn" href="${url(`/c/${KEYS}`)}">${L.reelKeysCta}</a></div>` },
+      cat.get(BUTTONS) && { key: 'buttons', html: `<h2>${L.reelBtnH}</h2><p>${L.reelBtnP(goods(count(BUTTONS)), money(minIn(BUTTONS)))}</p><div class="hero-cta"><a class="btn" href="${url(`/c/${BUTTONS}`)}">${L.reelBtnCta}</a></div>` },
     ].filter(Boolean);
-    view.innerHTML = `
+    out.html = `
       <section class="reel" id="reel">
         ${scenes.map((sc, i) => `<div class="reel-stage" data-key="${sc.key}">
-          <canvas class="reel-vid is-on"${sc.scrub ? ' data-scrub' : ''}${sc.band ? ' data-band' : ''} aria-hidden="true" style="background-image:url(scenes/web/${sc.key}.jpg?v=26)"></canvas>
+          <canvas class="reel-vid is-on"${sc.scrub ? ' data-scrub' : ''}${sc.band ? ' data-band' : ''} aria-hidden="true"${i < 2 ? ` style="${poster(sc.key)}"` : ''}></canvas>
           <div class="reel-shade" aria-hidden="true"></div>
           <div class="wrap reel-in"><div class="reel-card${i ? '' : ' is-on'}"${i ? ' aria-hidden="true"' : ''}>${sc.html}</div></div>
           ${i ? '' : `<div class="reel-hint" aria-hidden="true"><span>${L.reelHint}</span><i></i></div>`}
@@ -336,8 +356,8 @@
       <section class="section wrap wall" id="wall">
         <div class="section-head"><h2>${L.wallTitle}</h2><p>${L.wallLead}</p></div>
         <div class="wall-shelves" role="group" aria-label="${L.wallLabel}">
-          ${shelf.map((p, i) => `<a class="wall-item" href="#/p/${p.id}" style="--tone:${p.tone};--i:${i}"><img src="img/stage2/${p.id}.webp" alt="${esc(p.name)}" draggable="false"><span class="wall-tag"><b>${esc(p.brandName)}</b>${money(p.price)}</span></a>`).join('')}
-          ${instRoot ? `<a class="wall-all" href="#/c/${instRoot.id}"><b>${L.wallAll}</b><span>${goods(count(instRoot.id))}</span></a>` : ''}
+          ${shelf.map((p, i) => `<a class="wall-item" href="${url(`/p/${p.id}`)}" style="--tone:${p.tone};--i:${i}"><img src="img/stage2/${p.id}.webp" alt="${esc(p.name)}" draggable="false" loading="lazy"><span class="wall-tag"><b>${esc(p.brandName)}</b>${money(p.price)}</span></a>`).join('')}
+          ${instRoot ? `<a class="wall-all" href="${url(`/c/${instRoot.id}`)}"><b>${L.wallAll}</b><span>${goods(count(instRoot.id))}</span></a>` : ''}
         </div>
         <div class="wall-focus" id="wallFocus" role="dialog" aria-modal="true" aria-label="${L.wallLabel}" hidden>
           <div class="wall-bg"></div>
@@ -359,16 +379,16 @@
           ${roots.filter(r => count(r.id)).map(r => {
             const kids = r.children.filter(count), p = inCat.get(r.id).find(x => x.img);
             return `<div class="cat${kids.length ? '' : ' solo'}">
-              <a class="cat-main" href="#/c/${r.id}"><h3>${esc(r.name)}</h3><em>${goods(count(r.id))}</em></a>
+              <a class="cat-main" href="${url(`/c/${r.id}`)}"><h3>${esc(r.name)}</h3><em>${goods(count(r.id))}</em></a>
               ${p ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : ''}
-              ${kids.length ? `<ul>${kids.slice(0, 4).map(k => `<li><a href="#/c/${k}">${esc(cat.get(k).name)}</a></li>`).join('')}${kids.length > 4 ? `<li><a href="#/c/${r.id}">${L.moreGroups(kids.length - 4)}</a></li>` : ''}</ul>` : ''}
+              ${kids.length ? `<ul>${kids.slice(0, 4).map(k => `<li><a href="${url(`/c/${k}`)}">${esc(cat.get(k).name)}</a></li>`).join('')}${kids.length > 4 ? `<li><a href="${url(`/c/${r.id}`)}">${L.moreGroups(kids.length - 4)}</a></li>` : ''}</ul>` : ''}
             </div>`;
           }).join('')}
         </div>
       </section>
       ${show.length ? `<section class="section wrap">
-        <div class="section-head"><h2>${L.newInst}</h2><a href="#/c/${instRoot.id}">${L.all(goods(count(instRoot.id)))}</a></div>
-        <div class="show">${show.map(p => `<a href="#/p/${p.id}"><span class="tag">${esc(p.brand)}</span><span class="pic"><img src="${esc(p.imgs[0])}" alt="" loading="lazy"></span><h3>${esc(p.name)}</h3><span class="price">${money(p.price)}</span></a>`).join('')}</div>
+        <div class="section-head"><h2>${L.newInst}</h2><a href="${url(`/c/${instRoot.id}`)}">${L.all(goods(count(instRoot.id)))}</a></div>
+        <div class="show">${show.map(p => `<a href="${url(`/p/${p.id}`)}"><span class="tag">${esc(p.brand)}</span><span class="pic"><img src="${esc(p.imgs[0])}" alt="" loading="lazy"></span><h3>${esc(p.name)}</h3><span class="price">${money(p.price)}</span></a>`).join('')}</div>
       </section>` : ''}
       ${featured.length ? `<section class="section wrap"><div class="section-head"><h2>${L.popular}</h2></div><div class="grid four">${featured.map(card).join('')}</div></section>` : ''}
       </div>
@@ -376,18 +396,20 @@
         <div class="section-head"><h2>${L.byUnit}</h2><p>${L.byUnitLead}</p></div>
         <div class="index" id="index">${groups.map((g, i) => {
           const p = inCat.get(g.id).find(x => x.img);
-          return `<a href="#/c/${g.id}" data-peek="${p ? esc(p.img) : ''}"><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(g.name)}</b><span>${g.children.filter(count).slice(0, 4).map(k => esc(cat.get(k).name.toLowerCase())).join(', ')}</span><em>${count(g.id)}</em></a>`;
+          return `<a href="${url(`/c/${g.id}`)}" data-peek="${p ? esc(p.img) : ''}"><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(g.name)}</b><span>${g.children.filter(count).slice(0, 4).map(k => esc(cat.get(k).name.toLowerCase())).join(', ')}</span><em>${count(g.id)}</em></a>`;
         }).join('')}</div>
       </section>` : ''}
       <section class="wrap"><div class="help">
-        <a href="#/service"><h3>${L.repairFull}</h3><p>${L.help1p}</p></a>
-        <a href="#/delivery"><h3>${L.help2h}</h3><p>${L.help2p}</p></a>
+        <a href="${url(`/service`)}"><h3>${L.repairFull}</h3><p>${L.help1p}</p></a>
+        <a href="${url(`/delivery`)}"><h3>${L.help2h}</h3><p>${L.help2p}</p></a>
         <a href="tel:${PHONE}"><h3>${L.help3h}</h3><p>${L.help3p(PHONE_TEXT)}</p></a>
       </div></section>`;
 
     const fine = matchMedia('(hover: hover) and (min-width: 961px)').matches;
 
     const peek = $('#peek'), index = $('#index'), heroImg = null;
+    // Шрифти знаків партнерів потрібні лише в тому рядку: беремо їх, коли він близько.
+    new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect(); if (!$('#logoFonts')) document.head.insertAdjacentHTML('beforeend', '<link id="logoFonts" rel="stylesheet" href="fonts-logos.css">'); }, { rootMargin: '800px' }).observe($('.partners', view));
     wallInit(shelf);
     reelInit();
     if (fine && index) {
@@ -415,50 +437,67 @@
     const brands = [...new Set(all.map(p => p.brand).filter(Boolean))].sort();
     const state = { sort: query.get('sort') || 'default', brand: query.get('brand') || '', shown: PAGE };
     const top = path(id)[0];
-    view.innerHTML = `
-      ${crumbs(path(id).map((x, i, a) => ({ name: x.name, href: i < a.length - 1 ? `#/c/${x.id}` : null })))}
+    out.html = `
+      ${crumbs(path(id).map((x, i, a) => ({ name: x.name, href: i < a.length - 1 ? url(`/c/${x.id}`) : null })))}
       <div class="wrap cat-layout">
         <aside class="side" aria-label="${L.sections}"><h2>${esc(top.name)}</h2>${tree(top.children.length ? top.children : [top.id], 0, id)}
-          <h2 style="margin-top:18px">${L.otherSections}</h2><ul>${roots.filter(r => r !== top).map(r => `<li><a href="#/c/${r.id}">${esc(r.name)}<span>${count(r.id)}</span></a></li>`).join('')}</ul></aside>
+          <h2 style="margin-top:18px">${L.otherSections}</h2><ul>${roots.filter(r => r !== top).map(r => `<li><a href="${url(`/c/${r.id}`)}">${esc(r.name)}<span>${count(r.id)}</span></a></li>`).join('')}</ul></aside>
         <div>
           <div class="cat-head"><h1>${esc(c.name)}</h1><small>${goods(all.length)}</small></div>
           ${(window.CAT_INTRO?.[lang] || {})[id] ? `<p class="cat-lead">${esc(window.CAT_INTRO[lang][id])}</p>` : ''}
-          ${c.children.length ? `<div class="chips">${c.children.filter(count).map(k => `<a class="chip" href="#/c/${k}">${esc(cat.get(k).name)}<span>${count(k)}</span></a>`).join('')}</div>` : ''}
+          ${c.children.length ? `<div class="chips">${c.children.filter(count).map(k => `<a class="chip" href="${url(`/c/${k}`)}">${esc(cat.get(k).name)}<span>${count(k)}</span></a>`).join('')}</div>` : ''}
           <div id="list"></div>
         </div>
       </div>`;
-    listing($('#list'), all, state, brands, `#/c/${id}`, L.emptyCat(c.name));
+    listing($('#list'), all, state, brands, `/c/${id}`, L.emptyCat(c.name));
   }
 
   function results(query) {
     const q = (query.get('q') || '').trim();
     title(L.searchTitle(q));
     const found = search(q);
-    view.innerHTML = `${crumbs([{ name: L.search }])}<div class="wrap"><div class="cat-head"><h1>${q ? esc(L.quote(q)) : L.search}</h1><small>${goods(found.length)}</small></div><div id="list"></div></div>`;
+    out.html = `${crumbs([{ name: L.search }])}<div class="wrap"><div class="cat-head"><h1>${q ? esc(L.quote(q)) : L.search}</h1><small>${goods(found.length)}</small></div><div id="list"></div></div>`;
     const brands = [...new Set(found.map(p => p.brand).filter(Boolean))].sort();
     listing($('#list'), found, { sort: 'default', brand: '', shown: PAGE }, brands, null, L.emptySearch(q, PHONE_TEXT));
   }
 
+  /* Фільтри для інструментів: ціна, баси, вага. Число басів беремо з назви (41/120) чи характеристики, вагу — з характеристики. */
+  const basses = p => +(p.features.find(f => /^(Ліва рука|Left hand)$/.test(f[0]))?.[1].match(/^\d+/)?.[0] || p.name.match(/\d{2,3}\s*\/\s*(\d{2,3})/)?.[1] || 0);
+  const weight = p => parseFloat((p.features.find(f => /^(Вага|Weight)$/.test(f[0]))?.[1] || '').replace(',', '.')) || 0;
   function listing(root, all, state, brands, base, emptyText) {
+    const inst = all.filter(p => p.price >= 20000).length > 7;
+    const bassSet = inst ? [...new Set(all.map(basses).filter(Boolean))].sort((a, b) => a - b) : [];
+    const heavy = inst && all.filter(weight).length > 7;
+    const f = state.f = { min: 0, max: 0, bass: 0, kg: 0 };
+    const sel = (id, label, opts) => `<label>${label} <select data-f="${id}">${opts.map(([v, t]) => `<option value="${v}"${f[id] === v ? ' selected' : ''}>${t}</option>`).join('')}</select></label>`;
     const paint = () => {
-      let items = state.brand ? all.filter(p => p.brand === state.brand) : [...all];
+      let items = all.filter(p => (!state.brand || p.brand === state.brand) && (!f.min || p.price >= f.min) && (!f.max || (p.price && p.price <= f.max)) && (!f.bass || basses(p) === f.bass) && (!f.kg || (weight(p) && weight(p) <= f.kg)));
       if (state.sort === 'cheap') items.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
       if (state.sort === 'dear') items.sort((a, b) => (b.price ?? -1) - (a.price ?? -1));
       if (state.sort === 'name') items.sort((a, b) => a.name.localeCompare(b.name, L.locale));
-      if (!all.length) { root.innerHTML = `<div class="empty"><h2>${L.emptyH}</h2><p>${esc(emptyText)}</p><a class="btn" href="#/">${L.toCatalog}</a></div>`; return; }
+      if (!all.length) { root.innerHTML = `<div class="empty"><h2>${L.emptyH}</h2><p>${esc(emptyText)}</p><a class="btn" href="${url(`/`)}">${L.toCatalog}</a></div>`; return; }
       root.innerHTML = `
         <div class="toolbar">
           <label>${L.sort} <select id="sort"><option value="default">${L.sortDefault}</option><option value="cheap">${L.sortCheap}</option><option value="dear">${L.sortDear}</option><option value="name">${L.sortName}</option></select></label>
           ${brands.length > 1 ? `<div class="brands" role="group" aria-label="${L.maker}">${brands.map(b => `<button class="chip" data-brand="${esc(b)}" aria-pressed="${state.brand === b}">${esc(b)}</button>`).join('')}</div>` : ''}
+          ${inst ? `<div class="filters">
+            <label>${L.fPrice} <input type="number" data-f="min" min="0" step="1000" inputmode="numeric" placeholder="${L.fFrom}" aria-label="${L.fPrice}: ${L.fFrom}" value="${f.min || ''}"></label><input type="number" data-f="max" min="0" step="1000" inputmode="numeric" placeholder="${L.fTo}" aria-label="${L.fPrice}: ${L.fTo}" value="${f.max || ''}">
+            ${bassSet.length > 1 ? sel('bass', L.fBass, [[0, L.fAny], ...bassSet.map(x => [x, x])]) : ''}
+            ${heavy ? sel('kg', L.fWeight, [[0, L.fAny], ...[6, 8, 10, 12].map(x => [x, L.fUpTo(x)])]) : ''}
+            ${f.min || f.max || f.bass || f.kg || state.brand ? `<button class="link-btn" data-clear>${L.fClear}</button>` : ''}
+            <span class="filters-n" role="status">${goods(items.length)}</span></div>` : ''}
         </div>
+        ${items.length ? '' : `<div class="empty"><p>${L.fNone}</p></div>`}
         <div class="grid">${items.slice(0, state.shown).map(card).join('')}</div>
         ${items.length > state.shown ? `<button class="btn ghost more" id="more">${L.showMore(Math.min(PAGE, items.length - state.shown), items.length - state.shown)}</button>` : ''}`;
       $('#sort', root).value = state.sort;
     };
-    root.addEventListener('change', e => { if (e.target.id === 'sort') { state.sort = e.target.value; state.shown = PAGE; paint(); } });
+    root.addEventListener('change', e => { if (e.target.id === 'sort') { state.sort = e.target.value; state.shown = PAGE; paint(); }
+      const k = e.target.dataset.f; if (k) { f[k] = Math.max(0, +e.target.value || 0); state.shown = PAGE; paint(); $(`[data-f="${k}"]`, root)?.focus({ preventScroll: true }); } });
     root.addEventListener('click', e => {
       const b = e.target.closest('[data-brand]');
       if (b) { state.brand = state.brand === b.dataset.brand ? '' : b.dataset.brand; state.shown = PAGE; paint(); }
+      if (e.target.closest('[data-clear]')) { Object.assign(f, { min: 0, max: 0, bass: 0, kg: 0 }); state.brand = ''; paint(); $('#sort', root).focus({ preventScroll: true }); }
       if (e.target.id === 'more') { state.shown += PAGE; paint(); }
     });
     paint();
@@ -470,12 +509,12 @@
     title(seoName(p.name, p.cats.find(c => BAYAN_CATS.has(c))));
     const pics = p.imgs.length ? p.imgs : (p.big ? [p.big] : []);
     const related = inCat.get(p.cat).filter(x => x.id !== p.id).slice(0, 10);
-    view.innerHTML = `
-      ${crumbs([...path(p.cat).map(x => ({ name: x.name, href: `#/c/${x.id}` })), { name: p.name }])}
+    out.html = `
+      ${crumbs([...path(p.cat).map(x => ({ name: x.name, href: url(`/c/${x.id}`) })), { name: p.name }])}
       <div class="wrap product">
         <div>
-          <div class="gallery-main">${pics.length ? `<img id="mainPic" src="${esc(pics[0])}" alt="${esc(p.name)}" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'">` : '<span class="ph"></span>'}</div>
-          ${pics.length > 1 ? `<div class="thumbs">${pics.map((u, i) => `<button data-pic="${esc(u)}" aria-pressed="${i === 0}" aria-label="${L.photo(i + 1)}"><img src="${esc(u.includes('thickbox_default') ? u.replace('thickbox_default', 'cart_default') : u)}" alt=""></button>`).join('')}</div>` : ''}
+          <div class="gallery-main">${pics.length ? `<img id="mainPic" src="${esc(pics[0])}"${srcset(pics[0])} fetchpriority="high" width="1200" height="1200" alt="${esc(p.name)}" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'">` : '<span class="ph"></span>'}</div>
+          ${pics.length > 1 ? `<div class="thumbs">${pics.map((u, i) => `<button data-pic="${esc(u)}" aria-pressed="${i === 0}" aria-label="${L.photo(i + 1)}"><img src="${esc(thumb(u))}" alt="" width="72" height="72"></button>`).join('')}</div>` : ''}
         </div>
         <div class="p-info">
           <h1>${esc(p.name)}</h1>
@@ -494,13 +533,13 @@
             <li><b>${L.factCompat}</b> <a href="tel:${PHONE}">${PHONE_TEXT}</a></li>
           </ul>
           ${p.desc || p.short || p.features.length ? `<div class="p-desc"><h2>${L.desc}</h2>${p.short ? `<p>${esc(p.short)}</p>` : ''}${p.desc && p.desc !== p.short ? `<p>${esc(p.desc)}</p>` : ''}
-            ${p.features.length ? `<table>${p.features.map(f => `<tr><td>${esc(f[0])}</td><td>${esc(f[1])}</td></tr>`).join('')}</table>` : ''}</div>` : ''}
+            ${p.features.length ? `<table>${p.features.map(f => `<tr><td>${esc(f[0])}</td><td>${esc(f[1])}</td></tr>`).join('')}</table>${p.maker ? `<p class="p-note">${L.makerData}</p>` : ''}` : ''}</div>` : ''}
         </div>
       </div>
-      ${related.length ? `<section class="section wrap"><div class="section-head"><h2>${L.related}</h2><a href="#/c/${p.cat}">${L.all(goods(count(p.cat)))}</a></div><div class="row-scroll">${related.map(card).join('')}</div></section>` : ''}`;
+      ${related.length ? `<section class="section wrap"><div class="section-head"><h2>${L.related}</h2><a href="${url(`/c/${p.cat}`)}">${L.all(goods(count(p.cat)))}</a></div><div class="row-scroll">${related.map(card).join('')}</div></section>` : ''}`;
     view.onclick = e => {
       const t = e.target.closest('[data-pic]');
-      if (t) { $('#mainPic').src = t.dataset.pic; $$('.thumbs button').forEach(b => b.setAttribute('aria-pressed', b === t)); }
+      if (t) { const m = $('#mainPic'), ss = srcsetOf(t.dataset.pic); if (ss) m.srcset = ss; else m.removeAttribute('srcset'); m.src = t.dataset.pic; $$('.thumbs button').forEach(b => b.setAttribute('aria-pressed', b === t)); }
       const s = e.target.closest('[data-step]');
       if (s && $('#qty')) { const i = $('#qty'); i.value = Math.max(1, Math.min(999, (+i.value || 1) + +s.dataset.step)); }
       if (e.target.id === 'buy') add(p.id, Math.max(1, +$('#qty').value || 1));
@@ -511,8 +550,8 @@
   function checkout() {
     title(L.checkout);
     const lines = cartLines();
-    if (!lines.length) { view.innerHTML = `<div class="wrap empty"><h1>${L.cartEmpty}</h1><p>${L.cartEmptyCheckout}</p><a class="btn" href="#/">${L.toCatalog}</a></div>`; return; }
-    view.innerHTML = `
+    if (!lines.length) { out.html = `<div class="wrap empty"><h1>${L.cartEmpty}</h1><p>${L.cartEmptyCheckout}</p><a class="btn" href="${url(`/`)}">${L.toCatalog}</a></div>`; return; }
+    out.html = `
       ${crumbs([{ name: L.checkout }])}
       <div class="wrap checkout">
         <form class="form" id="order" novalidate>
@@ -548,7 +587,7 @@
         `Ім'я: ${d.name}`, `Телефон: ${d.phone}`, `Доставка: ${UK[d.delivery]}${d.delivery === 'np' && d.city ? `, ${d.city}` : ''}`, d.note ? `Коментар: ${d.note}` : '', lang === 'en' ? 'Покупець користувався англійською версією сайту.' : ''].filter((x, i, a) => x || a[i - 1]).join('\n');
       const viaMail = () => {
         location.href = `mailto:${MAIL}?subject=${encodeURIComponent('Замовлення з сайту')}&body=${encodeURIComponent(body)}`;
-        view.innerHTML = `<div class="wrap empty"><h1>${L.sentH}</h1><p>${L.sentP(PHONE_TEXT)}</p><a class="btn" href="tel:${PHONE}">${L.call}</a></div>`;
+        out.html = `<div class="wrap empty"><h1>${L.sentH}</h1><p>${L.sentP(PHONE_TEXT)}</p><a class="btn" href="tel:${PHONE}">${L.call}</a></div>`;
       };
       const CH = window.ACC_CHAT;
       if (!CH?.enabled) return viaMail();
@@ -558,9 +597,9 @@
       CH.sendOrder({ name: d.name, phone: d.phone, delivery: d.delivery, city: d.city, note: d.note, website: d.website, items: lines.map(l => ({ id: l.p.id, q: l.q })) })
         .then(r => {
           cart = {}; saveCart(); ACC?.rememberOrder(r);
-          view.innerHTML = `<div class="wrap empty"><h1>${esc(CH.t.orderOk(r.id))}</h1><p>${esc(CH.t.orderOkP(PHONE_TEXT))}</p><a class="btn ${r.payable ? 'ghost' : ''}" href="tel:${PHONE}">${L.call}</a></div>`;
+          out.html = `<div class="wrap empty"><h1>${esc(CH.t.orderOk(r.id))}</h1><p>${esc(CH.t.orderOkP(PHONE_TEXT))}</p><a class="btn ${r.payable ? 'ghost' : ''}" href="tel:${PHONE}">${L.call}</a></div>`;
           if (r.payable && ACC?.payButton) $('.empty h1', view).nextElementSibling.after(ACC.payButton(r.id));
-          scrollTo({ top: 0 });
+          scrollTo({ top: 0, behavior: 'instant' });
         })
         .catch(x => { if (x.net) return viaMail(); err.textContent = CH.errText(x); err.hidden = false; btn.disabled = false; });
     });
@@ -570,9 +609,9 @@
   function favorites() {
     title(AT.favH);
     const list = ACC.favs().map(id => prod.get(id)).filter(Boolean);
-    view.innerHTML = `${crumbs([{ name: AT.favH }])}<div class="wrap"><div class="cat-head"><h1>${esc(AT.favH)}</h1><small>${goods(list.length)}</small></div>
-      ${!ACC.user && ACC.enabled && list.length ? `<p class="acc-keep"><a href="#/login">${esc(AT.loginToKeep)}</a></p>` : ''}
-      ${list.length ? `<div class="grid">${list.map(card).join('')}</div>` : `<div class="empty"><p>${esc(AT.favEmpty)}</p><a class="btn" href="#/">${L.toCatalog}</a></div>`}</div>`;
+    out.html = `${crumbs([{ name: AT.favH }])}<div class="wrap"><div class="cat-head"><h1>${esc(AT.favH)}</h1><small>${goods(list.length)}</small></div>
+      ${!ACC.user && ACC.enabled && list.length ? `<p class="acc-keep"><a href="${url(`/login`)}">${esc(AT.loginToKeep)}</a></p>` : ''}
+      ${list.length ? `<div class="grid">${list.map(card).join('')}</div>` : `<div class="empty"><p>${esc(AT.favEmpty)}</p><a class="btn" href="${url(`/`)}">${L.toCatalog}</a></div>`}</div>`;
   }
   /* Порівняння: товари стовпчиками, рядки — ціна, виробник, артикул, розділ і всі характеристики, що є хоч в одного. */
   function compare(query) {
@@ -585,19 +624,19 @@
       [AT.rowPrice, p => p.price ? money(p.price) : L.askPrice],
       [AT.rowBrand, p => esc(p.brand || '')],
       [AT.rowRef, p => esc(p.ref || '')],
-      [AT.rowCat, p => cat.get(p.cat) ? `<a href="#/c/${p.cat}">${esc(cat.get(p.cat).name)}</a>` : ''],
+      [AT.rowCat, p => cat.get(p.cat) ? `<a href="${url(`/c/${p.cat}`)}">${esc(cat.get(p.cat).name)}</a>` : ''],
       ...keys.map(k => [esc(k), p => esc(feat(p, k))]),
       [AT.rowDesc, p => esc(p.desc || p.short || '')],
     ].filter(([, f]) => list.some(p => f(p)) && (!diff || new Set(list.map(f)).size > 1));
-    view.innerHTML = `${crumbs([{ name: AT.cmpH }])}<div class="wrap cmp">
+    out.html = `${crumbs([{ name: AT.cmpH }])}<div class="wrap cmp">
       <div class="cat-head"><h1>${esc(AT.cmpH)}</h1><small>${goods(list.length)}</small></div>
-      ${!list.length ? `<div class="empty"><p>${esc(AT.cmpEmpty(ACC.COMPARE_MAX))}</p><a class="btn" href="#/">${L.toCatalog}</a></div>` : `
-      <div class="cmp-tools">${list.length > 1 ? `<a class="chip" href="#/compare${diff ? '' : '?diff=1'}" aria-pressed="${diff}">${esc(AT.cmpDiff)}</a>` : `<p class="p-note">${esc(AT.cmpOne)}</p>`}
+      ${!list.length ? `<div class="empty"><p>${esc(AT.cmpEmpty(ACC.COMPARE_MAX))}</p><a class="btn" href="${url(`/`)}">${L.toCatalog}</a></div>` : `
+      <div class="cmp-tools">${list.length > 1 ? `<a class="chip" href="${url(`/compare${diff ? '' : '?diff=1'}`)}" aria-pressed="${diff}">${esc(AT.cmpDiff)}</a>` : `<p class="p-note">${esc(AT.cmpOne)}</p>`}
         <button class="chip" id="cmpClear">${esc(AT.cmpClear)}</button></div>
       <div class="cmp-scroll"><table class="cmp-table" style="--n:${list.length}">
         <thead><tr><th scope="row"></th>${list.map(p => `<th scope="col"><div class="cmp-card">
           <button class="cmp-x" data-cmp="${p.id}" aria-label="${esc(AT.cmpDel)}: ${esc(p.name)}">×</button>
-          <a class="cmp-img" href="#/p/${p.id}">${pic(p)}</a><a class="cmp-name" href="#/p/${p.id}">${esc(p.name)}</a>
+          <a class="cmp-img" href="${url(`/p/${p.id}`)}">${pic(p)}</a><a class="cmp-name" href="${url(`/p/${p.id}`)}">${esc(p.name)}</a>
           ${p.buy ? `<button class="btn cmp-buy" data-add="${p.id}">${L.addToCart}</button>` : `<a class="btn ghost cmp-buy" href="tel:${PHONE}">${L.call}</a>`}</div></th>`).join('')}</tr></thead>
         <tbody>${rows.map(([name, f]) => `<tr><th scope="row">${name}</th>${list.map(p => `<td>${f(p) || '—'}</td>`).join('')}</tr>`).join('')}</tbody>
       </table></div>`}</div>`;
@@ -611,18 +650,18 @@
   };
 
   const PAGES = {
-    delivery: [L.delivery, L.pages.delivery],
-    service: [L.repairFull, `${L.pages.service}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
+    delivery: [L.delivery, links(L.pages.delivery)],
+    service: [L.repairFull, `${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
     contacts: [L.contacts, `<p><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>
       <p><a class="contact-big" style="font-size:1.4rem" href="mailto:${MAIL}">${MAIL}</a></p>
-      <h2>${L.footTitle}</h2>${L.pages.contacts}<div id="letterBox"></div>`],
+      <h2>${L.footTitle}</h2>${links(L.pages.contacts)}<div id="letterBox"></div>`],
   };
-  function page(key) { const [h, body] = PAGES[key]; title(h); view.innerHTML = `${crumbs([{ name: h }])}<article class="wrap page"><h1>${h}</h1>${body}</article>`; if (key === 'contacts') window.ACC_CHAT?.mountLetter($('#letterBox')); }
-  function notFound() { title(L.nfTitle); view.innerHTML = `<div class="wrap empty"><h1>${L.nfH}</h1><p>${L.nfP}</p><a class="btn" href="#/">${L.toCatalog}</a></div>`; }
+  function page(key) { const [h, body] = PAGES[key]; title(h); out.html = `${crumbs([{ name: h }])}<article class="wrap page"><h1>${h}</h1>${body}</article>`; if (key === 'contacts') window.ACC_CHAT?.mountLetter($('#letterBox')); }
+  function notFound() { title(L.nfTitle); out.html = `<div class="wrap empty"><h1>${L.nfH}</h1><p>${L.nfP}</p><a class="btn" href="${url(`/`)}">${L.toCatalog}</a></div>`; }
 
   /* ── Маршрути ── */
-  function route() {
-    const [p, qs] = (location.hash.slice(1) || '/').split('?');
+  function route(y = 0) {
+    const [p, qs] = here().split('?');
     const seg = p.split('/').filter(Boolean), query = new URLSearchParams(qs || '');
     closePanels(); view.onclick = null;
     if (!seg.length) home();
@@ -636,8 +675,8 @@
     else if (PAGES[seg[0]]) page(seg[0]);
     else notFound();
     $('#peek').classList.remove('is-on');
-    $$('.nav-info a').forEach(a => a.getAttribute('href') === location.hash ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
-    window.scrollTo(0, 0);
+    $$('.nav-info a').forEach(a => a.pathname === location.pathname ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+    window.scrollTo({ top: y, behavior: 'instant' });
   }
 
   /* ── Шапка: мова, меню, пошук ── */
@@ -649,22 +688,22 @@
     b.setAttribute('aria-pressed', b.dataset.lang === lang);
     b.onclick = () => {
       if (b.dataset.lang === lang) return;
-      const u = new URL(location.href);
-      try { localStorage.setItem('bac-lang', b.dataset.lang); u.searchParams.delete('lang'); } catch { u.searchParams.set('lang', b.dataset.lang); }
-      history.replaceState(null, '', u); location.reload();
+      location.href = url(here(), b.dataset.lang);
     };
   });
-  $('#footCats').insertAdjacentHTML('beforeend', `<p>${roots.map(r => `<a href="#/c/${r.id}">${esc(r.name)}</a>`).join('<br>')}</p>`);
+  $$('[data-r]').forEach(a => { a.href = url(a.dataset.r); });
+  $('#footCats p')?.remove();   // у готовій сторінці список уже є
+  $('#footCats').insertAdjacentHTML('beforeend', `<p>${roots.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a>`).join('<br>')}</p>`);
   // Найбільший розділ розкладаємо на групи, щоб колонки меню були рівними.
   const megaCols = roots.flatMap(r => r.children.some(k => cat.get(k).children.length) ? r.children.map(k => cat.get(k)) : r.children.length ? [r] : []);
   const megaRest = roots.filter(r => !r.children.length && count(r.id));
-  $('#mega').innerHTML = `<div class="wrap mega-grid">${megaCols.filter(c => count(c.id)).map(c => `<div class="mega-col"><a href="#/c/${c.id}">${esc(c.name)}</a>${tree(c.children, 2)}</div>`).join('')}
-    <div class="mega-col">${megaRest.map(r => `<a href="#/c/${r.id}">${esc(r.name)}</a>`).join('')}<a href="#/service">${L.repair}</a><a href="#/delivery">${L.delivery}</a><a href="#/contacts">${L.contacts}</a></div></div>`;
+  $('#mega').innerHTML = `<div class="wrap mega-grid">${megaCols.filter(c => count(c.id)).map(c => `<div class="mega-col"><a href="${url(`/c/${c.id}`)}">${esc(c.name)}</a>${tree(c.children, 2)}</div>`).join('')}
+    <div class="mega-col">${megaRest.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a>`).join('')}<a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a></div></div>`;
   $('#drawer').innerHTML = `<div class="panel-head"><h2>${L.catalog}</h2><button class="icon-btn" data-close aria-label="${L.close}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="panel-body">${roots.map(r => r.children.length
-      ? `<details><summary>${esc(r.name)}</summary><ul><li><a href="#/c/${r.id}">${L.allInSection}<span>${count(r.id)}</span></a></li>${tree(r.children, 1).slice(4, -5)}</ul></details>`
-      : `<div class="plain"><a href="#/c/${r.id}">${esc(r.name)}</a></div>`).join('')}
-      <div class="plain"><a href="#/service">${L.repair}</a><a href="#/delivery">${L.delivery}</a><a href="#/contacts">${L.contacts}</a></div>
+      ? `<details><summary>${esc(r.name)}</summary><ul><li><a href="${url(`/c/${r.id}`)}">${L.allInSection}<span>${count(r.id)}</span></a></li>${tree(r.children, 1).slice(4, -5)}</ul></details>`
+      : `<div class="plain"><a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a></div>`).join('')}
+      <div class="plain"><a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a></div>
       <div class="lang drawer-lang" role="group" aria-label="${L.langLabel}"><button data-lang="uk" lang="uk">Українська</button><button data-lang="en" lang="en">English</button></div></div>`;
   wireLang();
 
@@ -686,13 +725,13 @@
     if (e.target.closest('[data-close]')) closePanels();
     const a = e.target.closest('[data-add]'); if (a) add(+a.dataset.add);
     const fv = e.target.closest('[data-fav]');
-    if (fv && ACC) { const on = ACC.toggleFav(+fv.dataset.fav); toast(on ? AT.favAdded : AT.favDel, on ? AT.favH : null, () => { location.hash = '#/favorites'; }); if (!on && location.hash === '#/favorites') favorites(); }
+    if (fv && ACC) { const on = ACC.toggleFav(+fv.dataset.fav); toast(on ? AT.favAdded : AT.favDel, on ? AT.favH : null, () => go('/favorites')); if (!on && here() === '/favorites') favorites(); }
     const cm = e.target.closest('[data-cmp]');
     if (cm && ACC) {
       const r = ACC.toggleCmp(+cm.dataset.cmp);
-      if (r.full) toast(r.text, AT.cmpOpen, () => { location.hash = '#/compare'; });
-      else if (location.hash.startsWith('#/compare')) route();
-      else toast(r.on ? AT.cmpAdded : AT.cmpDel, r.on && ACC.cmp().length > 1 ? AT.cmpOpen : null, () => { location.hash = '#/compare'; });
+      if (r.full) toast(r.text, AT.cmpOpen, () => go('/compare'));
+      else if (here().startsWith('/compare')) route();
+      else toast(r.on ? AT.cmpAdded : AT.cmpDel, r.on && ACC.cmp().length > 1 ? AT.cmpOpen : null, () => go('/compare'));
     }
     if (!e.target.closest('.top')) { $('#mega').hidden = true; $('#megaBtn').setAttribute('aria-expanded', 'false'); }
     if (!e.target.closest('.search')) hideSuggest();
@@ -704,10 +743,10 @@
     const lines = cartLines();
     panels.cart.innerHTML = `<div class="panel-head"><h2>${L.cart}</h2><button class="icon-btn" data-close aria-label="${L.close}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
       ${lines.length ? `<div class="panel-body">${lines.map(l => `<div class="line">${pic(l.p)}
-          <div><a href="#/p/${l.p.id}">${esc(l.p.name)}</a>
+          <div><a href="${url(`/p/${l.p.id}`)}">${esc(l.p.name)}</a>
             <div class="qty"><button data-q="${l.p.id}" data-d="-1" aria-label="${L.less}"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button><input type="number" min="1" max="999" value="${l.q}" data-qi="${l.p.id}" aria-label="${esc(L.qtyOf(l.p.name))}"><button data-q="${l.p.id}" data-d="1" aria-label="${L.more}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div></div>
           <div class="line-side"><b class="price">${l.p.price ? money(l.p.price * l.q) : ''}</b><button class="link-btn" data-rm="${l.p.id}">${L.remove}</button></div></div>`).join('')}</div>
-        <div class="panel-foot"><div class="sum-line sum-total"><span>${L.total}</span><span>${money(cartTotal())}</span></div><a class="btn wide" href="#/checkout">${L.placeOrder}</a><button class="btn ghost wide" data-close>${L.keepShopping}</button></div>`
+        <div class="panel-foot"><div class="sum-line sum-total"><span>${L.total}</span><span>${money(cartTotal())}</span></div><a class="btn wide" href="${url(`/checkout`)}">${L.placeOrder}</a><button class="btn ghost wide" data-close>${L.keepShopping}</button></div>`
         : `<div class="panel-body"><div class="empty"><h2>${L.cartEmpty}</h2><p>${L.cartEmptyP}</p><button class="btn" data-close>${L.toCatalog}</button></div></div>`}`;
   }
   panels.cart.addEventListener('click', e => {
@@ -724,7 +763,7 @@
     if (v.length < 2) return hideSuggest();
     const found = search(v);
     sug.innerHTML = found.length
-      ? found.slice(0, 6).map(p => `<a href="#/p/${p.id}">${pic(p)}<span>${esc(p.name)}<small>${esc(cat.get(p.cat)?.name || '')}</small></span>${p.price ? `<b>${money(p.price)}</b>` : ''}</a>`).join('') + (found.length > 6 ? `<a class="all" href="#/search?q=${encodeURIComponent(v)}" style="display:block">${L.showAll(goods(found.length))}</a>` : '')
+      ? found.slice(0, 6).map(p => `<a href="${url(`/p/${p.id}`)}">${pic(p)}<span>${esc(p.name)}<small>${esc(cat.get(p.cat)?.name || '')}</small></span>${p.price ? `<b>${money(p.price)}</b>` : ''}</a>`).join('') + (found.length > 6 ? `<a class="all" href="${url(`/search?q=${encodeURIComponent(v)}`)}" style="display:block">${L.showAll(goods(found.length))}</a>` : '')
       : `<p class="none">${L.noneFound}</p>`;
     sug.hidden = false; q.setAttribute('aria-expanded', 'true'); active = -1;
   });
@@ -738,7 +777,7 @@
     e.preventDefault();
     const pick = $('a.is-active', sug), v = q.value.trim();
     hideSuggest(); q.blur();
-    if (pick) location.hash = pick.getAttribute('href'); else if (v) location.hash = `#/search?q=${encodeURIComponent(v)}`;
+    if (pick) pick.click(); else if (v) go(`/search?q=${encodeURIComponent(v)}`);
   });
   sug.addEventListener('click', () => { hideSuggest(); q.value = ''; });
 
@@ -756,22 +795,21 @@
     $('#favCount').hidden = !f; $('#favCount').textContent = f;
     $('#cmpCount').hidden = !c; $('#cmpCount').textContent = c; $('#cmpBtn').hidden = !c;
     const u = ACC.user, ab = $('#accBtn');
-    ab.href = u ? '#/account' : '#/login'; ab.setAttribute('aria-label', u ? AT.account : AT.login); ab.title = u ? (u.name || u.email) : AT.login;
+    ab.href = url(u ? '/account' : '/login'); ab.setAttribute('aria-label', u ? AT.account : AT.login); ab.title = u ? (u.name || u.email) : AT.login;
     ab.classList.toggle('is-in', !!u);
     $$('[data-fav]').forEach(b => b.setAttribute('aria-pressed', ACC.isFav(+b.dataset.fav)));
     $$('[data-cmp]').forEach(b => b.setAttribute('aria-pressed', ACC.inCmp(+b.dataset.cmp)));
   }
   if (ACC) {
-    btns.cart.insertAdjacentHTML('beforebegin', `
-      <a class="icon-btn hdr-act" id="cmpBtn" href="#/compare" aria-label="${esc(AT.cmpH)}" title="${esc(AT.cmpH)}" hidden>${ICON.cmp}<b id="cmpCount" hidden></b></a>
-      <a class="icon-btn hdr-act" id="favBtn" href="#/favorites" aria-label="${esc(AT.favH)}" title="${esc(AT.favH)}">${ICON.fav}<b id="favCount" hidden></b></a>
-      <a class="icon-btn hdr-act" id="accBtn" href="#/login">${ICON.user}</a>`);
-    $$('#drawer .plain').at(-1)?.insertAdjacentHTML('afterbegin', `<a href="#/account">${esc(AT.account)}</a><a href="#/favorites">${esc(AT.favH)}</a><a href="#/compare">${esc(AT.cmpH)}</a>`);
+    for (const [id, t] of [['#cmpBtn', AT.cmpH], ['#favBtn', AT.favH]]) { $(id).setAttribute('aria-label', t); $(id).title = t; }
+    $$('#drawer .plain').at(-1)?.insertAdjacentHTML('afterbegin', `<a href="${url(`/account`)}">${esc(AT.account)}</a><a href="${url(`/favorites`)}">${esc(AT.favH)}</a><a href="${url(`/compare`)}">${esc(AT.cmpH)}</a>`);
     ACC.subscribe(paintAcc);
     paintAcc();
   }
 
   addEventListener('scroll', () => $('#top').classList.toggle('is-stuck', scrollY > 8), { passive: true });
-  addEventListener('hashchange', route);
-  paintCart(); route();
+  // Для tools/build_site.mjs: малює маршрут і віддає розмітку та дані для пошуковиків.
+  window.ACC_BUILD = { C, cat, prod, inCat, roots, path, title: () => document.title, L, lang,
+    render: r => { history.replaceState({}, '', url(r)); route(); return view.innerHTML; } };
+  paintCart(); window.SITE.start(route);
 })();

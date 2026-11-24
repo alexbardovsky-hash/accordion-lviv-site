@@ -3,6 +3,7 @@
    Сторінки #/login і #/account малює цей файл, #/favorites і #/compare — app.js (там картки товарів). */
 (() => {
   const API = window.ACC_API || '';
+  const { url, go } = window.SITE;
   const lang = window.I18N?.lang === 'en' ? 'en' : 'uk';
   const T = {
     uk: {
@@ -171,7 +172,7 @@
       if (!c.google) return;
       const mount = () => {
         window.google.accounts.id.initialize({ client_id: c.google, callback: async r => {
-          try { afterLogin(await call('/api/auth/google', { credential: r.credential, lang, ...guestStuff() })); location.hash = '#/account'; }
+          try { afterLogin(await call('/api/auth/google', { credential: r.credential, lang, ...guestStuff() })); go('/account'); }
           catch (x) { show(err, errText(x)); }
         } });
         const slot = h('div.acc-google');
@@ -185,7 +186,7 @@
 
   /* ── #/login, #/register, #/reset ── */
   function loginPage(view, mode, ctx) {
-    if (auth) { location.hash = '#/account'; return; }
+    if (auth) { go('/account'); return; }
     opened = Date.now(); window.ACC_CHAT?.warm?.();
     ctx.title(mode === 'register' ? T.registerH : T.loginH);
     const err = h('p.acc-err', { role: 'alert', hidden: true });
@@ -198,23 +199,23 @@
       const name = h('input', { name: 'name', autocomplete: 'name', required: true, maxlength: 80 });
       const phone = h('input', { type: 'tel', name: 'phone', autocomplete: 'tel', inputmode: 'tel', placeholder: '+380' });
       form = h('form.form.acc-form', { novalidate: true }, field(T.name, name), field(T.email, email), field(T.password, pw, T.pwHint(PW_MIN)), field(T.phoneOpt, phone), err, btn,
-        h('p.acc-switch', T.haveAccount, ' ', h('a', { href: '#/login' }, T.toLogin)));
+        h('p.acc-switch', T.haveAccount, ' ', h('a', { href: url('/login') }, T.toLogin)));
       form.addEventListener('submit', e => { e.preventDefault(); err.hidden = true;
         if (name.value.trim().length < 2 || !email.value.trim()) return show(err, T.err.required);
         if (pw.value.length < PW_MIN) return show(err, T.err.weak(PW_MIN));
         withBusy(btn, async () => {
-          try { afterLogin(await call('/api/auth/register', { name: name.value, email: email.value, password: pw.value, phone: phone.value, lang, ...guestStuff(), ...await human() })); location.hash = '#/account'; }
+          try { afterLogin(await call('/api/auth/register', { name: name.value, email: email.value, password: pw.value, phone: phone.value, lang, ...guestStuff(), ...await human() })); go('/account'); }
           catch (x) { show(err, errText(x)); window.ACC_CHAT?.warm?.(); }
         });
       });
     } else {
-      const forgot = h('button.link-btn.acc-forgot', { type: 'button', onclick: () => { location.hash = '#/reset'; } }, T.forgot);
+      const forgot = h('button.link-btn.acc-forgot', { type: 'button', onclick: () => { go('/reset'); } }, T.forgot);
       form = h('form.form.acc-form', { novalidate: true }, field(T.email, email), field(T.password, pw), forgot, err, btn,
-        h('p.acc-switch', T.noAccount, ' ', h('a', { href: '#/register' }, T.toRegister)));
+        h('p.acc-switch', T.noAccount, ' ', h('a', { href: url('/register') }, T.toRegister)));
       form.addEventListener('submit', e => { e.preventDefault(); err.hidden = true;
         if (!email.value.trim() || !pw.value) return show(err, T.err.required);
         withBusy(btn, async () => {
-          try { afterLogin(await call('/api/auth/login', { email: email.value, password: pw.value, ...guestStuff() })); location.hash = '#/account'; }
+          try { afterLogin(await call('/api/auth/login', { email: email.value, password: pw.value, ...guestStuff() })); go('/account'); }
           catch (x) { show(err, errText(x)); }
         });
       });
@@ -232,7 +233,7 @@
     const err = h('p.acc-err', { role: 'alert', hidden: true }), card = h('div.acc-auth-card');
     view.replaceChildren(ctx.crumbsEl(T.forgot), h('div.wrap.acc-auth', h('div.acc-auth-lead', h('h1', T.forgot)), card));
     getConfig().then(c => {
-      if (!c.reset) { card.replaceChildren(h('p', T.forgotNoMail), h('a.btn.ghost', { href: '#/login' }, T.toLogin)); return; }
+      if (!c.reset) { card.replaceChildren(h('p', T.forgotNoMail), h('a.btn.ghost', { href: url('/login') }, T.toLogin)); return; }
       const email = h('input', { type: 'email', autocomplete: 'email', required: true });
       const btn = h('button.btn.wide', { type: 'submit' }, T.sendCode);
       const f1 = h('form.form.acc-form', { novalidate: true }, field(T.email, email), err, btn);
@@ -246,7 +247,7 @@
             const f2 = h('form.form.acc-form', { novalidate: true }, h('p', T.codeSent(email.value.trim())), field(T.code, code), field(T.passwordNew, pw, T.pwHint(PW_MIN)), err, b2);
             f2.addEventListener('submit', ev => { ev.preventDefault(); err.hidden = true;
               withBusy(b2, async () => {
-                try { afterLogin(await call('/api/auth/reset/confirm', { email: email.value, code: code.value, password: pw.value, ...guestStuff() })); location.hash = '#/account'; }
+                try { afterLogin(await call('/api/auth/reset/confirm', { email: email.value, code: code.value, password: pw.value, ...guestStuff() })); go('/account'); }
                 catch (x) { show(err, errText(x)); }
               });
             });
@@ -292,7 +293,7 @@
   function paidPage(view, id, ctx) {
     ctx.title(T.payWait);
     const body = h('div.pay-card', { 'aria-live': 'polite' }, h('h1', T.payWait), h('p', T.payWaitP));
-    const links = h('p.pay-links', h('a.btn.ghost', { href: auth ? '#/account/orders' : '#/' }, auth ? T.payToAcc : T.payToShop));
+    const links = h('p.pay-links', h('a.btn.ghost', { href: auth ? url('/account/orders') : url('/') }, auth ? T.payToAcc : T.payToShop));
     view.replaceChildren(h('div.wrap.pay-wrap', body, links));
     let n = 0;
     const tick = () => call(`/api/orders/${id}/state`, orderCred(id)).then(o => {
@@ -306,23 +307,23 @@
 
   /* ── #/account[/orders|chats|profile] ── */
   function accountPage(view, tab, ctx) {
-    if (!auth) { location.hash = '#/login'; return; }
+    if (!auth) { go('/login'); return; }
     tab = ['orders', 'chats', 'profile'].includes(tab) ? tab : 'orders';
     ctx.title(T.account);
     const p = auth.profile || {};
     const nav = h('nav.acc-nav', { 'aria-label': T.account },
-      [['orders', T.orders, '#/account/orders'], ['chats', T.chats, '#/account/chats'], ['fav', `${T.favorites} · ${favs.length}`, '#/favorites'], ['cmp', `${T.compare} · ${cmp.length}`, '#/compare'], ['profile', T.profile, '#/account/profile']]
+      [['orders', T.orders, url('/account/orders')], ['chats', T.chats, url('/account/chats')], ['fav', `${T.favorites} · ${favs.length}`, url('/favorites')], ['cmp', `${T.compare} · ${cmp.length}`, url('/compare')], ['profile', T.profile, url('/account/profile')]]
         .map(([k, label, href]) => h('a', { href, 'aria-current': k === tab ? 'page' : null }, label)),
-      h('button.link-btn', { type: 'button', onclick: async () => { await call('/api/auth/logout', {}).catch(() => {}); signedOut(); location.hash = '#/'; } }, T.logout));
+      h('button.link-btn', { type: 'button', onclick: async () => { await call('/api/auth/logout', {}).catch(() => {}); signedOut(); go('/'); } }, T.logout));
     const body = h('div.acc-body', { 'aria-busy': 'true' });
     view.replaceChildren(ctx.crumbsEl(T.account), h('div.wrap.acc-layout', h('aside.acc-side', h('h1', T.hello(p.name || p.email || '')), h('p.acc-mail', p.email || ''), nav), body));
     const fail = x => body.replaceChildren(h('p.acc-err', errText(x)));
     if (tab === 'orders') call('/api/me/orders').then(list => {
       body.removeAttribute('aria-busy');
-      if (!list.length) return body.replaceChildren(h('div.empty', h('h2', T.orders), h('p', T.noOrders), h('a.btn', { href: '#/' }, T.toCatalog)));
+      if (!list.length) return body.replaceChildren(h('div.empty', h('h2', T.orders), h('p', T.noOrders), h('a.btn', { href: url('/') }, T.toCatalog)));
       body.replaceChildren(h('h2', T.orders), ...list.map(o => h('article.acc-order',
         h('header', h('h3', T.order(o.id, date(o.created_at))), h(`span.acc-status.s-${o.status}`, T.status[o.status] || o.status)),
-        h('ul', o.items.map(i => { const pr = ctx.prod(i.id); return h('li', pr ? ctx.thumb(pr) : h('span.ph'), h('a', { href: `#/p/${i.id}` }, pr?.name || i.name), h('span', `× ${i.q}`), h('b', i.price ? ctx.money(i.price * i.q) : '')); })),
+        h('ul', o.items.map(i => { const pr = ctx.prod(i.id); return h('li', pr ? ctx.thumb(pr) : h('span.ph'), h('a', { href: url(`/p/${i.id}`) }, pr?.name || i.name), h('span', `× ${i.q}`), h('b', i.price ? ctx.money(i.price * i.q) : '')); })),
         h('footer', h('span', o.delivery === 'pickup' ? T.pickup : `${T.np}${o.city ? `, ${o.city}` : ''}`), h('b', `${T.total}: ${ctx.money(o.total)}`)),
         o.pay === 'success' ? h('p.acc-ok.pay-done', T.payPaid) : o.payable ? payButton(o.id) : null)));
     }).catch(fail);
