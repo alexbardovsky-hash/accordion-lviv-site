@@ -653,7 +653,12 @@
     paintAcc();
   }
 
-  addEventListener('scroll', () => $('#top').classList.toggle('is-stuck', scrollY > 8), { passive: true });
+  // На телефоні кнопка чату ховається, поки гортають униз (не закриває «+» і «Додати в кошик»), і вертається, щойно гортнули вгору.
+  let lastY = 0;
+  addEventListener('scroll', () => {
+    $('#top').classList.toggle('is-stuck', scrollY > 8);
+    if (Math.abs(scrollY - lastY) > 6) { document.body.classList.toggle('fab-off', scrollY > lastY && scrollY > 120); lastY = scrollY; }
+  }, { passive: true });
   // Для tools/build_site.mjs: малює маршрут і віддає розмітку та дані для пошуковиків.
   window.ACC_BUILD = { C, cat, prod, inCat, roots, path, title: () => document.title, L, lang,
     render: r => { history.replaceState({}, '', url(r)); route(); return r === '/' ? lastHTML : view.innerHTML; } };   // головну беремо до того, як її оживить home.js

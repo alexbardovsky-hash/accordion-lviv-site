@@ -43,3 +43,5 @@
   .ask { right: 8px; left: 8px; bottom: 66px; width: auto; max-height: calc(100dvh - 84px); }
 }
 @media (prefers-reduced-motion: reduce) { .ask-fab { transition: none; } }
+@media (max-width: 700px) { .ask-fab { transition: translate .25s, opacity .25s, visibility 0s; } .fab-off .ask-fab:not(:focus-visible, [aria-expanded="true"]) { translate: 0 90px; opacity: 0; visibility: hidden; transition: translate .25s, opacity .25s, visibility 0s .25s; } }
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) { .ask-fab, .fab-off .ask-fab { transition: none !important; } }
