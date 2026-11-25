@@ -245,7 +245,7 @@
     const state = { sort: query.get('sort') || 'default', brand: query.get('brand') || '', shown: Math.max(PAGE, +query.get('n') || 0), query };
     const top = path(id)[0];
     if ([3, 38, 65].includes(top.id)) setFoot(L.footLead);
-    const scene = { 11: 'bellows', 6: 'keys', 5: 'buttons' }[id];   // макросцени з колишньої головної живуть у своїх розділах
+    const scene = null;   // ШІ-макросцени (міх, клавіші, ґудзики) показували деталі неправильно — прибрано 26.11 (Алекс)
     out.html = `
       ${scene ? `<section class="reel cat-reel" id="reel" aria-hidden="true"><div class="reel-stage" data-key="${scene}"><canvas class="reel-vid is-on"${scene === 'keys' ? ' data-band' : ''} style="${poster(scene)}"></canvas><div class="reel-card" hidden></div></div></section>` : ''}
       ${crumbs(path(id).map((x, i, a) => ({ name: x.name, href: i < a.length - 1 ? url(`/c/${x.id}`) : null })))}
@@ -493,7 +493,7 @@
 
   const PAGES = {
     delivery: [L.delivery, links(L.pages.delivery)],
-    service: [L.repairFull, `<div class="svc-media" aria-hidden="true"><video src="scenes/web/bellows_macro-w.mp4" poster="scenes/web/bellows-m.webp" muted loop playsinline preload="none"></video><video src="scenes/web/buttons-w.mp4" poster="scenes/web/buttons-m.webp" muted loop playsinline preload="none"></video></div>${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
+    service: [L.repairFull, `<div class="svc-media" aria-hidden="true"><img src="scenes/still/grille.webp" alt="" loading="lazy"><img src="scenes/still/registers.webp" alt="" loading="lazy"></div>${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
     contacts: [L.contacts, `<p><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>
       <p><a class="contact-big" style="font-size:1.4rem" href="mailto:${MAIL}">${MAIL}</a></p>
       <h2>${L.footTitle}</h2>${links(L.pages.contacts)}<div id="letterBox"></div>`],

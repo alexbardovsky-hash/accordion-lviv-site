@@ -26,7 +26,7 @@ window.ACC_HOME = (() => {
 
   function html(x) {
     const { L, esc, url, goods, count, cat, prod, money } = x, N = nodes(x);
-    const vid = (v, p) => `<video src="scenes/web/${v}-w.mp4" data-poster="scenes/web/${p}-m.webp" muted loop playsinline preload="none" aria-hidden="true"></video>`;
+    const pic = n => `<img class="t-pic" src="scenes/still/${n}.webp" srcset="scenes/still/${n}-m.webp 800w, scenes/still/${n}.webp 1600w" sizes="(max-width: 960px) 100vw, 34vw" alt="" loading="lazy">`;   // кадри з 3D-моделі (tools/m3d/stills.py); ШІ-ролики scenes/web прибрано 26.11
     const kom = x.inCat(48).find(p => p.img), st = STAGE.filter(s => prod.get(s.id));
     const restCats = x.roots.filter(r => ![3, 38, 43, 48].includes(r.id) && count(r.id));
     const brands = Object.entries(x.inCat(43).reduce((o, p) => (p.brand && (o[p.brand] = (o[p.brand] || 0) + 1), o), {})).sort((a, b) => b[1] - a[1]);
@@ -61,9 +61,9 @@ window.ACC_HOME = (() => {
       <div class="t t-e"><h3>${L.adviceH}</h3><p>${L.adviceP}</p><div class="t-cta"><a class="btn" href="tel:+380993339890">${L.phoneShow}</a><a class="btn ghost" href="${url('/contacts')}">${L.contacts}</a></div></div>
       <a class="t t-f" href="${url('/c/48')}">${kom ? `<img src="${esc(x.photo(kom))}" alt="" width="800" height="800" loading="lazy">` : ''}<h3>${esc(cat.get(48)?.name || '')}</h3><p>${goods(count(48))}</p></a>
       <h2 class="bento-h" id="bentoH">${L.ownersH}</h2>
-      <a class="t v t-b" href="${url('/service')}">${vid('bellows_macro', 'bellows')}<h3>${L.repairFull}</h3><p>${L.bentoRepair}</p></a>
-      <a class="t v t-b" href="${url('/c/38')}">${vid('keys', 'keys')}<h3>${esc(cat.get(38)?.name || '')}</h3><p>${goods(count(38))}</p></a>
-      <a class="t v t-b" href="${url('/c/3')}">${vid('buttons', 'buttons')}<h3>${L.parts}</h3><p>${L.bentoParts(goods(count(3)))}</p></a>
+      <a class="t v t-b" href="${url('/service')}">${pic('bellows')}<h3>${L.repairFull}</h3><p>${L.bentoRepair}</p></a>
+      <a class="t v t-b" href="${url('/c/38')}">${pic('strap')}<h3>${esc(cat.get(38)?.name || '')}</h3><p>${goods(count(38))}</p></a>
+      <a class="t v t-b" href="${url('/c/3')}">${pic('buttons')}<h3>${L.parts}</h3><p>${L.bentoParts(goods(count(3)))}</p></a>
       <div class="bento-more">${restCats.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)} <i>${count(r.id)}</i></a>`).join('')}</div>
     </section>
     <section class="partners dark"><p class="partners-lead wrap"><span>${L.partnersLead}</span></p><div class="marquee" aria-hidden="true">${x.partners}</div></section>`;
