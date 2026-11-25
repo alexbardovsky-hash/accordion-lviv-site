@@ -32,7 +32,8 @@
 <link rel="stylesheet" href="glass.css?v=4956cba5">
 <link rel="stylesheet" href="chat.css?v=4187115e">
 <link rel="stylesheet" href="account.css?v=4eb54ee3">
-<link rel="stylesheet" href="stage.css?v=dfd28cb6">
+<link rel="stylesheet" href="stage.css?v=4ee522a2">
+<link rel="stylesheet" href="home.css?v=090092c2">
 </head>
 <body>
 <a class="skip" href="#view" data-t="skip">Перейти до вмісту</a>
@@ -43,7 +44,7 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
     <a class="brand" href="/accordion-lviv-site/" data-r="/" aria-label="Акордеон Центр, на головну" data-ta="aria-label:brandHome">
-      <img class="brand-logo" src="img/logo.png" alt="" width="1220" height="736">
+      <img class="brand-logo" src="img/logo-light.png" alt="" width="1220" height="736">
       <span class="brand-name"><span data-t="brand">Акордеон Центр</span><small data-t="city">Львів</small></span>
     </a>
     <button class="nav-cat only-desktop" id="megaBtn" aria-controls="mega" aria-expanded="false">
@@ -52,7 +53,7 @@
     <form class="search" id="searchForm" role="search" autocomplete="off">
       <label class="sr" for="q" data-t="searchLabel">Пошук товарів</label>
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
-      <input id="q" name="q" type="search" placeholder="Ґудзик, ледерин, ремені, Pigini…" data-ta="placeholder:searchPh" aria-controls="suggest" aria-expanded="false">
+      <input id="q" name="q" type="search" placeholder="Ґудзик, ледерин, ремені, Pigini…" data-ta="placeholder:searchPh" role="combobox" aria-autocomplete="list" aria-controls="suggest" aria-expanded="false">
       <div class="suggest" id="suggest" hidden></div>
     </form>
     <nav class="nav-info" aria-label="Покупцям" data-ta="aria-label:forBuyers">
@@ -63,9 +64,10 @@
     <div class="lang" role="group" aria-label="Мова сайту" data-ta="aria-label:langLabel">
       <button data-lang="uk" lang="uk" aria-label="Українська">UA</button><button data-lang="en" lang="en" aria-label="English">EN</button>
     </div>
+    <button class="icon-btn search-btn" id="searchBtn" type="button" aria-controls="searchForm" aria-expanded="false" aria-label="Пошук товарів" data-ta="aria-label:searchLabel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button>
     <a class="phone" href="tel:+380993339890" aria-label="Зателефонувати 099 333 98 90" data-ta="aria-label:callAria">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
-      <span>099 333 98 90</span>
+      <span data-t="phoneShow">099 333 98 90</span>
     </a>
     <a class="icon-btn hdr-act" id="cmpBtn" href="/accordion-lviv-site/compare/" data-r="/compare" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"/></svg><b id="cmpCount" hidden></b></a>
     <a class="icon-btn hdr-act" id="favBtn" href="/accordion-lviv-site/favorites/" data-r="/favorites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"/></svg><b id="favCount" hidden></b></a>
@@ -82,7 +84,7 @@
       <nav class="crumbs wrap" aria-label="Ви тут"><a href="/accordion-lviv-site/">Головна</a><i>/</i><a href="/accordion-lviv-site/c/3-komplektuiuchi/">Комплектуючі</a><i>/</i><a href="/accordion-lviv-site/c/4-klaviatura-ta-mekhanika/">Клавіатура та механіка</a><i>/</i><a href="/accordion-lviv-site/c/6-klavishi/">Клавіші</a><i>/</i><span>Клавіша біла (Weltmeister) з важелем</span></nav>
       <div class="wrap product">
         <div>
-          <div class="gallery-main"><img id="mainPic" src="photos/web5/15.jpg" srcset="photos/web5/15-m.webp 800w, photos/web5/15.jpg 1200w" sizes="(max-width: 960px) 92vw, 1200px" fetchpriority="high" width="1200" height="1200" alt="Клавіша біла (Weltmeister) з важелем" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"></div>
+          <div class="gallery-main"><button type="button" class="zoom-btn" id="zoomBtn" aria-label="Збільшити фото"><img id="mainPic" src="photos/web5/15.jpg" srcset="photos/web5/15-m.webp 800w, photos/web5/15.jpg 1200w" sizes="(max-width: 960px) 92vw, 1200px" fetchpriority="high" width="1200" height="1200" alt="Клавіша біла (Weltmeister) з важелем" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"></button></div>
           <div class="thumbs"><button data-pic="photos/web5/15.jpg" aria-pressed="true" aria-label="Фото 1"><img src="photos/web5/15-m.webp" alt="" width="72" height="72"></button><button data-pic="photos/web5/15-o.jpg" aria-pressed="false" aria-label="Фото 2"><img src="photos/web5/15-o-m.webp" alt="" width="72" height="72"></button></div>
         </div>
         <div class="p-info">
@@ -91,7 +93,7 @@
           <p class="p-price">160 грн</p>
           <div class="buy">
               <div class="qty"><button data-step="-1" aria-label="Менше"><svg viewBox="0 0 24 24"><path d="M5 12h14"></path></svg></button><input id="qty" type="number" min="1" max="999" value="1" aria-label="Кількість"><button data-step="1" aria-label="Більше"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg></button></div>
-              <button class="btn" id="buy">Додати в кошик</button><button class="btn ghost p-ask" id="askP" type="button">Запитати про товар</button>
+              <button class="btn" id="buy">Додати в кошик</button><button class="btn ghost p-ask-one" id="askP" type="button">Запитати про товар</button>
             </div>
           <div class="p-acts">
             <button class="chip act-chip" data-fav="15" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"></path></svg><span>Обране</span></button>
@@ -100,9 +102,9 @@
             <li><b>Доставка:</b> Нова Пошта по Україні або самовивіз у Львові</li>
             <li><b>Питання щодо сумісності:</b> <a href="tel:+380993339890">+38 099 333 98 90</a></li>
           </ul>
-          <div class="p-desc"><h2>Опис</h2><p>Клавіша біла (Weltmeister) з важелем</p><p>Клавіша біла (Weltmeister) з важелем, 168х19х13,4 мм</p>
-            </div>
+          <div class="p-desc"><h2>Опис</h2><p>Клавіша біла (Weltmeister) з важелем</p><p>Клавіша біла (Weltmeister) з важелем, 168х19х13,4 мм</p></div>
         </div>
+        
       </div>
       <section class="section wrap"><div class="section-head"><h2>Ще з цього розділу</h2><a href="/accordion-lviv-site/c/6-klavishi/">Усі 11 товарів</a></div><div class="row-scroll">
     <article class="card">
@@ -209,7 +211,7 @@
 <footer class="foot">
   <div class="wrap">
     <p class="foot-lead" data-t="footLead">Не знаєте, яка деталь потрібна? Зателефонуйте, підберемо за моделлю інструмента.</p>
-    <a class="foot-call" href="tel:+380993339890">099 333 98 90</a>
+    <a class="foot-call" href="tel:+380993339890" data-t="phoneShow">099 333 98 90</a>
     <div class="foot-grid">
       <div><h2 data-t="footTitle">Акордеон Центр, Львів</h2>
         <p><span data-t="footAbout">Запчастини, аксесуари та інструменти для акордеоністів і майстрів з ремонту.</span><br><a href="mailto:bajan@accordion.lviv.ua">bajan@accordion.lviv.ua</a></p></div>
@@ -228,7 +230,7 @@
 
 <script src="data/slugs.js?v=92688474"></script>
 <script src="site.js?v=31176955"></script>
-<script src="i18n.js?v=b7a7cdd4"></script>
+<script src="i18n.js?v=edd0b3a3"></script>
 <script src="data/catalog.js?v=3e521e80"></script>
 <script src="data/catalog-i18n.js?v=4976095f"></script>
 <script src="data/specs.js?v=7e0e602c"></script>
@@ -239,6 +241,7 @@
 <script src="chat.js?v=0e585443"></script>
 <script src="account.js?v=5a77f6d7"></script>
 <script src="data/scene_frames.js?v=3cf973db"></script>
-<script src="app.js?v=fc5a8e15"></script>
+<script src="home.js?v=8196d3c9"></script>
+<script src="app.js?v=38bd44f9"></script>
 </body>
 </html>

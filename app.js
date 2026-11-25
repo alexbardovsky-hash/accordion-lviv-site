@@ -8,6 +8,13 @@
   for (const c of C.cats) { c.uk = TR.uk?.cats[c.id] || c.name; c.name = TR[lang]?.cats[c.id] || c.uk; }
   // Слово «баян» зі сторінок прибране, але в пошуку й у <title> лишається як синонім: люди шукають саме його.
   for (const x of C.products) { const u = TR.uk?.products[x.id] || {}; x.orig = x.name; x.uk = u.name || x.name; Object.assign(x, u, TR[lang]?.products[x.id]); }
+  /* Назви в каталозі писали різні люди: різні лапки, капс, «mod.», зайві дефіси. Вирівнюємо на показ; у пошуку й листах лишається й початкова. */
+  const nice = t => t.replace(/PIGINI/g, 'Pigini').replace(/BUGARI/g, 'Bugari').replace(/Fis[Ii]talia/g, 'Fisitalia').replace(/Mengasciini/g, 'Mengascini').replace(/LITTLESTAR/g, 'Littlestar').replace(/ARABESQUE/g, 'Arabesque').replace(/MusicTech-DUAL LINK DIGITAL BOX/g, 'Musictech Dual Link Digital Box').replace(/MusicTech/g, 'Musictech')
+    .replace(/(\d)\|/g, '$1/').replace(/\|(?=[A-Z])/g, '/').replace(/\b(87|96)120\b/g, '$1/120')
+    .replace(/["“”]([^"“”]*)["“”]/g, (_, q) => `«${q.trim()}»`).replace(/«(Pigini|Bugari Armando|Bugari|Scandalli)\s+([^»]+)»/g, '$1 «$2»').replace(/«(Bugari|Pigini|Scandalli|Fisitalia)»/g, '$1')
+    .replace(/(?:\s[–-])?\s(?:mod\.|мод\.|модель|model)\s*/gi, ' ').replace(/«Mod\. /g, '«').replace(/\s*\(convertor\)/g, '').replace(/\s[–-]\s(?=[а-яіїєґ]|button|converter|accordion|piano)/gi, ', ').replace(/\s[–-]\s(?=[\d«A-ZА-Я])/g, ' ').replace(/(\d)\s\/\s(?=[A-ZА-Я])/g, '$1/')
+    .replace(/,\s*,/g, ',').replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ').trim().replace(/[«»]/g, q => lang === 'en' ? { '«': '“', '»': '”' }[q] : q);
+  for (const x of C.products) x.name = nice(x.name);
   // Характеристики з сайтів виробників (data/specs.js) — лише там, де в каталозі їх немає.
   for (const x of C.products) { const s = window.SPECS?.[x.id]; if (s && x.features.length < 3) { x.features = s[lang]; x.maker = true; } }
   const BAYAN_CATS = new Set([44, 45, 56]);
@@ -64,6 +71,7 @@
   // Телефон бере легшу копію головного фото (tools/web_sizes.py).
   const srcsetOf = u => /^photos\/web5\/\d+(-o)?\.jpg$/.test(u) ? `${u.replace('.jpg', '-m.webp')} 800w, ${u} 1200w` : '';
   const thumb = u => srcsetOf(u) ? u.replace('.jpg', '-m.webp') : u.replace('thickbox_default', 'cart_default');
+  const photo = p => LOCAL.has(p.id) ? `${PHOTO_DIR}/${p.id}-m.webp` : p.img;
   const srcset = u => srcsetOf(u) ? ` srcset="${srcsetOf(u)}" sizes="(max-width: 960px) 92vw, 1200px"` : '';
   const priceTag = p => p.price ? `<span class="price">${money(p.price)}</span>` : `<span class="price ask">${L.askPrice}</span>`;
   /* Обране й порівняння (account.js): сердечко й терези на картці та сторінці товару. */
@@ -91,8 +99,9 @@
   /* ── Сторінки ── */
   const view = $('#view');
   // Готова сторінка вже має ту саму розмітку: тоді не перемальовуємо, щоб картинка не блимала.
-  let fresh = true;
+  let fresh = true, lastHTML = '';
   const out = { set html(v) {
+    lastHTML = v;
     if (fresh && view.firstElementChild) { const t = document.createElement('template'); t.innerHTML = v; fresh = false; if (t.innerHTML.trim() === view.innerHTML.trim()) return; }
     fresh = false; view.innerHTML = v;
   } };
@@ -199,105 +208,6 @@
     tick();
   }
 
-  // Перший екран: велика назва, поруч один інструмент із вітрини, що змінюється сам.
-  function mastInit(list) {
-    const a = $('#mastPic');
-    if (!a || list.length < 2) return;
-    const img = $('img', a), cap = $('.mast-cap', a);
-    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let i = 0, t;
-    list.slice(1).forEach(p => { const im = new Image(); im.src = `img/stage2/${p.id}.webp`; });
-    const show = async () => {
-      if (!document.body.contains(a)) return clearInterval(t);
-      if (document.hidden || a.matches(':hover')) return;
-      i = (i + 1) % list.length;
-      const p = list[i];
-      const out = img.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(-6%) scale(.96)' }], { duration: 380, easing: 'ease-in', fill: 'forwards' });
-      await out.finished.catch(() => {});
-      img.src = `img/stage2/${p.id}.webp`; img.alt = p.name; a.href = url(`/p/${p.id}`);
-      const amb = $('#mastAmb'); if (amb) amb.src = img.src;
-      a.style.setProperty('--tone', p.tone);
-      cap.innerHTML = `<b>${esc(p.brandName)}</b><span>${money(p.price)}</span>`;
-      await img.decode().catch(() => {});
-      out.cancel();
-      img.animate([{ opacity: 0, transform: 'translateX(8%) scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 700, easing: 'cubic-bezier(.2,.8,.2,1)' });
-    };
-    if (!calm) t = setInterval(show, 4200);
-  }
-
-  function wallInit(list) {
-    const sec = $('#wall'), focus = $('#wallFocus');
-    if (!sec || !focus) return;
-    const items = $$('.wall-item', sec), n = items.length;
-    const big = $('.wall-big', focus), info = $('.wall-info', focus), closeBtn = $('.wall-close', focus);
-    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const ease = 'cubic-bezier(.2,.8,.2,1)';
-    let cur = -1, busy = false;
-    const clip = t => { t = (t || '').replace(/\s+/g, ' ').trim(); return t.length > 190 ? t.slice(0, t.lastIndexOf(' ', 190)) + '…' : t; };
-    const fill = i => {
-      const p = list[i], text = clip(p.short);
-      big.src = `img/stage2/${p.id}.webp`; big.alt = p.name;
-      focus.style.setProperty('--tone', p.tone);
-      info.innerHTML = `<small>${esc(p.brandName)}<i>${L.stageOf(i + 1, n)}</i></small><h2>${esc(p.name)}</h2>${text && text !== p.name ? `<p>${esc(text)}</p>` : ''}<span class="price">${money(p.price)}</span><div class="wall-actions"><a class="btn" href="${url(`/p/${p.id}`)}">${L.stageView}</a>${p.buy ? `<button class="add" data-add="${p.id}" aria-label="${esc(L.addAria(p.name))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>` : ''}</div>`;
-    };
-    // Переліт: великий план стартує з місця й розміру інструмента на полиці.
-    const fly = (i, back) => {
-      const a = $('img', items[i]).getBoundingClientRect(), r = big.getBoundingClientRect();
-      const k = a.height / r.height;
-      const from = `translate(${a.left + a.width / 2 - (r.left + r.width / 2)}px, ${a.bottom - r.bottom}px) scale(${k})`;
-      const frames = back ? [{ transform: 'none' }, { transform: from }] : [{ transform: from }, { transform: 'none' }];
-      return big.animate(frames, { duration: calm ? 0 : back ? 420 : 680, easing: ease, fill: 'both' });
-    };
-    const unlock = () => document.documentElement.classList.remove('wall-open');
-    const open = i => {
-      if (busy) return;
-      cur = i; fill(i);
-      focus.hidden = false; document.documentElement.classList.add('wall-open');
-      items.forEach((el, k) => el.classList.toggle('is-out', k === i));
-      const go2 = () => { fly(i); requestAnimationFrame(() => focus.classList.add('is-open')); };
-      if (big.complete && big.naturalWidth) go2(); else big.addEventListener('load', go2, { once: true });
-      closeBtn.focus({ preventScroll: true });
-      addEventListener('sitenav', unlock, { once: true });
-    };
-    const close = () => {
-      if (cur < 0 || busy) return;
-      busy = true; focus.classList.remove('is-open');
-      const i = cur, an = fly(i, true);
-      an.finished.catch(() => {}).then(() => {
-        an.cancel(); focus.hidden = true; unlock(); busy = false; cur = -1;
-        items.forEach(el => el.classList.remove('is-out'));
-        items[i].focus({ preventScroll: true });
-      });
-    };
-    const go = d => {
-      if (cur < 0 || busy) return;
-      const i = (cur + d + n) % n;
-      big.getAnimations().forEach(x => x.cancel());
-      const out = big.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-d * 60}px) scale(.94)` }], { duration: calm ? 0 : 200, easing: 'ease-in', fill: 'both' });
-      busy = true; info.classList.add('is-swap');
-      out.finished.then(() => {
-        cur = i; fill(i); items.forEach((el, k) => el.classList.toggle('is-out', k === i));
-        out.cancel(); info.classList.remove('is-swap'); busy = false;
-        big.animate([{ opacity: 0, transform: `translateX(${d * 60}px) scale(.94)` }, { opacity: 1, transform: 'none' }], { duration: calm ? 0 : 420, easing: ease });
-      });
-    };
-    items.forEach((el, k) => el.addEventListener('click', e => { if (e.metaKey || e.ctrlKey) return; e.preventDefault(); open(k); }));
-    closeBtn.addEventListener('click', close);
-    $('.wall-bg', focus).addEventListener('click', close);
-    $('.wall-arrow.prev', focus).addEventListener('click', () => go(-1));
-    $('.wall-arrow.next', focus).addEventListener('click', () => go(1));
-    addEventListener('keydown', e => {
-      if (cur < 0 || !$('#wall')) return;
-      if (e.key === 'Escape') close();
-      if (e.key === 'ArrowLeft') go(-1);
-      if (e.key === 'ArrowRight') go(1);
-    });
-    // Свайп на телефоні гортає інструменти у великому плані.
-    let sx = 0, sy = 0;
-    focus.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
-    focus.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy; if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1); }, { passive: true });
-  }
-
   /* ── Партнери: official — офіційне представництво в Україні, dealer — домовленості про представництво, partner — партнер.
      Знаки стилізовані під фірмові: шрифт і дрібний елемент, без чужих файлів. ── */
   const PARTNERS = [
@@ -312,122 +222,21 @@
     { n: 'Serenellini', tier: 'partner', cls: 'serenellini' },
     { n: 'Dino Baffetti', tier: 'partner', cls: 'baffetti' },
   ];
-  // Порядок на полиці підібраний за кольором: синій, фіолетовий, чорний, білий, червоний у центрі, далі чорний, біло-синій, червоно-чорний, сірий.
-  // tone — колір підсвітки тла під інструмент (як смак у банки); brand — підпис, якщо в каталозі бренду нема.
-  const SHELF = [
-    { id: 568, tone: '#2f4fa8' }, { id: 485, tone: '#7a3b9a' }, { id: 297, tone: '#6e6a70' }, { id: 509, tone: '#c9a24f', brand: 'Mengascini' },
-    { id: 492, tone: '#e0203f' },
-    { id: 377, tone: '#5f5a60' }, { id: 494, tone: '#3b6fc4' }, { id: 543, tone: '#b51f3a' }, { id: 561, tone: '#8a8d93' },
-  ];
   const logo = p => `<span class="lg lg-${p.cls} is-${p.tier}">${p.mark || ''}<b>${p.n}</b>${p.sub ? `<em>${p.sub}</em>` : ''}${p.tier === 'official' ? `<small>${L.official}</small>` : ''}</span>`;
 
 
   function home() {
     title('');
-    const open = roots.find(r => r.children.length) || roots[0];
-    const featured = C.featured.map(id => prod.get(id)).filter(Boolean);
-    const instRoot = roots.find(r => /^акордеони/i.test(r.uk));
-    const partsRoot = roots.find(r => r.children.some(k => cat.get(k).children.length));
-    const groups = partsRoot ? partsRoot.children.map(k => cat.get(k)).filter(g => count(g.id)) : [];
-    // По одному найстаршому інструменту від кожного виробника.
-    const flagship = new Map();
-    if (instRoot) for (const p of [...inCat.get(instRoot.id)].filter(p => p.price && p.imgs.length && p.brand).sort((a, b) => b.price - a.price)) if (!flagship.has(p.brand)) flagship.set(p.brand, p);
-    const show = [...flagship.values()].slice(0, 6);
-    // Полиця на першому екрані: ряд інструментів у повітрі, обраний виїжджає в центр (вирізані на прозоре, img/stage2/).
-    const shelf = SHELF.map(x => { const p = prod.get(x.id); return p && { ...p, tone: x.tone, brandName: p.brand || x.brand || '' }; }).filter(Boolean);
-    const cheapest = Math.min(...C.products.filter(p => p.price).map(p => p.price));
-    // Перший екран: три повільні макросцени (міх, клавіша, ґудзик), гортання перемикає сцену, інформація зліва.
-    const minIn = id => { const v = (inCat.get(id) || []).filter(p => p.price).map(p => p.price); return v.length ? Math.min(...v) : 0; };
-    const KEYS = 6, BUTTONS = 5, BELLOWS = 11;
-    const scenes = [
-      { key: 'open', scrub: true, html: `<h1 class="reel-name">${L.mast.map(w => `<span><i>${w}</i></span>`).join('')}</h1><p>${L.mastLead(goods(C.products.length), money(cheapest))}</p><div class="hero-cta">${instRoot ? `<a class="btn" href="${url(`/c/${instRoot.id}`)}">${L.instruments}</a>` : ''}${partsRoot ? `<a class="btn ghost" href="${url(`/c/${partsRoot.id}`)}">${L.parts}</a>` : ''}</div>` },
-      cat.get(BELLOWS) && { key: 'bellows', html: `<h2>${L.reelOpenH}</h2><p>${L.reelOpenP(goods(count(BELLOWS)), money(minIn(BELLOWS)))}</p><div class="hero-cta"><a class="btn" href="${url(`/c/${BELLOWS}`)}">${L.reelOpenCta}</a></div>` },
-      cat.get(KEYS) && { key: 'keys', band: true, html: `<h2>${L.reelKeysH}</h2><p>${L.reelKeysP(goods(count(KEYS)), money(minIn(KEYS)))}</p><div class="hero-cta"><a class="btn" href="${url(`/c/${KEYS}`)}">${L.reelKeysCta}</a></div>` },
-      cat.get(BUTTONS) && { key: 'buttons', html: `<h2>${L.reelBtnH}</h2><p>${L.reelBtnP(goods(count(BUTTONS)), money(minIn(BUTTONS)))}</p><div class="hero-cta"><a class="btn" href="${url(`/c/${BUTTONS}`)}">${L.reelBtnCta}</a></div>` },
-    ].filter(Boolean);
-    out.html = `
-      <section class="reel" id="reel">
-        ${scenes.map((sc, i) => `<div class="reel-stage" data-key="${sc.key}">
-          <canvas class="reel-vid is-on"${sc.scrub ? ' data-scrub' : ''}${sc.band ? ' data-band' : ''} aria-hidden="true"${i < 2 ? ` style="${poster(sc.key)}"` : ''}></canvas>
-          <div class="reel-shade" aria-hidden="true"></div>
-          <div class="wrap reel-in"><div class="reel-card${i ? '' : ' is-on'}"${i ? ' aria-hidden="true"' : ''}>${sc.html}</div></div>
-          ${i ? '' : `<div class="reel-hint" aria-hidden="true"><span>${L.reelHint}</span><i></i></div>`}
-        </div>`).join('')}
-      </section>
-      <section class="section wrap wall" id="wall">
-        <div class="section-head"><h2>${L.wallTitle}</h2><p>${L.wallLead}</p></div>
-        <div class="wall-shelves" role="group" aria-label="${L.wallLabel}">
-          ${shelf.map((p, i) => `<a class="wall-item" href="${url(`/p/${p.id}`)}" style="--tone:${p.tone};--i:${i}"><img src="img/stage2/${p.id}.webp" alt="${esc(p.name)}" draggable="false" loading="lazy"><span class="wall-tag"><b>${esc(p.brandName)}</b>${money(p.price)}</span></a>`).join('')}
-          ${instRoot ? `<a class="wall-all" href="${url(`/c/${instRoot.id}`)}"><b>${L.wallAll}</b><span>${goods(count(instRoot.id))}</span></a>` : ''}
-        </div>
-        <div class="wall-focus" id="wallFocus" role="dialog" aria-modal="true" aria-label="${L.wallLabel}" hidden>
-          <div class="wall-bg"></div>
-          <button class="wall-close" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>${L.wallBack}</button>
-          <div class="wall-stand"><img class="wall-big" alt=""><div class="wall-disc" aria-hidden="true"></div></div>
-          <div class="wall-info" aria-live="polite"></div>
-          <button class="wall-arrow prev" type="button" aria-label="${L.shelfPrev}"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
-          <button class="wall-arrow next" type="button" aria-label="${L.shelfNext}"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
-        </div>
-      </section>
-      <section class="partners">
-        <p class="partners-lead wrap"><span>${L.partnersLead}</span></p>
-        <div class="marquee" aria-hidden="true">${[0, 1].map(() => `<div>${PARTNERS.map(logo).join('')}</div>`).join('')}</div>
-      </section>
-      <div class="sheet">
-      <section class="section wrap">
-        <div class="section-head"><h2>${L.catalog}</h2><p>${L.catLead}</p></div>
-        <div class="cats">
-          ${roots.filter(r => count(r.id)).map(r => {
-            const kids = r.children.filter(count), p = inCat.get(r.id).find(x => x.img);
-            return `<div class="cat${kids.length ? '' : ' solo'}">
-              <a class="cat-main" href="${url(`/c/${r.id}`)}"><h3>${esc(r.name)}</h3><em>${goods(count(r.id))}</em></a>
-              ${p ? `<img src="${esc(p.img)}" alt="" loading="lazy">` : ''}
-              ${kids.length ? `<ul>${kids.slice(0, 4).map(k => `<li><a href="${url(`/c/${k}`)}">${esc(cat.get(k).name)}</a></li>`).join('')}${kids.length > 4 ? `<li><a href="${url(`/c/${r.id}`)}">${L.moreGroups(kids.length - 4)}</a></li>` : ''}</ul>` : ''}
-            </div>`;
-          }).join('')}
-        </div>
-      </section>
-      ${show.length ? `<section class="section wrap">
-        <div class="section-head"><h2>${L.newInst}</h2><a href="${url(`/c/${instRoot.id}`)}">${L.all(goods(count(instRoot.id)))}</a></div>
-        <div class="show">${show.map(p => `<a href="${url(`/p/${p.id}`)}"><span class="tag">${esc(p.brand)}</span><span class="pic"><img src="${esc(p.imgs[0])}" alt="" loading="lazy"></span><h3>${esc(p.name)}</h3><span class="price">${money(p.price)}</span></a>`).join('')}</div>
-      </section>` : ''}
-      ${featured.length ? `<section class="section wrap"><div class="section-head"><h2>${L.popular}</h2></div><div class="grid four">${featured.map(card).join('')}</div></section>` : ''}
-      </div>
-      ${groups.length ? `<section class="section wrap">
-        <div class="section-head"><h2>${L.byUnit}</h2><p>${L.byUnitLead}</p></div>
-        <div class="index" id="index">${groups.map((g, i) => {
-          const p = inCat.get(g.id).find(x => x.img);
-          return `<a href="${url(`/c/${g.id}`)}" data-peek="${p ? esc(p.img) : ''}"><i>${String(i + 1).padStart(2, '0')}</i><b>${esc(g.name)}</b><span>${g.children.filter(count).slice(0, 4).map(k => esc(cat.get(k).name.toLowerCase())).join(', ')}</span><em>${count(g.id)}</em></a>`;
-        }).join('')}</div>
-      </section>` : ''}
-      <section class="wrap"><div class="help">
-        <a href="${url(`/service`)}"><h3>${L.repairFull}</h3><p>${L.help1p}</p></a>
-        <a href="${url(`/delivery`)}"><h3>${L.help2h}</h3><p>${L.help2p}</p></a>
-        <a href="tel:${PHONE}"><h3>${L.help3h}</h3><p>${L.help3p(PHONE_TEXT)}</p></a>
-      </div></section>`;
-
-    const fine = matchMedia('(hover: hover) and (min-width: 961px)').matches;
-
-    const peek = $('#peek'), index = $('#index'), heroImg = null;
-    // Шрифти знаків партнерів потрібні лише в тому рядку: беремо їх, коли він близько.
-    new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect(); if (!$('#logoFonts')) document.head.insertAdjacentHTML('beforeend', '<link id="logoFonts" rel="stylesheet" href="fonts-logos.css">'); }, { rootMargin: '800px' }).observe($('.partners', view));
-    wallInit(shelf);
-    reelInit();
-    if (fine && index) {
-      let x = 0, y = 0, tx = 0, ty = 0, raf = 0;
-      const tick = () => { x += (tx - x) * .16; y += (ty - y) * .16; peek.style.transform = `translate(${x}px, ${y}px)`; raf = peek.classList.contains('is-on') ? requestAnimationFrame(tick) : 0; };
-      index.addEventListener('mousemove', e => {
-        tx = e.clientX + 28; ty = e.clientY - 120;
-        const a = e.target.closest('a[data-peek]');
-        if (!a?.dataset.peek) return;
-        const im = $('img', peek);
-        if (im.getAttribute('src') !== a.dataset.peek) im.src = a.dataset.peek;
-        if (!peek.classList.contains('is-on')) { x = tx; y = ty; peek.classList.add('is-on'); }
-        if (!raf) raf = requestAnimationFrame(tick);
-      });
-      index.addEventListener('mouseleave', () => peek.classList.remove('is-on'));
-    }
-    if (fine && heroImg) $('.hero').addEventListener('mousemove', e => { heroImg.style.setProperty('--px', `${(e.clientX / innerWidth - .5) * -26}px`); heroImg.style.setProperty('--py', `${(e.clientY / innerHeight - .5) * -18}px`); });
+    const x = { L, lang, esc, url, goods, money, count, cat, prod, inCat: id => inCat.get(id) || [], cats: C.cats, roots, photo,
+      partners: [0, 1].map(() => `<div>${PARTNERS.map(logo).join('')}</div>`).join('') };
+    out.html = window.ACC_HOME.html(x);
+    logoFonts();
+    window.ACC_HOME.init(view, x);
+  }
+  // Шрифти знаків партнерів потрібні лише в тому рядку: беремо їх, коли він близько.
+  function logoFonts() {
+    const p = $('.partners', view);
+    if (p) new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect(); if (!$('#logoFonts')) document.head.insertAdjacentHTML('beforeend', '<link id="logoFonts" rel="stylesheet" href="fonts-logos.css">'); }, { rootMargin: '800px' }).observe(p);
   }
 
   function category(id, query) {
@@ -436,9 +245,11 @@
     title(seoName(c.name, c.id));
     const all = inCat.get(id);
     const brands = [...new Set(all.map(p => p.brand).filter(Boolean))].sort();
-    const state = { sort: query.get('sort') || 'default', brand: query.get('brand') || '', shown: PAGE };
+    const state = { sort: query.get('sort') || 'default', brand: query.get('brand') || '', shown: Math.max(PAGE, +query.get('n') || 0), query };
     const top = path(id)[0];
+    const scene = { 11: 'bellows', 6: 'keys', 5: 'buttons' }[id];   // макросцени з колишньої головної живуть у своїх розділах
     out.html = `
+      ${scene ? `<section class="reel cat-reel" id="reel" aria-hidden="true"><div class="reel-stage" data-key="${scene}"><canvas class="reel-vid is-on"${scene === 'keys' ? ' data-band' : ''} style="${poster(scene)}"></canvas><div class="reel-card" hidden></div></div></section>` : ''}
       ${crumbs(path(id).map((x, i, a) => ({ name: x.name, href: i < a.length - 1 ? url(`/c/${x.id}`) : null })))}
       <div class="wrap cat-layout">
         <aside class="side" aria-label="${L.sections}"><h2>${esc(top.name)}</h2>${tree(top.children.length ? top.children : [top.id], 0, id)}
@@ -451,6 +262,7 @@
         </div>
       </div>`;
     listing($('#list'), all, state, brands, `/c/${id}`, L.emptyCat(c.name));
+    if (scene) reelInit();
   }
 
   function results(query) {
@@ -459,7 +271,7 @@
     const found = search(q);
     out.html = `${crumbs([{ name: L.search }])}<div class="wrap"><div class="cat-head"><h1>${q ? esc(L.quote(q)) : L.search}</h1><small>${goods(found.length)}</small></div><div id="list"></div></div>`;
     const brands = [...new Set(found.map(p => p.brand).filter(Boolean))].sort();
-    listing($('#list'), found, { sort: 'default', brand: '', shown: PAGE }, brands, null, L.emptySearch(q, PHONE_TEXT));
+    listing($('#list'), found, { sort: query.get('sort') || 'default', brand: query.get('brand') || '', shown: Math.max(PAGE, +query.get('n') || 0), query }, brands, null, L.emptySearch(q, PHONE_TEXT));
   }
 
   /* Фільтри для інструментів: ціна, баси, вага. Число басів беремо з назви (41/120) чи характеристики, вагу — з характеристики. */
@@ -469,8 +281,16 @@
     const inst = all.filter(p => p.price >= 20000).length > 7;
     const bassSet = inst ? [...new Set(all.map(basses).filter(Boolean))].sort((a, b) => a - b) : [];
     const heavy = inst && all.filter(weight).length > 7;
-    const f = state.f = { min: 0, max: 0, bass: 0, kg: 0 };
+    const qn = k => Math.max(0, +state.query?.get(k) || 0);
+    const f = state.f = { min: qn('min'), max: qn('max'), bass: qn('bass'), kg: qn('kg') };
+    // Фільтри живуть в адресі: повернувся назад чи надіслав посилання — вони на місці.
+    const keep = () => {
+      const u = new URL(location.href);
+      for (const [k, v] of Object.entries({ ...f, brand: state.brand, sort: state.sort === 'default' ? '' : state.sort, n: state.shown > PAGE ? state.shown : '' })) if (v) u.searchParams.set(k, v); else u.searchParams.delete(k);
+      if (u.href !== location.href) history.replaceState(history.state, '', u);
+    };
     const sel = (id, label, opts) => `<label>${label} <select data-f="${id}">${opts.map(([v, t]) => `<option value="${v}"${f[id] === v ? ' selected' : ''}>${t}</option>`).join('')}</select></label>`;
+    let painted = false;
     const paint = () => {
       let items = all.filter(p => (!state.brand || p.brand === state.brand) && (!f.min || p.price >= f.min) && (!f.max || (p.price && p.price <= f.max)) && (!f.bass || basses(p) === f.bass) && (!f.kg || (weight(p) && weight(p) <= f.kg)));
       if (state.sort === 'cheap') items.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
@@ -492,6 +312,7 @@
         <div class="grid">${items.slice(0, state.shown).map(card).join('')}</div>
         ${items.length > state.shown ? `<button class="btn ghost more" id="more">${L.showMore(Math.min(PAGE, items.length - state.shown), items.length - state.shown)}</button>` : ''}`;
       $('#sort', root).value = state.sort;
+      if (painted) keep(); painted = true;
     };
     root.addEventListener('change', e => { if (e.target.id === 'sort') { state.sort = e.target.value; state.shown = PAGE; paint(); }
       const k = e.target.dataset.f; if (k) { f[k] = Math.max(0, +e.target.value || 0); state.shown = PAGE; paint(); $(`[data-f="${k}"]`, root)?.focus({ preventScroll: true }); } });
@@ -510,32 +331,40 @@
     title(seoName(p.name, p.cats.find(c => BAYAN_CATS.has(c))));
     const pics = p.imgs.length ? p.imgs : (p.big ? [p.big] : []);
     const related = inCat.get(p.cat).filter(x => x.id !== p.id).slice(0, 10);
+    // Інструменти: без «кількості», спершу питають про наявність і домовляються послухати (варіант A, 25.11).
+    const inst = p.price >= 20000 && p.cats.some(c => path(c)[0]?.id === 43 || c === 48);
+    const text = [p.short, p.desc !== p.short ? p.desc : ''].filter(Boolean).map(t => `<p>${esc(t)}</p>`).join('');
+    const spec = p.features.length ? (inst ? `<dl class="p-spec">${p.features.map(f => `<div><dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd></div>`).join('')}</dl>` : `<table>${p.features.map(f => `<tr><td>${esc(f[0])}</td><td>${esc(f[1])}</td></tr>`).join('')}</table>`) + (p.maker ? `<p class="p-note">${L.makerData}</p>` : '') : '';
+    const desc = text || spec ? `<div class="p-desc"><h2>${inst && spec ? L.specH : L.desc}</h2>${text}${spec}</div>` : '';
     out.html = `
       ${crumbs([...path(p.cat).map(x => ({ name: x.name, href: url(`/c/${x.id}`) })), { name: p.name }])}
-      <div class="wrap product">
+      <div class="wrap product${inst ? ' inst' : ''}">
         <div>
-          <div class="gallery-main">${pics.length ? `<img id="mainPic" src="${esc(pics[0])}"${srcset(pics[0])} fetchpriority="high" width="1200" height="1200" alt="${esc(p.name)}" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'">` : '<span class="ph"></span>'}</div>
+          <div class="gallery-main">${pics.length ? `<button type="button" class="zoom-btn" id="zoomBtn" aria-label="${L.zoom}"><img id="mainPic" src="${esc(pics[0])}"${srcset(pics[0])} fetchpriority="high" width="1200" height="1200" alt="${esc(p.name)}" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'"></button>` : '<span class="ph"></span>'}</div>
           ${pics.length > 1 ? `<div class="thumbs">${pics.map((u, i) => `<button data-pic="${esc(u)}" aria-pressed="${i === 0}" aria-label="${L.photo(i + 1)}"><img src="${esc(thumb(u))}" alt="" width="72" height="72"></button>`).join('')}</div>` : ''}
         </div>
         <div class="p-info">
           <h1>${esc(p.name)}</h1>
           <p class="p-ref">${[p.ref && `${L.sku} ${esc(p.ref)}`, p.brand && esc(p.brand)].filter(Boolean).join(', ')}</p>
           ${p.price ? `<p class="p-price">${money(p.price)}</p>` : `<p class="p-price" style="font-size:1.4rem">${L.askPrice}</p>`}
-          ${p.buy ? `<div class="buy">
+          ${inst ? `<div class="p-ask">
+              ${window.ACC_CHAT?.enabled ? `<button class="btn" id="askP" type="button">${L.instAsk}</button><button class="btn ghost" id="askL" type="button">${L.instListen}</button>` : `<a class="btn" href="tel:${PHONE}">${L.instAsk}</a><a class="btn ghost" href="${url('/contacts')}">${L.instListen}</a>`}
+              ${p.buy ? `<button class="link-btn p-add" data-add="${p.id}">${L.addToCart}</button>` : ''}</div>`
+          : p.buy ? `<div class="buy">
               <div class="qty"><button data-step="-1" aria-label="${L.less}"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button><input id="qty" type="number" min="1" max="999" value="1" aria-label="${L.qty}"><button data-step="1" aria-label="${L.more}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
-              <button class="btn" id="buy">${L.addToCart}</button>${window.ACC_CHAT?.enabled ? `<button class="btn ghost p-ask" id="askP" type="button">${window.ACC_CHAT.t.askProduct}</button>` : ''}
+              <button class="btn" id="buy">${L.addToCart}</button>${window.ACC_CHAT?.enabled ? `<button class="btn ghost p-ask-one" id="askP" type="button">${window.ACC_CHAT.t.askProduct}</button>` : ''}
             </div>`
             : `<div class="buy"><a class="btn" href="tel:${PHONE}">${L.callPh(PHONE_TEXT)}</a></div><p class="p-note">${L.toOrder}</p>`}
           ${ACC ? `<div class="p-acts">
             <button class="chip act-chip" data-fav="${p.id}" aria-pressed="${ACC.isFav(p.id)}">${ICON.fav}<span>${esc(AT.favH)}</span></button>
             <button class="chip act-chip" data-cmp="${p.id}" aria-pressed="${ACC.inCmp(p.id)}">${ICON.cmp}<span>${esc(AT.cmpAdd)}</span></button></div>` : ''}
-          <ul class="p-facts">
+          ${inst ? `<ul class="p-steps">${L.instSteps.map(([b, t]) => `<li><b>${b}</b>${t}</li>`).join('')}</ul>` : `<ul class="p-facts">
             <li><b>${L.factDeliveryL}</b> ${L.factDelivery}</li>
             <li><b>${L.factCompat}</b> <a href="tel:${PHONE}">${PHONE_TEXT}</a></li>
-          </ul>
-          ${p.desc || p.short || p.features.length ? `<div class="p-desc"><h2>${L.desc}</h2>${p.short ? `<p>${esc(p.short)}</p>` : ''}${p.desc && p.desc !== p.short ? `<p>${esc(p.desc)}</p>` : ''}
-            ${p.features.length ? `<table>${p.features.map(f => `<tr><td>${esc(f[0])}</td><td>${esc(f[1])}</td></tr>`).join('')}</table>${p.maker ? `<p class="p-note">${L.makerData}</p>` : ''}` : ''}</div>` : ''}
+          </ul>`}
+          ${!inst ? desc : ''}
         </div>
+        ${inst ? `<div class="p-full">${desc}</div>` : ''}
       </div>
       ${related.length ? `<section class="section wrap"><div class="section-head"><h2>${L.related}</h2><a href="${url(`/c/${p.cat}`)}">${L.all(goods(count(p.cat)))}</a></div><div class="row-scroll">${related.map(card).join('')}</div></section>` : ''}`;
     view.onclick = e => {
@@ -545,7 +374,16 @@
       if (s && $('#qty')) { const i = $('#qty'); i.value = Math.max(1, Math.min(999, (+i.value || 1) + +s.dataset.step)); }
       if (e.target.id === 'buy') add(p.id, Math.max(1, +$('#qty').value || 1));
       if (e.target.id === 'askP') window.ACC_CHAT.open({ topic: window.ACC_CHAT.t.productTopic(p.name), productId: p.id });
+      if (e.target.id === 'askL') window.ACC_CHAT.open({ topic: `${L.instListen}: ${p.name}`.slice(0, 120), productId: p.id });
+      if (e.target.closest('#zoomBtn')) zoom($('#mainPic').dataset.full || $('#mainPic').getAttribute('src'), p.name);
     };
+  }
+
+  /* Фото на весь екран */
+  function zoom(src, alt) {
+    let d = $('#zoom');
+    if (!d) { document.body.insertAdjacentHTML('beforeend', `<dialog id="zoom" class="zoom"><img alt=""><button type="button" aria-label="${L.close}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></dialog>`); d = $('#zoom'); d.addEventListener('click', () => d.close()); addEventListener('sitenav', () => d.close()); }
+    const im = $('img', d); im.src = src; im.alt = alt; d.showModal();
   }
 
   function checkout() {
@@ -665,6 +503,7 @@
     const [p, qs] = here().split('?');
     const seg = p.split('/').filter(Boolean), query = new URLSearchParams(qs || '');
     closePanels(); view.onclick = null;
+    document.body.classList.toggle('is-home', !seg.length);
     if (!seg.length) home();
     else if (seg[0] === 'c') category(+seg[1], query);
     else if (seg[0] === 'p') product(+seg[1]);
@@ -717,6 +556,7 @@
     scrim.hidden = true; document.body.style.overflow = ''; $('#mega').hidden = true; $('#megaBtn').setAttribute('aria-expanded', 'false');
     if (wasOpen && lastFocus?.isConnected) lastFocus.focus();
   }
+  $('#searchBtn').onclick = () => { const on = $('#top').classList.toggle('search-on'); $('#searchBtn').setAttribute('aria-expanded', on); topH(); if (on) $('#q').focus(); };
   btns.cart.onclick = () => openPanel('cart');
   btns.drawer.onclick = () => openPanel('drawer');
   scrim.onclick = closePanels;
@@ -811,6 +651,8 @@
   addEventListener('scroll', () => $('#top').classList.toggle('is-stuck', scrollY > 8), { passive: true });
   // Для tools/build_site.mjs: малює маршрут і віддає розмітку та дані для пошуковиків.
   window.ACC_BUILD = { C, cat, prod, inCat, roots, path, title: () => document.title, L, lang,
-    render: r => { history.replaceState({}, '', url(r)); route(); return view.innerHTML; } };
+    render: r => { history.replaceState({}, '', url(r)); route(); return r === '/' ? lastHTML : view.innerHTML; } };   // головну беремо до того, як її оживить home.js
+  function topH() { document.documentElement.style.setProperty('--top-h', `${$('#top').offsetHeight}px`); }
+  topH(); addEventListener('resize', topH);
   paintCart(); window.SITE.start(route);
 })();

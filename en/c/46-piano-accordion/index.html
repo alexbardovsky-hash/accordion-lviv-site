@@ -30,7 +30,8 @@
 <link rel="stylesheet" href="glass.css?v=4956cba5">
 <link rel="stylesheet" href="chat.css?v=4187115e">
 <link rel="stylesheet" href="account.css?v=4eb54ee3">
-<link rel="stylesheet" href="stage.css?v=dfd28cb6">
+<link rel="stylesheet" href="stage.css?v=4ee522a2">
+<link rel="stylesheet" href="home.css?v=090092c2">
 </head>
 <body>
 <a class="skip" href="#view" data-t="skip">Skip to content</a>
@@ -41,7 +42,7 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
     <a class="brand" href="/accordion-lviv-site/en/" data-r="/" aria-label="Accordion Centre, home page" data-ta="aria-label:brandHome">
-      <img class="brand-logo" src="img/logo.png" alt="" width="1220" height="736">
+      <img class="brand-logo" src="img/logo-light.png" alt="" width="1220" height="736">
       <span class="brand-name"><span data-t="brand">Accordion Centre</span><small data-t="city">Lviv</small></span>
     </a>
     <button class="nav-cat only-desktop" id="megaBtn" aria-controls="mega" aria-expanded="false">
@@ -50,7 +51,7 @@
     <form class="search" id="searchForm" role="search" autocomplete="off">
       <label class="sr" for="q" data-t="searchLabel">Search products</label>
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg>
-      <input id="q" name="q" type="search" placeholder="Button, bellows tape, straps, Pigini…" data-ta="placeholder:searchPh" aria-controls="suggest" aria-expanded="false">
+      <input id="q" name="q" type="search" placeholder="Button, bellows tape, straps, Pigini…" data-ta="placeholder:searchPh" role="combobox" aria-autocomplete="list" aria-controls="suggest" aria-expanded="false">
       <div class="suggest" id="suggest" hidden></div>
     </form>
     <nav class="nav-info" aria-label="Customer info" data-ta="aria-label:forBuyers">
@@ -61,9 +62,10 @@
     <div class="lang" role="group" aria-label="Site language" data-ta="aria-label:langLabel">
       <button data-lang="uk" lang="uk" aria-label="Українська">UA</button><button data-lang="en" lang="en" aria-label="English">EN</button>
     </div>
-    <a class="phone" href="tel:+380993339890" aria-label="Call 099 333 98 90" data-ta="aria-label:callAria">
+    <button class="icon-btn search-btn" id="searchBtn" type="button" aria-controls="searchForm" aria-expanded="false" aria-label="Search products" data-ta="aria-label:searchLabel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button>
+    <a class="phone" href="tel:+380993339890" aria-label="Call +38 099 333 98 90" data-ta="aria-label:callAria">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
-      <span>099 333 98 90</span>
+      <span data-t="phoneShow">+38 099 333 98 90</span>
     </a>
     <a class="icon-btn hdr-act" id="cmpBtn" href="/accordion-lviv-site/en/compare/" data-r="/compare" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"/></svg><b id="cmpCount" hidden></b></a>
     <a class="icon-btn hdr-act" id="favBtn" href="/accordion-lviv-site/en/favorites/" data-r="/favorites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"/></svg><b id="favCount" hidden></b></a>
@@ -77,6 +79,7 @@
 </header>
 
 <main id="view" tabindex="-1">
+      
       <nav class="crumbs wrap" aria-label="You are here"><a href="/accordion-lviv-site/en/">Home</a><i>/</i><a href="/accordion-lviv-site/en/c/43-accordions/">Accordions</a><i>/</i><span>Piano accordion</span></nav>
       <div class="wrap cat-layout">
         <aside class="side" aria-label="Catalogue sections"><h2>Accordions</h2><ul><li><a href="/accordion-lviv-site/en/c/44-button-accordion/">Button accordion<span>17</span></a></li><li><a href="/accordion-lviv-site/en/c/45-button-converter-free-bass/">Button converter (free-bass)<span>31</span></a></li><li><a href="/accordion-lviv-site/en/c/46-piano-accordion/" aria-current="page">Piano accordion<span>15</span></a></li><li><a href="/accordion-lviv-site/en/c/47-piano-converter-free-bass/">Piano converter (free-bass)<span>23</span></a></li><li><a href="/accordion-lviv-site/en/c/54-digital-accordion/">Digital accordion<span>1</span></a></li><li><a href="/accordion-lviv-site/en/c/56-musette-button/">Musette button<span>2</span></a></li></ul>
@@ -102,60 +105,60 @@
       <div class="card-img"><img src="photos/web5/492-s.jpg" alt="" loading="lazy" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"><div class="card-acts">
       <button class="act" data-fav="492" aria-pressed="false" aria-label="Add to favourites" title="Add to favourites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"></path></svg></button>
       <button class="act" data-cmp="492" aria-pressed="false" aria-label="Compare" title="Compare"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"></path></svg></button></div></div>
-      <a class="card-name" href="/accordion-lviv-site/en/p/492-fisitalia-accordion-37-96-mod-37-34/">Fisitalia accordion 37/96 mod. 37.34</a>
+      <a class="card-name" href="/accordion-lviv-site/en/p/492-fisitalia-accordion-37-96-mod-37-34/">Fisitalia accordion 37/96 37.34</a>
       <span class="card-meta">Item no. 33313</span>
       <div class="card-foot"><span class="price">138,190 UAH</span>
-        <button class="add" data-add="492" aria-label="Add to cart: Fisitalia accordion 37/96 mod. 37.34"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button class="add" data-add="492" aria-label="Add to cart: Fisitalia accordion 37/96 37.34"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
       </div>
     </article>
     <article class="card">
       <div class="card-img"><img src="photos/web5/493-s.jpg" alt="" loading="lazy" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"><div class="card-acts">
       <button class="act" data-fav="493" aria-pressed="false" aria-label="Add to favourites" title="Add to favourites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"></path></svg></button>
       <button class="act" data-cmp="493" aria-pressed="false" aria-label="Compare" title="Compare"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"></path></svg></button></div></div>
-      <a class="card-name" href="/accordion-lviv-site/en/p/493-fisitalia-accordion-mod-41-45-tc-41-120/">Fisitalia accordion mod. 41.45 – TC 41/120</a>
+      <a class="card-name" href="/accordion-lviv-site/en/p/493-fisitalia-accordion-mod-41-45-tc-41-120/">Fisitalia accordion 41.45 TC 41/120</a>
       <span class="card-meta">Item no. 33314</span>
       <div class="card-foot"><span class="price">207,460 UAH</span>
-        <button class="add" data-add="493" aria-label="Add to cart: Fisitalia accordion mod. 41.45 – TC 41/120"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button class="add" data-add="493" aria-label="Add to cart: Fisitalia accordion 41.45 TC 41/120"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
       </div>
     </article>
     <article class="card">
       <div class="card-img"><img src="photos/web5/494-s.jpg" alt="" loading="lazy" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"><div class="card-acts">
       <button class="act" data-fav="494" aria-pressed="false" aria-label="Add to favourites" title="Add to favourites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"></path></svg></button>
       <button class="act" data-cmp="494" aria-pressed="false" aria-label="Compare" title="Compare"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"></path></svg></button></div></div>
-      <a class="card-name" href="/accordion-lviv-site/en/p/494-fisitalia-accordion-mod-littlestar-41-120/">Fisitalia accordion mod. “LITTLESTAR” – 41/120</a>
+      <a class="card-name" href="/accordion-lviv-site/en/p/494-fisitalia-accordion-mod-littlestar-41-120/">Fisitalia accordion “Littlestar” 41/120</a>
       <span class="card-meta">Item no. 33315</span>
       <div class="card-foot"><span class="price">141,000 UAH</span>
-        <button class="add" data-add="494" aria-label="Add to cart: Fisitalia accordion mod. “LITTLESTAR” – 41/120"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button class="add" data-add="494" aria-label="Add to cart: Fisitalia accordion “Littlestar” 41/120"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
       </div>
     </article>
     <article class="card">
       <div class="card-img"><img src="photos/web5/533-s.jpg" alt="" loading="lazy" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"><div class="card-acts">
       <button class="act" data-fav="533" aria-pressed="false" aria-label="Add to favourites" title="Add to favourites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"></path></svg></button>
       <button class="act" data-cmp="533" aria-pressed="false" aria-label="Compare" title="Compare"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"></path></svg></button></div></div>
-      <a class="card-name" href="/accordion-lviv-site/en/p/533-fisitalia-accordion-mod-34-34-34-72/">Fisitalia accordion mod. “34.34” – 34/72</a>
+      <a class="card-name" href="/accordion-lviv-site/en/p/533-fisitalia-accordion-mod-34-34-34-72/">Fisitalia accordion “34.34” 34/72</a>
       
       <div class="card-foot"><span class="price">123,900 UAH</span>
-        <button class="add" data-add="533" aria-label="Add to cart: Fisitalia accordion mod. “34.34” – 34/72"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button class="add" data-add="533" aria-label="Add to cart: Fisitalia accordion “34.34” 34/72"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
       </div>
     </article>
     <article class="card">
       <div class="card-img"><img src="photos/web5/537-s.jpg" alt="" loading="lazy" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"><div class="card-acts">
       <button class="act" data-fav="537" aria-pressed="false" aria-label="Add to favourites" title="Add to favourites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"></path></svg></button>
       <button class="act" data-cmp="537" aria-pressed="false" aria-label="Compare" title="Compare"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"></path></svg></button></div></div>
-      <a class="card-name" href="/accordion-lviv-site/en/p/537-bugari-accordion-mod-115j-34-72/">Bugari accordion mod. “115J” – 34/72</a>
+      <a class="card-name" href="/accordion-lviv-site/en/p/537-bugari-accordion-mod-115j-34-72/">Bugari accordion “115J” 34/72</a>
       
       <div class="card-foot"><span class="price">126,690 UAH</span>
-        <button class="add" data-add="537" aria-label="Add to cart: Bugari accordion mod. “115J” – 34/72"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button class="add" data-add="537" aria-label="Add to cart: Bugari accordion “115J” 34/72"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
       </div>
     </article>
     <article class="card">
       <div class="card-img"><img src="photos/web5/538-s.jpg" alt="" loading="lazy" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"><div class="card-acts">
       <button class="act" data-fav="538" aria-pressed="false" aria-label="Add to favourites" title="Add to favourites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"></path></svg></button>
       <button class="act" data-cmp="538" aria-pressed="false" aria-label="Compare" title="Compare"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"></path></svg></button></div></div>
-      <a class="card-name" href="/accordion-lviv-site/en/p/538-bugari-accordion-mod-100j-26-48/">Bugari accordion mod. “100J” – 26/48</a>
+      <a class="card-name" href="/accordion-lviv-site/en/p/538-bugari-accordion-mod-100j-26-48/">Bugari accordion “100J” 26/48</a>
       
       <div class="card-foot"><span class="price">98,400 UAH</span>
-        <button class="add" data-add="538" aria-label="Add to cart: Bugari accordion mod. “100J” – 26/48"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button class="add" data-add="538" aria-label="Add to cart: Bugari accordion “100J” 26/48"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
       </div>
     </article>
     <article class="card">
@@ -192,20 +195,20 @@
       <div class="card-img"><img src="photos/web5/544-s.jpg" alt="" loading="lazy" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"><div class="card-acts">
       <button class="act" data-fav="544" aria-pressed="false" aria-label="Add to favourites" title="Add to favourites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"></path></svg></button>
       <button class="act" data-cmp="544" aria-pressed="false" aria-label="Compare" title="Compare"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"></path></svg></button></div></div>
-      <a class="card-name" href="/accordion-lviv-site/en/p/544-fisitalia-accordion-mod-41-45-kr-41-120/">Fisitalia accordion mod. 41.45 – KR 41/120</a>
+      <a class="card-name" href="/accordion-lviv-site/en/p/544-fisitalia-accordion-mod-41-45-kr-41-120/">Fisitalia accordion 41.45 KR 41/120</a>
       
       <div class="card-foot"><span class="price">182,450 UAH</span>
-        <button class="add" data-add="544" aria-label="Add to cart: Fisitalia accordion mod. 41.45 – KR 41/120"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button class="add" data-add="544" aria-label="Add to cart: Fisitalia accordion 41.45 KR 41/120"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
       </div>
     </article>
     <article class="card">
       <div class="card-img"><img src="photos/web5/545-s.jpg" alt="" loading="lazy" onerror="this.outerHTML='&lt;span class=&quot;ph&quot;&gt;&lt;/span&gt;'"><div class="card-acts">
       <button class="act" data-fav="545" aria-pressed="false" aria-label="Add to favourites" title="Add to favourites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7.5-4.6-9.3-9.2C1.4 7.4 3.6 4 7 4c2.1 0 3.6 1.2 5 3 1.4-1.8 2.9-3 5-3 3.4 0 5.6 3.4 4.3 6.8C19.5 15.4 12 20 12 20Z"></path></svg></button>
       <button class="act" data-cmp="545" aria-pressed="false" aria-label="Compare" title="Compare"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 20h14M4 9l3-5 3 5a3 3 0 0 1-6 0ZM14 9l3-5 3 5a3 3 0 0 1-6 0ZM7 4h10"></path></svg></button></div></div>
-      <a class="card-name" href="/accordion-lviv-site/en/p/545-fisitalia-accordion-mod-41-45-tc-black-edition-41-120/">Fisitalia accordion mod. “41.45.TC Black Edition” 41/120</a>
+      <a class="card-name" href="/accordion-lviv-site/en/p/545-fisitalia-accordion-mod-41-45-tc-black-edition-41-120/">Fisitalia accordion “41.45.TC Black Edition” 41/120</a>
       
       <div class="card-foot"><span class="price">223,450 UAH</span>
-        <button class="add" data-add="545" aria-label="Add to cart: Fisitalia accordion mod. “41.45.TC Black Edition” 41/120"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+        <button class="add" data-add="545" aria-label="Add to cart: Fisitalia accordion “41.45.TC Black Edition” 41/120"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
       </div>
     </article>
     <article class="card">
@@ -255,7 +258,7 @@
 <footer class="foot">
   <div class="wrap">
     <p class="foot-lead" data-t="footLead">Not sure which part you need? Call us and we will match it to your instrument model.</p>
-    <a class="foot-call" href="tel:+380993339890">099 333 98 90</a>
+    <a class="foot-call" href="tel:+380993339890" data-t="phoneShow">+38 099 333 98 90</a>
     <div class="foot-grid">
       <div><h2 data-t="footTitle">Accordion Centre, Lviv</h2>
         <p><span data-t="footAbout">Parts, accessories and instruments for accordion players and repairers.</span><br><a href="mailto:bajan@accordion.lviv.ua">bajan@accordion.lviv.ua</a></p></div>
@@ -274,7 +277,7 @@
 
 <script src="data/slugs.js?v=92688474"></script>
 <script src="site.js?v=31176955"></script>
-<script src="i18n.js?v=b7a7cdd4"></script>
+<script src="i18n.js?v=edd0b3a3"></script>
 <script src="data/catalog.js?v=3e521e80"></script>
 <script src="data/catalog-i18n.js?v=4976095f"></script>
 <script src="data/specs.js?v=7e0e602c"></script>
@@ -285,6 +288,7 @@
 <script src="chat.js?v=0e585443"></script>
 <script src="account.js?v=5a77f6d7"></script>
 <script src="data/scene_frames.js?v=3cf973db"></script>
-<script src="app.js?v=fc5a8e15"></script>
+<script src="home.js?v=8196d3c9"></script>
+<script src="app.js?v=38bd44f9"></script>
 </body>
 </html>

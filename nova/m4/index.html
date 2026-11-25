@@ -28,9 +28,9 @@
   const portrait = matchMedia('(max-aspect-ratio: 1/1)').matches, K = portrait ? 'm' : 'd', FW = portrait ? 1088 : 1920, FH = portrait ? 1920 : 1088, V = 'scenes/fly/web/';
   $('#still').src = `${V}start_${K}.webp`;
   // точки: частка кадру; для телефона кадр інший, тому координати свої (tools/fly.py start)
-  const H = [['buttons', 5, 640, 590, 'l'], ['registers', 26, 752, 500, 'l'], ['grille', 19, 872, 660, ''], ['bellows', 11, 1080, 330, ''], ['bass', 7, 1215, 520, ''], ['strap', catId(/^Ремені/i), 735, 235, 'l']].map(([k, id, x, y, side]) => { const c = id && cat(id); return c && c.n ? { k, c, side, x: portrait ? MX(x) : x / 1920, y: portrait ? MY(y) : y / 1088 } : null; }).filter(Boolean);
-  function MX(x) { const rx = (x - 480) / 960; return (1088 * (.5 - .427 * 1.06) + rx * 1088 * 1.06) / 1088; }
-  function MY(y) { const ry = (y - 141) / 828, h = 1088 * 1.06 * 828 / 960; return ((1920 - h) / 2 + 19 + ry * h) / 1920; }
+  // точки в пікселях вирізаного фото виробника (1727×1228); де воно лежить у кадрі — tools/fly_frames.py → frames.json
+  const PLACE = { d: [.194792, .154412, .55, .690257], m: [.034926, .282812, .930147, .374479] }[K];
+  const H = [['buttons', 5, 280, 690, 'l'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, ''], ['bellows', 11, 1211, 330, ''], ['bass', 7, 1520, 690, ''], ['strap', catId(/^Ремені/i), 420, 130, 'l']].map(([k, id, x, y, side]) => { const c = id && cat(id); return c && c.n ? { k, c, side, x: PLACE[0] + x / 1727 * PLACE[2], y: PLACE[1] + y / 1228 * PLACE[3] } : null; }).filter(Boolean);
   for (const h of H) { h.b = el('button', { className: `hs ${h.side}`, ariaLabel: h.c.name, onclick: () => fly(h) }, el('span', {}, h.c.name)); lab.append(h.b); $('#nx').append(h.n = el('button', { onclick: () => swap(h) }, h.c.name)); }
   const place = () => { const W = lab.clientWidth, Hh = lab.clientHeight, s = Math.max(W / FW, Hh / FH), ox = (W - FW * s) / 2, oy = (Hh - FH * s) / 2; for (const h of H) { h.b.style.left = `${ox + h.x * FW * s}px`; h.b.style.top = `${oy + h.y * FH * s}px`; } };
   addEventListener('resize', place); place();

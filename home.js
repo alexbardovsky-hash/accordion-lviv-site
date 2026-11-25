@@ -1,0 +1,149 @@
+/* Головна (25.11): «Розбір» — натискаєш на вузол акордеона, камера летить до нього в 3D і показує деталі;
+   далі сцена чотирьох флагманів, мозаїка запчастин і майстерні, партнери. Малює app.js → home(), тут розмітка й поведінка.
+   Прольоти: tools/fly.py → tools/fly_web.py, scenes/fly/web/<вузол>_<d|m>[_back].mp4. */
+window.ACC_HOME = (() => {
+  const VID = 'scenes/fly/web/', VER = '?v=1';
+  // Точки в пікселях вирізаного фото виробника (1727×1228); де воно лежить у кадрі — tools/fly_frames.py (frames.json).
+  const CUT = [1727, 1228], PLACE = { d: [.159896, .17739, .530208, .665441], m: [.110294, .303125, .780331, .314063] }, FRAME = { d: [1920, 1088], m: [1088, 1920] };
+  const NODES = [['buttons', 5, 320, 900, 'l'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, 'r'], ['bellows', 11, 1211, 330, 'r'], ['bass', 7, 1520, 690, 'r'], ['strap', /^(Ремені|Straps)/i, 420, 130, 'l']];
+  const STAGE = [
+    { id: 301, w: 'Pigini', n: 'Pigini Nova', src: 'img/flag/301.webp', tone: '#7d1528' }, { id: 554, w: 'Bugari', n: 'Bugari Armando 2 RC Cassotto', src: 'img/flag/554.webp', tone: '#8b4a1f' },
+    { id: 377, w: 'Scandalli', n: 'Scandalli BJP-442 ST', src: 'img/stage2/377.webp', tone: '#3d4650' }, { id: 387, w: 'Fisitalia', n: 'Fisitalia B-61', src: 'img/flag/387.webp', tone: '#0e5a52' },
+  ];
+  const portrait = () => matchMedia('(max-aspect-ratio: 1/1)').matches;
+
+  function nodes(x) {
+    return NODES.map(([k, id, px, py, side]) => {
+      const c = id instanceof RegExp ? x.cats.find(c => id.test(c.name) && x.count(c.id)) : x.cat.get(id);
+      return c && x.count(c.id) ? { k, c, px, py, side } : null;
+    }).filter(Boolean);
+  }
+  const spec = (p, lang) => {
+    const g = k => p.features.find(f => f[0] === k)?.[1] || '', en = lang === 'en';
+    const r = g(en ? 'Right hand' : 'Права рука').match(en ? /^\d+ [a-z]+/i : /^\d+ [а-яіїєґ]+/i)?.[0], b = g(en ? 'Left hand' : 'Ліва рука').match(/\d+/)?.[0], w = g(en ? 'Weight' : 'Вага').match(en ? /^[\d.]+ ?kg/ : /^[\d,]+ ?кг/)?.[0];
+    return [r, b && `${en ? 'bass' : 'бас'} ${b}`, w].filter(Boolean).join(', ');
+  };
+
+  function html(x) {
+    const { L, esc, url, goods, count, cat, prod, money } = x, N = nodes(x);
+    const vid = (v, p) => `<video src="scenes/web/${v}.webm" poster="scenes/web/${p}-m.webp" muted loop playsinline preload="none" aria-hidden="true"></video>`;
+    const kom = x.inCat(48).find(p => p.img), st = STAGE.filter(s => prod.get(s.id));
+    const restCats = x.roots.filter(r => ![3, 43, 48].includes(r.id) && count(r.id));
+    return `
+    <section class="lab" id="lab" aria-label="${L.labLabel}">
+      <div class="lab-film" id="labFilm"><picture><source media="(max-aspect-ratio: 1/1)" srcset="${VID}start_m.webp${VER}"><img src="${VID}start_d.webp${VER}" alt="${L.labAlt}" fetchpriority="high"></picture></div>
+      <div class="lab-text"><h1>${L.mast.map(w => `<span>${w}</span>`).join(' ')}</h1><p class="lab-hint m">${L.labHint}</p><p class="lab-slogan">${L.slogan}</p>
+        <div class="lab-cta"><a class="btn" href="${url('/c/43')}">${L.instruments}</a><a class="btn ghost" href="${url('/c/3')}">${L.parts}</a></div></div>
+      <p class="lab-hint d" aria-hidden="true">${L.labHint}</p>
+      <div class="lab-dots" id="labDots">${N.map((n, i) => `<button type="button" class="hs ${n.side}" data-n="${i}" aria-label="${esc(L.labFly(n.c.name))}"><span>${esc(n.c.name)}</span></button>`).join('')}</div>
+      <nav class="lab-nav" aria-label="${L.labLabel}">${N.map((n, i) => `<button type="button" data-n="${i}">${esc(n.c.name)}</button>`).join('')}</nav>
+      <aside class="lab-panel" id="labPanel" aria-live="polite"><button type="button" class="lab-x" id="labX" aria-label="${L.labBack}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><h2 id="labH"></h2><p id="labP"></p><ul id="labL"></ul><a class="btn" id="labA"></a></aside>
+    </section>
+    <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="${L.instruments}">
+      <div class="flag-word" id="flagWord" aria-hidden="true">${st[0] ? esc(st[0].w) : ''}</div>
+      <img class="flag-pic" id="flagPic" src="${st[0] ? st[0].src : ''}" alt="${st[0] ? esc(st[0].n) : ''}" loading="lazy" draggable="false">
+      <div class="flag-info" aria-live="polite"><h2 id="flagN">${st[0] ? esc(st[0].n) : ''}</h2><p id="flagS">${st[0] ? esc(spec(prod.get(st[0].id), x.lang)) : ''}</p></div>
+      <div class="flag-buy"><b id="flagP">${st[0] ? money(prod.get(st[0].id).price) : ''}</b><a class="btn" id="flagA" href="${st[0] ? url(`/p/${st[0].id}`) : '#'}">${L.flagOpen}</a></div>
+      <button type="button" class="flag-arr p" aria-label="${L.shelfPrev}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="flag-arr n" aria-label="${L.shelfNext}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="flag-tabs">${st.map((s, i) => `<button type="button" data-s="${i}" aria-pressed="${i === 0}">${esc(s.w)}</button>`).join('')}<a href="${url('/c/43')}">${L.all(goods(count(43)))}</a></div>
+    </section>
+    <section class="bento" aria-label="${L.parts}">
+      <a class="t v big t-a" href="${url('/c/3')}">${vid('buttons', 'buttons')}<h2>${L.parts}</h2><p>${L.bentoParts(goods(count(3)))}</p></a>
+      <a class="t v t-b" href="${url('/c/11')}">${vid('bellows_macro', 'bellows')}<h3>${esc(cat.get(11)?.name || '')}</h3><p>${goods(count(11))}</p></a>
+      <a class="t v t-b" href="${url('/c/6')}">${vid('keys', 'keys')}<h3>${esc(cat.get(6)?.name || '')}</h3><p>${goods(count(6))}</p></a>
+      <a class="t t-e" href="${url('/service')}"><h3>${L.repairFull}</h3><p>${L.bentoRepair}</p></a>
+      <a class="t t-f" href="${url('/c/48')}">${kom ? `<img src="${esc(x.photo(kom))}" alt="" width="800" height="800" loading="lazy">` : ''}<h3>${esc(cat.get(48)?.name || '')}</h3><p>${goods(count(48))}</p></a>
+      <div class="bento-more"><a href="${url('/c/43')}">${L.wallAll} <i>${count(43)}</i></a>${restCats.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)} <i>${count(r.id)}</i></a>`).join('')}</div>
+    </section>
+    <section class="partners dark"><p class="partners-lead wrap"><span>${L.partnersLead}</span></p><div class="marquee" aria-hidden="true">${x.partners}</div></section>`;
+  }
+
+  function init(view, x) {
+    const $ = (s, r = view) => r.querySelector(s), $$ = (s, r = view) => [...r.querySelectorAll(s)];
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ac = new AbortController(), on = (t, e, f, o = {}) => t.addEventListener(e, f, { signal: ac.signal, ...o });
+    addEventListener('sitenav', () => ac.abort(), { once: true });
+    lab(); flag();
+
+    /* Відео мозаїки грають, лише коли їх видно */
+    const vo = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !calm) e.target.play().catch(() => {}); else e.target.pause(); }), { rootMargin: '120px' });
+    $$('.bento video').forEach(v => vo.observe(v));
+    ac.signal.addEventListener('abort', () => vo.disconnect());
+
+    function lab() {
+      const el = $('#lab'), film = $('#labFilm'), N = nodes(x), dots = $$('.hs', el), nav = $$('.lab-nav button', el);
+      let K = portrait() ? 'm' : 'd', cur = null, busy = false, cache = new Map();
+      const place = () => {
+        const W = el.clientWidth, H = el.clientHeight, [fw, fh] = FRAME[K], P = PLACE[K], s = Math.max(W / fw, H / fh), ox = (W - fw * s) / 2, oy = (H - fh * s) / 2;
+        N.forEach((n, i) => { dots[i].style.left = `${ox + (P[0] + n.px / CUT[0] * P[2]) * fw * s}px`; dots[i].style.top = `${oy + (P[1] + n.py / CUT[1] * P[3]) * fh * s}px`; });
+      };
+      on(window, 'resize', () => { const k = portrait() ? 'm' : 'd'; if (k !== K && !cur && !busy) { K = k; cache = new Map(); $$('video', film).forEach(v => v.remove()); } place(); });
+      place();
+      const load = (k, back) => {
+        const u = `${VID}${k}_${K}${back ? '_back' : ''}.mp4${VER}`;
+        // Файл тягнемо цілком самі: айфон не завантажує відео наперед і «canplaythrough» там можна не дочекатись.
+        if (!cache.has(u)) cache.set(u, fetch(u, { signal: ac.signal }).then(r => { if (!r.ok) throw new Error('video'); return r.blob(); }).then(b => {
+          const v = document.createElement('video'); v.muted = true; v.defaultMuted = true; v.playsInline = true; v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.preload = 'auto'; v.setAttribute('aria-hidden', 'true');
+          const src = URL.createObjectURL(b); ac.signal.addEventListener('abort', () => URL.revokeObjectURL(src)); v.src = src; film.append(v); v.load(); return v;
+        }).catch(e => { cache.delete(u); throw e; }));
+        return cache.get(u);
+      };
+      /* Прольоти тягнемо наперед, коли людина вже щось робить і не береже трафік */
+      const net = navigator.connection || {};
+      let warm = false;
+      const heat = () => { if (warm || net.saveData || /2g|3g/.test(net.effectiveType || '')) return; warm = true; (async () => { for (const n of N) { if (ac.signal.aborted) return; await load(n.k).catch(() => {}); } })(); };
+      for (const e of ['pointermove', 'touchstart', 'keydown']) on(window, e, heat, { once: true, passive: true });
+      dots.forEach((d, i) => { for (const e of ['pointerenter', 'focus', 'touchstart']) on(d, e, () => load(N[i].k).catch(() => {}), { once: true, passive: true }); });
+      const only = v => $$('video', film).forEach(o => o.classList.toggle('on', o === v));
+      const play = v => new Promise(ok => { v.currentTime = 0; v.onended = ok; v.play().then(() => requestAnimationFrame(() => requestAnimationFrame(() => only(v)))).catch(() => { try { v.currentTime = Math.max(0, v.duration - .02); } catch { /* */ } only(v); ok(); }); setTimeout(ok, 6000); });
+      const fill = i => {
+        const c = N[i].c, list = x.inCat(c.id).filter(p => p.price && p.img).slice(0, 5);
+        $('#labH').textContent = c.name; $('#labP').textContent = x.goods(x.count(c.id)); const a = $('#labA'); a.href = x.url(`/c/${c.id}`); a.textContent = x.L.labAll;
+        $('#labL').innerHTML = list.map(p => `<li><a href="${x.url(`/p/${p.id}`)}"><img src="${x.esc(x.photo(p))}" alt="" width="64" height="64"><span>${x.esc(p.name)}</span><b>${x.money(p.price)}</b></a></li>`).join('');
+        nav.forEach((b, k) => b.setAttribute('aria-current', k === i));
+      };
+      async function fly(i) {
+        if (busy || cur === i) return; busy = true;
+        const d = dots[i], wait = setTimeout(() => d.classList.add('busy'), 160);
+        const v = calm ? null : await Promise.race([load(N[i].k).catch(() => null), new Promise(ok => setTimeout(ok, 8000, null))]);   // повільний інтернет: показуємо деталі без польоту
+        clearTimeout(wait); d.classList.remove('busy');
+        if (ac.signal.aborted) return;
+        fill(i); el.classList.add('is-fly');
+        if (v) { const p = play(v); setTimeout(() => el.classList.add('is-open'), Math.max(0, (v.duration || 2.6) * 1000 - 600)); await p; load(N[i].k, true).catch(() => {}); }
+        el.classList.add('is-open'); if (v) film.classList.add('rest');
+        cur = i; busy = false; $('#labX').focus({ preventScroll: true });
+      }
+      async function back(focus = true) {
+        if (busy || cur === null) return; busy = true;
+        const i = cur; el.classList.remove('is-open'); film.classList.remove('rest');
+        const v = calm ? null : await load(N[i].k, true).catch(() => null);
+        if (v) await play(v);
+        only(null); el.classList.remove('is-fly'); nav.forEach(b => b.removeAttribute('aria-current')); cur = null; busy = false; if (focus) dots[i].focus({ preventScroll: true });
+      }
+      const swap = async i => { if (i === cur || busy) return; if (cur !== null) await back(false); await fly(i); };
+      dots.forEach((d, i) => on(d, 'click', () => fly(i))); nav.forEach((b, i) => on(b, 'click', () => swap(i)));
+      on($('#labX'), 'click', () => back()); on(film, 'click', () => back()); on(window, 'keydown', e => { if (e.key === 'Escape' && cur !== null) back(); });
+    }
+
+    function flag() {
+      const el = $('#flag'), S = STAGE.filter(s => x.prod.get(s.id)), pic = $('#flagPic'), word = $('#flagWord'), tabs = $$('.flag-tabs button', el);
+      if (!S.length) return;
+      let cur = 0, busy = false;
+      const size = w => `${innerWidth > 860 ? Math.min(23, 150 / w.length) : Math.min(24, 126 / w.length)}vw`;
+      const paint = i => { const s = S[i], p = x.prod.get(s.id); el.style.setProperty('--tone', s.tone); word.textContent = s.w; word.style.fontSize = size(s.w); pic.src = s.src; pic.alt = s.n; $('#flagN').textContent = s.n; $('#flagS').textContent = spec(p, x.lang); $('#flagP').textContent = x.money(p.price); $('#flagA').href = x.url(`/p/${s.id}`); tabs.forEach((b, k) => b.setAttribute('aria-pressed', k === i)); };
+      paint(0); on(window, 'resize', () => { word.style.fontSize = size(S[cur].w); });
+      const seen = new IntersectionObserver(es => { if (es[0].isIntersecting) { seen.disconnect(); S.forEach(s => { new Image().src = s.src; }); } }, { rootMargin: '300px' }); seen.observe(el);
+      async function show(i, d) {
+        i = (i + S.length) % S.length; if (busy || i === cur) return; busy = true; d = d || (i > cur ? 1 : -1); cur = i;
+        if (!calm) { const o = { duration: 260, easing: 'ease-in', fill: 'forwards' }; word.animate([{ opacity: 1 }, { opacity: 0, transform: `translateX(${-d * 6}vw)` }], o); await pic.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-d * 22}vw) rotate(${-d * 5}deg) scale(.9)` }], o).finished.catch(() => {}); }
+        paint(i); await pic.decode().catch(() => {}); [...pic.getAnimations(), ...word.getAnimations()].forEach(a => a.cancel());
+        if (!calm) { const o = { duration: 620, easing: 'cubic-bezier(.16,.9,.2,1)' }; word.animate([{ opacity: 0, transform: `translateX(${d * 6}vw)` }, { opacity: 1, transform: 'none' }], o); pic.animate([{ opacity: 0, transform: `translateX(${d * 26}vw) rotate(${d * 6}deg) scale(.88)` }, { opacity: 1, transform: 'none' }], o); }
+        busy = false;
+      }
+      tabs.forEach((b, i) => on(b, 'click', () => show(i))); on($('.flag-arr.p', el), 'click', () => show(cur - 1, -1)); on($('.flag-arr.n', el), 'click', () => show(cur + 1, 1));
+      on(el, 'keydown', e => { if (e.target.closest('a')) return; if (e.key === 'ArrowLeft') show(cur - 1, -1); if (e.key === 'ArrowRight') show(cur + 1, 1); });
+      let sx = null, sy = 0; on(el, 'pointerdown', e => { sx = e.target.closest('a,button') ? null : e.clientX; sy = e.clientY; }); on(el, 'pointerup', e => { if (sx !== null && Math.abs(e.clientX - sx) > 50 && Math.abs(e.clientX - sx) > Math.abs(e.clientY - sy)) show(cur + (e.clientX < sx ? 1 : -1), e.clientX < sx ? 1 : -1); sx = null; }); on(el, 'pointercancel', () => { sx = null; });
+    }
+  }
+  return { html, init };
+})();
