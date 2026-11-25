@@ -2,10 +2,10 @@
    далі сцена чотирьох флагманів, мозаїка запчастин і майстерні, партнери. Малює app.js → home(), тут розмітка й поведінка.
    Прольоти: tools/fly.py → tools/fly_web.py, scenes/fly/web/<вузол>_<d|m>[_back].mp4. */
 window.ACC_HOME = (() => {
-  const VID = 'scenes/fly/web/', VER = '?v=1';
+  const VID = 'scenes/fly/web/', VER = '?v=2';
   // Точки в пікселях вирізаного фото виробника (1727×1228); де воно лежить у кадрі — tools/fly_frames.py (frames.json).
   const CUT = [1727, 1228], PLACE = { d: [.159896, .17739, .530208, .665441], m: [.110294, .303125, .780331, .314063] }, FRAME = { d: [1920, 1088], m: [1088, 1920] };
-  const NODES = [['buttons', 5, 320, 900, 'l'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, 'r'], ['bellows', 11, 1211, 330, 'r'], ['bass', 7, 1520, 690, 'r'], ['strap', /^(Ремені|Straps)/i, 420, 130, 'l']];
+  const NODES = [['buttons', 5, 320, 900, 'l m'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, 'r'], ['bellows', 11, 1211, 330, 'r m'], ['bass', 7, 1520, 690, 'r m'], ['strap', /^(Ремені|Straps)/i, 420, 130, 'l']];
   const STAGE = [
     { id: 301, w: 'Pigini', n: 'Pigini Nova', src: 'img/flag/301.webp', tone: '#7d1528' }, { id: 554, w: 'Bugari', n: 'Bugari Armando 2 RC Cassotto', src: 'img/flag/554.webp', tone: '#8b4a1f' },
     { id: 377, w: 'Scandalli', n: 'Scandalli BJP-442 ST', src: 'img/stage2/377.webp', tone: '#3d4650' }, { id: 387, w: 'Fisitalia', n: 'Fisitalia B-61', src: 'img/flag/387.webp', tone: '#0e5a52' },

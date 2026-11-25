@@ -90,7 +90,7 @@ body::after { display: none; }
 @media (min-width: 961px) and (max-width: 1180px) { .top-row .brand-name { display: none; } }
 
 /* Сцена над розділом: міх, клавіші, ґудзики */
-.cat-reel { margin-top: calc(var(--top-h, 74px) * -1); } .cat-reel .reel-stage, .cat-reel .reel-stage:first-child { height: min(52svh, 520px); min-height: 0; background: #151112; }
+.cat-reel { margin-top: calc(var(--top-h, 74px) * -1); } .cat-reel .reel-stage, .cat-reel .reel-stage:first-child { height: min(34svh, 320px); min-height: 0; background: #151112; }
 .cat-reel canvas.reel-vid, .cat-reel canvas.reel-vid[data-band] { inset: -9% 0; height: 118%; -webkit-mask-image: none; mask-image: none; background-size: cover; background-position: 50% 50%; }
 .cat-reel .reel-stage::before { content: ""; position: absolute; z-index: 1; inset: 0; background: linear-gradient(rgba(18, 14, 15, .45), transparent 34%, transparent 62%, rgba(18, 14, 15, .3)); pointer-events: none; }
 /* Крихти на телефоні в один рядок */
@@ -112,3 +112,15 @@ body:has(#scrim:not([hidden])) .ask-fab, body:has(dialog[open]) .ask-fab, body:h
 :root { --top-h: 74px; }
 @media (max-width: 960px) { :root { --top-h: 66px; } }
 :lang(en) .foot-call { font-size: clamp(1.6rem, 6.6vw, 6.6rem); }
+
+/* Фільтри: на телефоні за кнопкою, товари видно одразу */
+.filt-btn { display: none; }
+@media (max-width: 960px) { .filt-btn { display: inline-flex; min-height: 46px; align-items: center; margin-bottom: 14px; } .toolbar.can-fold { display: none; } .toolbar.can-fold.is-open { display: flex; } .cat-reel .reel-stage, .cat-reel .reel-stage:first-child { height: 24svh; } }
+/* Підрозділи на ПК уже є в боковому списку */
+@media (min-width: 961px) { .cat-layout .chips { display: none; } }
+/* Ремонт: поруч із текстом живі деталі */
+.svc-media { display: grid; gap: 14px; } .svc-media video { width: 100%; border-radius: 22px; object-fit: cover; aspect-ratio: 16 / 10; background: #151112; }
+@media (min-width: 961px) { .page.wrap:has(.svc-media) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 44%); column-gap: clamp(32px, 6vw, 100px); align-content: start; } .page.wrap:has(.svc-media) > * { grid-column: 1; } .page.wrap:has(.svc-media) > h1 { grid-column: 1 / -1; max-width: none; } .page.wrap > .svc-media { grid-column: 2; grid-row: 2 / span 20; max-width: none; position: sticky; top: 104px; align-self: start; } }
+/* Дорогий інструмент стоїть на світлі, а не в білому квадраті */
+.product.inst .gallery-main { background: radial-gradient(62% 58% at 50% 44%, #fff 30%, #e9e5e1 100%); } .product.inst .gallery-main img { mix-blend-mode: multiply; }
+@media (max-width: 960px) { .svc-media { margin-bottom: 22px; } .svc-media video + video { display: none; } }

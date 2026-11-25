@@ -90,3 +90,8 @@
 @media (min-aspect-ratio: 1/1) { .is-open .lab-film { translate: calc(min(440px, 100%) * -.42) 0; } }
 @media (max-aspect-ratio: 1/1) { .is-open .lab-film { translate: 0 -20%; } }
 @media (prefers-reduced-motion: reduce) { .lab-film { transition: none; } }
+
+/* Телефон: підписи хоч на трьох точках, щоб було видно, що їх можна торкати */
+@media (max-aspect-ratio: 1/1) and (max-width: 619px) { .hs.m span { display: block; font-size: .82rem; padding: 3px 10px; left: 50%; right: auto; top: 40px; translate: -50% 0; } }
+/* Слово бренду видно над інструментом, а не лише краями */
+@media (min-width: 861px) { .flag-word { inset: calc(var(--top-h, 74px) + 5.5svh) 0 auto; translate: none; color: rgba(255, 255, 255, .2); } .flag-pic { top: 55%; } }

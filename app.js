@@ -298,7 +298,8 @@
       if (state.sort === 'name') items.sort((a, b) => a.name.localeCompare(b.name, L.locale));
       if (!all.length) { root.innerHTML = `<div class="empty"><h2>${L.emptyH}</h2><p>${esc(emptyText)}</p><a class="btn" href="${url(`/`)}">${L.toCatalog}</a></div>`; return; }
       root.innerHTML = `
-        <div class="toolbar">
+        ${inst ? `<button type="button" class="chip filt-btn" aria-expanded="${!!state.open}">${L.fBtn}${(n => n ? ` · ${n}` : '')([f.min, f.max, f.bass, f.kg, state.brand].filter(Boolean).length)}</button>` : ''}
+        <div class="toolbar${inst ? ' can-fold' : ''}${state.open ? ' is-open' : ''}">
           <label>${L.sort} <select id="sort"><option value="default">${L.sortDefault}</option><option value="cheap">${L.sortCheap}</option><option value="dear">${L.sortDear}</option><option value="name">${L.sortName}</option></select></label>
           ${brands.length > 1 ? `<div class="brands" role="group" aria-label="${L.maker}">${brands.map(b => `<button class="chip" data-brand="${esc(b)}" aria-pressed="${state.brand === b}">${esc(b)}</button>`).join('')}</div>` : ''}
           ${inst ? `<div class="filters">
@@ -319,6 +320,7 @@
     root.addEventListener('click', e => {
       const b = e.target.closest('[data-brand]');
       if (b) { state.brand = state.brand === b.dataset.brand ? '' : b.dataset.brand; state.shown = PAGE; paint(); }
+      if (e.target.closest('.filt-btn')) { state.open = !state.open; paint(); $('.filt-btn', root).focus({ preventScroll: true }); }
       if (e.target.closest('[data-clear]')) { Object.assign(f, { min: 0, max: 0, bass: 0, kg: 0 }); state.brand = ''; paint(); $('#sort', root).focus({ preventScroll: true }); }
       if (e.target.id === 'more') { state.shown += PAGE; paint(); }
     });
@@ -490,12 +492,14 @@
 
   const PAGES = {
     delivery: [L.delivery, links(L.pages.delivery)],
-    service: [L.repairFull, `${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
+    service: [L.repairFull, `<div class="svc-media" aria-hidden="true"><video src="scenes/web/bellows_macro.webm" poster="scenes/web/bellows-m.webp" muted loop playsinline preload="none"></video><video src="scenes/web/buttons.webm" poster="scenes/web/buttons-m.webp" muted loop playsinline preload="none"></video></div>${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
     contacts: [L.contacts, `<p><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>
       <p><a class="contact-big" style="font-size:1.4rem" href="mailto:${MAIL}">${MAIL}</a></p>
       <h2>${L.footTitle}</h2>${links(L.pages.contacts)}<div id="letterBox"></div>`],
   };
-  function page(key) { const [h, body] = PAGES[key]; title(h); out.html = `${crumbs([{ name: h }])}<article class="wrap page"><h1>${h}</h1>${body}</article>`; if (key === 'contacts') window.ACC_CHAT?.mountLetter($('#letterBox')); }
+  function page(key) { const [h, body] = PAGES[key]; title(h); out.html = `${crumbs([{ name: h }])}<article class="wrap page"><h1>${h}</h1>${body}</article>`; if (key === 'contacts') window.ACC_CHAT?.mountLetter($('#letterBox'));
+    if (key === 'service' && !matchMedia('(prefers-reduced-motion: reduce)').matches) { const vo = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.play().catch(() => {}); else e.target.pause(); })); $$('.svc-media video').forEach(v => vo.observe(v)); }
+  }
   function notFound() { title(L.nfTitle); out.html = `<div class="wrap empty"><h1>${L.nfH}</h1><p>${L.nfP}</p><a class="btn" href="${url(`/`)}">${L.toCatalog}</a></div>`; }
 
   /* ── Маршрути ── */
