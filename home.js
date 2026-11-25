@@ -8,7 +8,7 @@ window.ACC_HOME = (() => {
   const NODES = [['buttons', 5, 320, 900, 'l m'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, 'r'], ['bellows', 11, 1211, 330, 'r m'], ['bass', 7, 1520, 690, 'r m'], ['strap', /^(Ремені|Straps)/i, 420, 130, 'l']];
   const STAGE = [
     { id: 301, w: 'Pigini', n: 'Pigini Nova', src: 'img/flag/301.webp', tone: '#7d1528' }, { id: 554, w: 'Bugari', n: 'Bugari Armando 2 RC Cassotto', src: 'img/flag/554.webp', tone: '#8b4a1f' },
-    { id: 377, w: 'Scandalli', n: 'Scandalli BJP-442 ST', src: 'img/stage2/377.webp', tone: '#3d4650' }, { id: 387, w: 'Fisitalia', n: 'Fisitalia B-61', src: 'img/flag/387.webp', tone: '#0e5a52' },
+    { id: 541, w: 'Scandalli', n: 'Scandalli Super VI', src: 'img/stage2/541.webp', tone: '#3d4650' }, { id: 387, w: 'Fisitalia', n: 'Fisitalia B-61', src: 'img/flag/387.webp', tone: '#0e5a52' },
   ];
   const portrait = () => matchMedia('(max-aspect-ratio: 1/1)').matches;
 
