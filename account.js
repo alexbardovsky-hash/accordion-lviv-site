@@ -108,7 +108,8 @@
     if (!r.ok) throw Object.assign(new Error(d.error || 'other'), { data: d });
     return d;
   }
-  const errText = e => { const f = T.err[e.message] || T.err.other; return typeof f === 'function' ? f(e.message === 'rate' ? e.data?.retry || 60 : e.data?.min || e.data?.max || COMPARE_MAX) : f; };
+  const errText = e => { if (!API) return T.offline;   // тестова копія без сервера: кажемо прямо, а не «щось пішло не так»
+    const f = T.err[e.message] || T.err.other; return typeof f === 'function' ? f(e.message === 'rate' ? e.data?.retry || 60 : e.data?.min || e.data?.max || COMPARE_MAX) : f; };
   const apply = d => {   // відповідь сервера з профілем, обраним і порівнянням
     if (d.token) auth = { token: d.token, profile: d.profile }; else if (auth && d.profile) auth.profile = d.profile;
     if (auth) ls.set('bac-auth', auth);
