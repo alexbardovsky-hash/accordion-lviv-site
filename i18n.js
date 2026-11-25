@@ -86,6 +86,7 @@
     cartAria: g => `Кошик, ${g}`, cartAriaEmpty: 'Кошик, порожній', remove: 'Прибрати',
     placeOrder: 'Оформити замовлення', keepShopping: 'Продовжити покупки',
     cartEmptyP: 'Додайте товар кнопкою з плюсом у каталозі або на сторінці товару.',
+    searchNear: 'Точного збігу немає, показуємо схожі.', searchPage: 'Про це є сторінка:', searchCats: 'Подивіться в розділах',
     showAll: g => `Показати всі ${g}`, noneFound: 'Нічого не знайшлося. Спробуйте коротше слово або артикул.',
   };
 
@@ -172,6 +173,7 @@
     cartAria: g => `Cart, ${g}`, cartAriaEmpty: 'Cart, empty', remove: 'Remove',
     placeOrder: 'Go to checkout', keepShopping: 'Keep shopping',
     cartEmptyP: 'Add a product with the plus button in the catalogue or on its page.',
+    searchNear: 'No exact match, showing similar items.', searchPage: 'There is a page about this:', searchCats: 'Try these sections',
     showAll: g => `Show all ${g}`, noneFound: 'Nothing found. Try a shorter word or an item number.',
   };
 

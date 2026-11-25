@@ -124,3 +124,9 @@ body:has(#scrim:not([hidden])) .ask-fab, body:has(dialog[open]) .ask-fab, body:h
 /* Дорогий інструмент стоїть на світлі, а не в білому квадраті */
 .product.inst .gallery-main { background: radial-gradient(62% 58% at 50% 44%, #fff 30%, #e9e5e1 100%); } .product.inst .gallery-main img { mix-blend-mode: multiply; }
 @media (max-width: 960px) { .svc-media { margin-bottom: 22px; } .svc-media video + video { display: none; } }
+/* Пошук: підказки, коли точного збігу немає */
+.near { margin: -6px 0 20px; color: var(--muted, #555); }
+.near a { text-decoration: underline; }
+.near-cats { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 4px 0 60px; }
+.near-cats p { flex-basis: 100%; text-align: center; margin: 0 0 4px; }
+.near-cats .chip { display: inline-flex; align-items: center; min-height: 44px; }

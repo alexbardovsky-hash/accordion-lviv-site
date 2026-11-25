@@ -31,9 +31,6 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const money = L.money, goods = L.goods;
-  // Пошук прощає різне написання: і/и, ґ/г, подвоєні літери. Шукаємо і за українською назвою, і за назвою поточною мовою.
-  const norm = s => String(s).toLowerCase().replace(/[іїи]/g, 'и').replace(/[єэ]/g, 'е').replace(/ґ/g, 'г').replace(/ы/g, 'и').replace(/ё/g, 'е').replace(/[ʼ'’`"«»]/g, '').replace(/кк/g, 'к').replace(/лл/g, 'л');
-
   /* ── Індекси ── */
   const cat = new Map(C.cats.map(c => [c.id, c]));
   const prod = new Map(C.products.map(p => [p.id, p]));
@@ -46,15 +43,10 @@
   }
   const count = id => inCat.get(id)?.length || 0;
   const path = id => { const out = []; for (let c = cat.get(id); c; c = cat.get(c.parent)) out.unshift(c); return out; };
-  for (const p of C.products) p._n = norm(`${p.name} ${p.uk} ${p.orig} ${p.ref} ${p.brand || ''} ${p.short}${p.cats.some(c => BAYAN_CATS.has(c)) ? ' баян' : ''}`);
-
-  const search = q => {
-    const words = norm(q).split(/\s+/).filter(Boolean);
-    if (!words.length) return [];
-    return C.products
-      .map(p => { const name = norm(p.name); let s = 0; for (const w of words) { if (!p._n.includes(w)) return null; s += name.startsWith(w) ? 3 : name.includes(w) ? 2 : 1; } return { p, s }; })
-      .filter(Boolean).sort((a, b) => b.s - a.s || a.p.name.localeCompare(b.p.name, L.locale)).map(x => x.p);
-  };
+  // Пошук (search.js): назва поточною мовою й українською, артикул, бренд, розділи; терпить помилки й різне написання.
+  const look = window.ACC_SEARCH.make(C.products.map(p => ({ p, name: p.name, more: `${p.uk} ${p.orig} ${p.ref} ${p.brand || ''} ${p.short}`, cats: p.cats.map(c => cat.get(c)?.name || '').join(' '), instrument: p.cats.some(c => path(c)[0]?.id === 43), bayan: p.cats.some(c => BAYAN_CATS.has(c)) })));
+  // Запитують не лише товар: «ремонт», «доставка», «адреса» ведуть на свою сторінку.
+  const pageFor = q => [['service', /ремонт|сервіс|налашту|настрой|repair|tuning|servic/i, L.repairFull], ['delivery', /достав|оплат|нова\s?пошт|самовив|deliver|shipping|payment|\bpay\b/i, L.delivery], ['contacts', /контакт|адрес|телефон|графік|години|contact|address|phone|hours/i, L.contacts]].find(x => x[1].test(q));
 
   /* ── Кошик ── */
   let cart = {};
@@ -270,8 +262,8 @@
   function results(query) {
     const q = (query.get('q') || '').trim();
     title(L.searchTitle(q));
-    const found = search(q);
-    out.html = `${crumbs([{ name: L.search }])}<div class="wrap"><div class="cat-head"><h1>${q ? esc(L.quote(q)) : L.search}</h1><small>${goods(found.length)}</small></div><div id="list"></div></div>`;
+    const { items: found, fuzzy } = look(q), pg = pageFor(q);
+    out.html = `${crumbs([{ name: L.search }])}<div class="wrap"><div class="cat-head"><h1>${q ? esc(L.quote(q)) : L.search}</h1><small>${goods(found.length)}</small></div>${fuzzy ? `<p class="near">${L.searchNear}</p>` : ''}${pg ? `<p class="near">${L.searchPage} <a href="${url(`/${pg[0]}`)}">${pg[2]}</a></p>` : ''}<div id="list"></div>${found.length ? '' : `<nav class="near-cats" aria-label="${L.searchCats}"><p>${L.searchCats}</p>${[43, 4, 11, 26, 31, 39, 40].filter(id => cat.get(id) && count(id)).map(id => `<a class="chip" href="${url(`/c/${id}`)}">${esc(cat.get(id).name)}</a>`).join('')}</nav>`}</div>`;
     const brands = [...new Set(found.map(p => p.brand).filter(Boolean))].sort();
     listing($('#list'), found, { sort: query.get('sort') || 'default', brand: query.get('brand') || '', shown: Math.max(PAGE, +query.get('n') || 0), query }, brands, null, L.emptySearch(q, PHONE_TEXT));
   }
@@ -615,10 +607,10 @@
   q.addEventListener('input', () => {
     const v = q.value.trim();
     if (v.length < 2) return hideSuggest();
-    const found = search(v);
-    sug.innerHTML = found.length
+    const { items: found } = look(v), pg = pageFor(v);
+    sug.innerHTML = (pg ? `<a class="all" href="${url(`/${pg[0]}`)}" style="display:block">${pg[2]}</a>` : '') + (found.length
       ? found.slice(0, 6).map(p => `<a href="${url(`/p/${p.id}`)}">${pic(p)}<span>${esc(p.name)}<small>${esc(cat.get(p.cat)?.name || '')}</small></span>${p.price ? `<b>${money(p.price)}</b>` : ''}</a>`).join('') + (found.length > 6 ? `<a class="all" href="${url(`/search?q=${encodeURIComponent(v)}`)}" style="display:block">${L.showAll(goods(found.length))}</a>` : '')
-      : `<p class="none">${L.noneFound}</p>`;
+      : pg ? '' : `<p class="none">${L.noneFound}</p>`);
     sug.hidden = false; q.setAttribute('aria-expanded', 'true'); active = -1;
   });
   q.addEventListener('keydown', e => {
