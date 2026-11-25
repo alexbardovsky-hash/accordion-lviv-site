@@ -99,3 +99,49 @@
 @media (min-width: 861px) { .flag-word { inset: calc(var(--top-h, 74px) + 5.5svh) 0 auto; translate: none; color: rgba(255, 255, 255, .2); } .flag-pic { top: 55%; } }
 .is-placed:not(.is-fly) .hs { visibility: visible; }
 @media (max-aspect-ratio: 1/1) and (max-width: 619px) { .hs.busy span { display: block; font-size: .82rem; padding: 3px 10px; left: 50%; right: auto; top: 54px; translate: -50% 0; background: var(--red); } }
+
+/* ── Спершу акордеон (25.11): ціна на першому екрані, панель вузла продає інструмент ── */
+.lab-model { font: 500 1rem/1.3 var(--ui); color: var(--night-muted); } .lab-model b { color: var(--night-ink); font-weight: 600; white-space: nowrap; margin-left: 8px; }
+.lab-own { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; padding-bottom: 18px; border-bottom: 1px solid rgba(246, 241, 234, .18); }
+.lab-own p { color: var(--night-ink); line-height: 1.3; } .lab-own b { display: block; font: 600 1.45rem/1.2 var(--display); letter-spacing: -.04em; white-space: nowrap; margin-top: 4px; } .lab .lab-own .btn { min-height: 50px; padding: 0 26px; }
+.lab-panel h3 { font: 500 1rem/1.3 var(--ui); color: var(--night-muted); }
+.lab-parts { margin-top: auto; align-self: flex-start; padding: 12px 0 4px; font-size: .95rem; color: var(--night-muted); text-decoration: underline; text-underline-offset: 4px; } .lab-parts:hover { color: #fff; }
+
+/* ── Вибір акордеона ── */
+.pick { --pad: clamp(18px, 3.2vw, 56px); background: #efe8e1; color: #1a1213; padding: clamp(56px, 7vw, 120px) var(--pad) clamp(34px, 4vw, 64px); display: grid; grid-template-columns: 1fr 1fr; gap: clamp(26px, 3vw, 48px) clamp(20px, 4vw, 72px); }
+.pick > h2 { grid-column: 1 / -1; font: 700 clamp(2rem, 4.4vw, 4.6rem)/1 var(--display); letter-spacing: -.06em; text-wrap: balance; }
+.pk { display: grid; grid-template-rows: 1fr auto auto; gap: 14px; } .pk-go { display: grid; place-items: center; } .pk-go img { width: 100%; height: clamp(220px, 46svh, 520px); object-fit: contain; filter: drop-shadow(0 30px 26px rgba(40, 20, 14, .3)); transition: rotate .6s cubic-bezier(.2, .8, .2, 1), scale .6s cubic-bezier(.2, .8, .2, 1); } .pk-go:hover img { rotate: -2deg; scale: 1.03; }
+.pk h3 { font: 600 clamp(1.5rem, 2.6vw, 2.7rem)/1.05 var(--display); letter-spacing: -.05em; }
+.pk-l, .pk-brands { display: flex; flex-wrap: wrap; gap: 10px; } .pk-l a, .pk-brands a { min-height: 50px; display: inline-flex; align-items: center; gap: 9px; padding: 0 22px; border-radius: 999px; text-decoration: none; transition: background .2s, color .2s, border-color .2s; }
+.pk-l a { background: #1a1213; color: #fff; } .pk-l a:hover { background: var(--red); } .pk-brands a { border: 1.5px solid rgba(26, 18, 19, .3); } .pk-brands a:hover { background: #1a1213; border-color: #1a1213; color: #fff; }
+.pk-l i, .pk-brands i { font-style: normal; opacity: .66; font-size: .88em; }
+.pk-brands { grid-column: 1 / -1; align-items: center; padding-top: clamp(20px, 2.4vw, 34px); border-top: 1px solid rgba(26, 18, 19, .18); } .pk-brands span { margin-right: 10px; color: #5b4f4b; }
+
+/* ── Мозаїка після флагманів: порада й комісійний, нижче ремонт, аксесуари, запчастини ── */
+.bento { grid-template-rows: minmax(clamp(220px, 36svh, 360px), auto) auto minmax(clamp(200px, 32svh, 320px), auto); }
+.bento .t-e { grid-column: span 8; } .bento .t-f { grid-column: span 4; } .bento .t-b { grid-column: span 4; } .bento .t-e:hover { background: var(--red); }
+.bento .t-e h3 { font-size: clamp(1.7rem, 3.2vw, 3.2rem); letter-spacing: -.055em; line-height: 1; } .bento .t-e p { margin-top: 14px; font-size: 1.05rem; max-width: 44ch; }
+.t-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; } .t-cta .btn { min-height: 52px; display: inline-flex; align-items: center; padding: 0 26px; border-radius: 999px; background: #fff; border: 1.5px solid #fff; color: #1a1213; } .t-cta .btn:hover { background: #120e0f; border-color: #120e0f; color: #fff; } .t-cta .btn.ghost { background: none; color: #fff; border-color: rgba(255, 255, 255, .7); box-shadow: none; } .t-cta .btn.ghost:hover { background: #fff; color: #1a1213; }
+.bento-h { grid-column: 1 / -1; font: 600 clamp(1.5rem, 2.4vw, 2.4rem)/1.1 var(--display); letter-spacing: -.05em; padding: clamp(26px, 3vw, 44px) 4px 4px; }
+
+/* ── Меню: акордеони окремою темною смугою вгорі ── */
+.top-row .nav-inst { text-decoration: none; } .top-row #megaBtn { background: none; border: 1.5px solid rgba(246, 241, 234, .4); } .top-row #megaBtn:hover, .top-row #megaBtn[aria-expanded="true"] { background: var(--night-ink); border-color: var(--night-ink); color: #141112; }
+.mega-main { display: grid; grid-template-columns: minmax(220px, 1fr) 1.4fr 1.4fr; gap: clamp(20px, 3vw, 56px); padding-block: 30px 28px; border-bottom: 1px solid var(--line); }
+.mega-main a { text-decoration: none; } .mega-main a:hover { color: var(--red); } .mega-main i { font-style: normal; color: var(--muted); font-weight: 400; font-size: .5em; letter-spacing: 0; } .mega-big { display: block; font: 700 clamp(1.7rem, 2.4vw, 2.5rem)/1 var(--display); letter-spacing: -.055em; } .mega-used { display: inline-block; margin-top: 16px; } .mega-used i { font-size: .85em; }
+.mega-main ul { list-style: none; margin: 0; padding: 0; columns: 2 170px; column-gap: 32px; } .mega-main li { break-inside: avoid; } .mega-main li a { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; font-weight: 500; } .mega-main li span { color: var(--muted); font-size: .85rem; font-weight: 400; }
+.mega .mega-grid { padding-block: 24px 10px; }
+.dr-main > summary { font: 600 1.25rem/1.2 var(--display); letter-spacing: -.04em; }
+
+@media (max-width: 860px) {
+  .pick { grid-template-columns: 1fr; } .pk-go img { height: clamp(200px, 34svh, 340px); } .pk-l a, .pk-brands a { min-height: 48px; padding: 0 18px; } .pk-brands span { flex-basis: 100%; }
+  .bento { grid-template-rows: none; } .bento .t-e, .bento .t-f { grid-column: 1 / -1; } .bento .t-b { grid-column: 1 / -1; min-height: 170px; } .bento .t-f { min-height: 230px; }
+}
+@media (max-aspect-ratio: 1/1) { .lab-model { display: flex; justify-content: space-between; gap: 10px; } .lab-panel { gap: 12px; } .lab-own { padding-bottom: 12px; flex-wrap: nowrap; } .lab-panel h2 { font-size: 1.7rem; } .lab-own b { font-size: 1.2rem; } .lab .lab-own .btn { min-height: 46px; padding: 0 20px; } }
+/* Шапка над світлою смугою вибору лишається темною й читається */
+.is-home .top-row { background: rgba(21, 17, 18, .84); }
+.mega .mega-grid { columns: 6 170px; column-gap: 34px; } .mega-grid .mega-col { margin-bottom: 20px; } .mega-grid .mega-col li a { padding: 2px 0; font-size: .95rem; } .mega-main { padding-block: 24px 20px; } .mega .mega-info { margin-top: 4px; }
+.bento .t-f::after { content: ""; position: absolute; z-index: -1; inset: 35% 0 0; background: linear-gradient(transparent, #efe8e1 62%); }
+@media (max-aspect-ratio: 1/1) and (max-width: 619px) { .lab-cta .btn { flex: 1 1 auto; white-space: nowrap; padding: 0 14px; } }
+@media (min-width: 961px) and (max-width: 1240px) { .top-row { gap: 10px; } .top-row .cart-label { display: none; } .top-row .nav-cat { padding: 0 15px; } }
+@media (max-width: 1100px) and (min-aspect-ratio: 1/1) { .lab-slogan { display: none; } }
+@media (max-width: 380px) { .lab-cta { gap: 8px; } .lab-cta .btn { font-size: .95rem; padding: 0 10px; } }

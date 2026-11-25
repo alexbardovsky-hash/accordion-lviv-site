@@ -35,7 +35,9 @@
   /* ── Індекси ── */
   const cat = new Map(C.cats.map(c => [c.id, c]));
   const prod = new Map(C.products.map(p => [p.id, p]));
-  const roots = C.cats.filter(c => c.parent == null);
+  // Акордеони завжди перші: у меню, підвалі, бічному списку (Алекс 25.11: спершу продаємо інструмент).
+  const RANK = [43, 48, 38, 3], rank = c => (i => i < 0 ? RANK.length : i)(RANK.indexOf(c.id));
+  const roots = C.cats.filter(c => c.parent == null).sort((a, b) => rank(a) - rank(b));
   const subtree = id => { const out = [id]; for (const ch of cat.get(id)?.children || []) out.push(...subtree(ch)); return out; };
   const inCat = new Map();
   for (const c of C.cats) {
@@ -242,6 +244,7 @@
     const brands = [...new Set(all.map(p => p.brand).filter(Boolean))].sort();
     const state = { sort: query.get('sort') || 'default', brand: query.get('brand') || '', shown: Math.max(PAGE, +query.get('n') || 0), query };
     const top = path(id)[0];
+    if ([3, 38, 65].includes(top.id)) setFoot(L.footLead);
     const scene = { 11: 'bellows', 6: 'keys', 5: 'buttons' }[id];   // макросцени з колишньої головної живуть у своїх розділах
     out.html = `
       ${scene ? `<section class="reel cat-reel" id="reel" aria-hidden="true"><div class="reel-stage" data-key="${scene}"><canvas class="reel-vid is-on"${scene === 'keys' ? ' data-band' : ''} style="${poster(scene)}"></canvas><div class="reel-card" hidden></div></div></section>` : ''}
@@ -504,7 +507,7 @@
   /* ── Маршрути ── */
   const setFoot = (t, p) => { const e = $('.foot-lead'); if (e) e.textContent = p && !(p.price >= 20000 && p.cats.some(c => path(c)[0]?.id === 43 || c === 48)) ? L.footLead : t; };
   function route(y = 0) {
-    setFoot(L.footLead);
+    setFoot(L.footLeadInst);
     const [p, qs] = here().split('?');
     const seg = p.split('/').filter(Boolean), query = new URLSearchParams(qs || '');
     closePanels(); view.onclick = null;
@@ -541,14 +544,16 @@
   $('#footCats p')?.remove();   // у готовій сторінці список уже є
   $('#footCats').insertAdjacentHTML('beforeend', `<p>${roots.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a>`).join('<br>')}</p>`);
   // Найбільший розділ розкладаємо на групи, щоб колонки меню були рівними.
-  const megaCols = roots.flatMap(r => r.children.some(k => cat.get(k).children.length) ? r.children.map(k => cat.get(k)) : r.children.length ? [r] : []);
-  const megaRest = roots.filter(r => !r.children.length && count(r.id));
-  $('#mega').innerHTML = `<div class="wrap mega-grid">${megaCols.filter(c => count(c.id)).map(c => `<div class="mega-col"><a href="${url(`/c/${c.id}`)}">${esc(c.name)}</a>${tree(c.children, 2)}</div>`).join('')}
+  const megaCols = roots.filter(r => r.id !== 43).flatMap(r => r.children.some(k => cat.get(k).children.length) ? r.children.map(k => cat.get(k)) : r.children.length ? [r] : []);
+  const megaRest = roots.filter(r => !r.children.length && count(r.id) && r.id !== 48);
+  const brandN = Object.entries(inCat.get(43).reduce((o, p) => (p.brand && (o[p.brand] = (o[p.brand] || 0) + 1), o), {})).sort((a, b) => b[1] - a[1]);
+  const megaMain = `<div class="wrap mega-main"><div><a class="mega-big" href="${url('/c/43')}">${esc(cat.get(43).name)} <i>${count(43)}</i></a><a class="mega-used" href="${url('/c/48')}">${esc(cat.get(48).name)} <i>${count(48)}</i></a></div>${tree(cat.get(43).children, 2)}<ul>${brandN.map(([b, n]) => `<li><a href="${url(`/c/43?brand=${encodeURIComponent(b)}`)}">${esc(b)}<span>${n}</span></a></li>`).join('')}</ul></div>`;
+  $('#mega').innerHTML = `${megaMain}<div class="wrap mega-grid">${megaCols.filter(c => count(c.id)).map(c => `<div class="mega-col"><a href="${url(`/c/${c.id}`)}">${esc(c.name)}</a>${tree(c.children, 2)}</div>`).join('')}
     <div class="mega-col">${megaRest.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a>`).join('')}</div></div>
     <nav class="wrap mega-info" aria-label="${L.forBuyers}"><b>${L.forBuyers}</b><a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a></nav>`;
   $('#drawer').innerHTML = `<div class="panel-head"><h2>${L.menu}</h2><button class="icon-btn" data-close aria-label="${L.close}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="panel-body"><nav class="dr-me" id="drMe" hidden></nav><h3 class="dr-h">${L.catalog}</h3>${roots.map(r => r.children.length
-      ? `<details><summary>${esc(r.name)}</summary><ul><li><a href="${url(`/c/${r.id}`)}">${L.allInSection}<span>${count(r.id)}</span></a></li>${tree(r.children, 1).slice(4, -5)}</ul></details>`
+      ? `<details${r.id === 43 ? ' open class="dr-main"' : ''}><summary>${esc(r.name)}</summary><ul><li><a href="${url(`/c/${r.id}`)}">${L.allInSection}<span>${count(r.id)}</span></a></li>${tree(r.children, 1).slice(4, -5)}</ul></details>`
       : `<div class="plain"><a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a></div>`).join('')}
       <h3 class="dr-h">${L.forBuyers}</h3><nav class="dr-info" aria-label="${L.forBuyers}"><a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a><a href="tel:${PHONE}">${PHONE_TEXT}</a></nav>
       <div class="lang drawer-lang" role="group" aria-label="${L.langLabel}"><button data-lang="uk" lang="uk">Українська</button><button data-lang="en" lang="en">English</button></div></div>`;
