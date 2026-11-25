@@ -13,20 +13,20 @@
     .replace(/(\d)\|/g, '$1/').replace(/\|(?=[A-Z])/g, '/').replace(/\b(87|96)120\b/g, '$1/120')
     .replace(/["“”]([^"“”]*)["“”]/g, (_, q) => `«${q.trim()}»`).replace(/«(Pigini|Bugari Armando|Bugari|Scandalli)\s+([^»]+)»/g, '$1 «$2»').replace(/«(Bugari|Pigini|Scandalli|Fisitalia)»/g, '$1')
     .replace(/(?:\s[–-])?\s(?:mod\.|мод\.|модель|model)\s*/gi, ' ').replace(/«Mod\. /g, '«').replace(/\s*\(convertor\)/g, '').replace(/\s[–-]\s(?=[а-яіїєґ]|button|converter|accordion|piano)/gi, ', ').replace(/\s[–-]\s(?=[\d«A-ZА-Я])/g, ' ').replace(/(\d)\s\/\s(?=[A-ZА-Я])/g, '$1/')
-    .replace(/» готово-виборний/g, '», готово-виборний').replace(/41\.45, [ТT][СC] /, '41.45 TC ').replace(/«AIR I C 77\/120»/, '«AIR I C» 77/120').replace(/,\s*,/g, ',').replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ').trim().replace(/[«»]/g, q => lang === 'en' ? { '«': '“', '»': '”' }[q] : q);
-  for (const x of C.products) { const v = window.VARIANTS?.[x.id]?.[lang === 'en' ? 1 : 0]; x.name = nice(x.name) + (v && !x.name.includes(v) ? `, ${v}` : '');if (window.VARIANTS?.[x.id]) x.uk += `, ${window.VARIANTS[x.id][0]}`; }
+    .replace(/» готово-виборний/g, '», готово-виборний').replace(/41\.45, [ТT][СC] /, '41.45 TC ').replace(/«AIR I C 77\/120»/, '«AIR I C» 77/120').replace(/,\s*,/g, ',').replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ').trim().replace(/[«»]/g, q => lang !== 'uk' ? { '«': '“', '»': '”' }[q] : q);
+  for (const x of C.products) { const v = window.VARIANTS?.[x.id]?.[lang === 'uk' ? 0 : 1]; x.name = nice(x.name) + (v && !x.name.includes(v) ? `, ${v}` : '');if (window.VARIANTS?.[x.id]) x.uk += `, ${window.VARIANTS[x.id][0]}`; }
   // Характеристики з сайтів виробників (data/specs.js) — лише там, де в каталозі їх немає.
-  for (const x of C.products) { const s = window.SPECS?.[x.id]; if (s && x.features.length < 3) { x.features = s[lang]; x.maker = true; } }
+  for (const x of C.products) { const s = window.SPECS?.[x.id]; if (s && x.features.length < 3) { x.features = s[lang] || s.en; x.maker = true; } }
   /* Де таблиці виробника немає (69 з 88): права й ліва рука з позначки «82/96» у назві — так магазин пише кількість ґудзиків чи клавіш і басів.
      Тип клавіатури — з розділу (44, 45, 56 кнопкові; 46, 47 клавішні). Більше нічого не домислюємо. */
   const pl = (n, f) => { const a = n % 10, b = n % 100; return f[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? 1 : 2]; };
   for (const x of C.products) {
     const btn = x.cats.some(c => [44, 45, 56].includes(c)), key = x.cats.some(c => [46, 47].includes(c)); if (x.maker || !(btn || key)) continue;
     const raw = x.features.map(f => f.join(' ')).join(' '); if (x.features.length === 1 && /аккордеон|Голоса/.test(raw)) x.features = [];   // зламаний рядок з імпорту (126, 127)
-    const m = `${x.name} ${raw}`.match(/(\d{2,3})\s*\/\s*(\d{2,3})/); if (!m || x.features.some(f => /^(Права рука|Right hand)$/.test(f[0]))) continue;
+    const m = `${x.name} ${raw}`.match(/(\d{2,3})\s*\/\s*(\d{2,3})/); if (!m || x.features.some(f => /^(Права рука|Right hand|右手)$/.test(f[0]))) continue;
     const r = +m[1], b = +m[2];
-    x.features = [...x.features, lang === 'en' ? ['Right hand', `${r} ${key ? 'keys' : 'buttons'}`] : ['Права рука', `${r} ${key ? pl(r, ['клавіша', 'клавіші', 'клавіш']) : pl(r, ['ґудзик', 'ґудзики', 'ґудзиків'])}`],
-      lang === 'en' ? ['Left hand', `${b} bass buttons`] : ['Ліва рука', `${b} ${pl(b, ['кнопка', 'кнопки', 'кнопок'])}`]];
+    x.features = [...x.features, lang === 'zh' ? ['右手', `${r} 个${key ? '琴键' : '键钮'}`] : lang === 'en' ? ['Right hand', `${r} ${key ? 'keys' : 'buttons'}`] : ['Права рука', `${r} ${key ? pl(r, ['клавіша', 'клавіші', 'клавіш']) : pl(r, ['ґудзик', 'ґудзики', 'ґудзиків'])}`],
+      lang === 'zh' ? ['左手', `${b} 个低音键钮`] : lang === 'en' ? ['Left hand', `${b} bass buttons`] : ['Ліва рука', `${b} ${pl(b, ['кнопка', 'кнопки', 'кнопок'])}`]];
   }
   const BAYAN_CATS = new Set([44, 45, 56]);
   const seoName = (name, id) => lang === 'uk' && BAYAN_CATS.has(id) && !/баян/i.test(name) ? `${name} (баян)` : name;
@@ -284,8 +284,8 @@
   }
 
   /* Фільтри для інструментів: ціна, баси, вага. Число басів беремо з назви (41/120) чи характеристики, вагу — з характеристики. */
-  const basses = p => +(p.features.find(f => /^(Ліва рука|Left hand)$/.test(f[0]))?.[1].match(/^\d+/)?.[0] || p.name.match(/\d{2,3}\s*\/\s*(\d{2,3})/)?.[1] || 0);
-  const weight = p => parseFloat((p.features.find(f => /^(Вага|Weight)$/.test(f[0]))?.[1] || '').replace(',', '.')) || 0;
+  const basses = p => +(p.features.find(f => /^(Ліва рука|Left hand|左手)$/.test(f[0]))?.[1].match(/^\d+/)?.[0] || p.name.match(/\d{2,3}\s*\/\s*(\d{2,3})/)?.[1] || 0);
+  const weight = p => parseFloat((p.features.find(f => /^(Вага|Weight|重量)$/.test(f[0]))?.[1] || '').replace(',', '.')) || 0;
   function listing(root, all, state, brands, base, emptyText) {
     if (!brands.includes(state.brand)) state.brand = '';
     const inst = all.filter(p => p.price >= 20000).length > 7;
@@ -439,7 +439,7 @@
       for (const k of ['name', 'phone']) { const i = form.elements[k]; i.nextElementSibling.hidden = !bad[k]; i.setAttribute('aria-invalid', bad[k]); if (bad[k] && !first) first = i; }
       if (first) { first.focus(); return; }
       const body = [`Замовлення з сайту`, '', ...lines.map(l => `${l.p.uk}${l.p.ref ? ` (арт. ${l.p.ref})` : ''} × ${l.q}${l.p.price ? ` = ${UK.money(l.p.price * l.q)}` : ''}`), '', `Разом: ${UK.money(cartTotal())}`, '',
-        `Ім'я: ${d.name}`, `Телефон: ${d.phone}`, `Доставка: ${UK[d.delivery]}${d.delivery !== 'pickup' && d.city ? `, ${d.city}` : ''}`, d.note ? `Коментар: ${d.note}` : '', lang === 'en' ? 'Покупець користувався англійською версією сайту.' : ''].filter((x, i, a) => x || a[i - 1]).join('\n');
+        `Ім'я: ${d.name}`, `Телефон: ${d.phone}`, `Доставка: ${UK[d.delivery]}${d.delivery !== 'pickup' && d.city ? `, ${d.city}` : ''}`, d.note ? `Коментар: ${d.note}` : '', lang !== 'uk' ? `Покупець користувався ${lang === 'zh' ? 'китайською' : 'англійською'} версією сайту.` : ''].filter((x, i, a) => x || a[i - 1]).join('\n');
       const viaMail = () => {
         location.href = `mailto:${MAIL}?subject=${encodeURIComponent('Замовлення з сайту')}&body=${encodeURIComponent(body)}`;
         out.html = `<div class="wrap empty"><h1>${L.sentH}</h1><p>${L.sentP(PHONE_TEXT)}</p><a class="btn" href="tel:${PHONE}">${L.call}</a></div>`;
@@ -569,7 +569,7 @@
       ? `<details${r.id === 43 ? ' open class="dr-main"' : ''}><summary>${esc(r.name)}</summary><ul><li><a href="${url(`/c/${r.id}`)}">${L.allInSection}<span>${count(r.id)}</span></a></li>${tree(r.children, 1).slice(4, -5)}</ul></details>`
       : `<div class="plain"><a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a></div>`).join('')}
       <h3 class="dr-h">${L.forBuyers}</h3><nav class="dr-info" aria-label="${L.forBuyers}"><a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a><a href="tel:${PHONE}">${PHONE_TEXT}</a></nav>
-      <div class="lang drawer-lang" role="group" aria-label="${L.langLabel}"><button data-lang="uk" lang="uk">Українська</button><button data-lang="en" lang="en">English</button></div></div>`;
+      <div class="lang drawer-lang" role="group" aria-label="${L.langLabel}"><button data-lang="uk" lang="uk">Українська</button><button data-lang="en" lang="en">English</button><button data-lang="zh" lang="zh">中文</button></div></div>`;
   wireLang();
 
   const scrim = $('#scrim'), panels = { cart: $('#cart'), drawer: $('#drawer') }, btns = { cart: $('#cartBtn'), drawer: $('#menuBtn') };

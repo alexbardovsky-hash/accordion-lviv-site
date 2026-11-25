@@ -1,7 +1,7 @@
 /* Живий чат з магазином, форма листа й відправка замовлень у CRM (server/). Без window.ACC_API нічого не показує. */
 (() => {
   const API = window.ACC_API || '';
-  const lang = window.I18N?.lang === 'en' ? 'en' : 'uk';
+  const lang = ['en', 'zh'].includes(window.I18N?.lang) ? window.I18N.lang : 'uk';
   const T = {
     uk: {
       fab: 'Запитати', title: 'Питання до магазину', close: 'Закрити', newQ: 'Нове питання', myQ: 'Мої питання', back: '← Мої питання',
@@ -36,6 +36,23 @@
       },
       letterH: 'Write to us', subject: 'Subject', letter: 'Message', letterSend: 'Send message', letterOk: n => `Message #${n} received. We will reply to the contact you gave.`,
       orderOk: n => `Order #${n} received`, orderOkP: ph => `We will contact you to confirm stock, delivery and payment. If it is urgent, call ${ph}.`,
+    },
+    zh: {
+      fab: '咨询我们', title: '向商店提问', close: '关闭', newQ: '新问题', myQ: '我的问题', back: '← 我的问题',
+      intro: '告诉我们您在找什么，或乐器出了什么问题。我们会在这里回复，必要时给您打电话。',
+      topic: '主题', topicPh: '例如：Weltmeister 的键钮', name: '姓名', contact: '电话或邮箱', message: '问题',
+      send: '发送', sending: '正在发送…', write: '输入消息…', reply: '发送',
+      waiting: '已收到您的问题。回复会显示在这里；您可以关闭此窗口，“咨询我们”按钮上会出现提示。',
+      closed: '此对话已结束。再次发送消息会重新打开。', you: '您', shop: 'Accordion Centre', left: n => `还可输入 ${n} 字`,
+      askProduct: '咨询此商品', productTopic: n => `商品咨询：${n}`,
+      err: {
+        too_long: m => `内容过长：最多 ${m} 个字符。`, required: '请填写所有字段。', contact: '请填写电话（至少 9 位数字）或邮箱。',
+        rate: s => `消息过多，请 ${Math.max(1, Math.ceil(s / 60))} 分钟后再试。`, links: '消息中的链接过多。',
+        duplicate: '此消息已发送。', wait_reply: '请等待我们的回复。', too_fast: '请稍等，正在确认您不是机器人。请再点一次。',
+        pow: '验证失败，请再点一次。', not_found: '未找到此对话。', net: '无法连接服务器，请稍后再试或致电我们。', other: '出了点问题，请重试。',
+      },
+      letterH: '给我们留言', subject: '主题', letter: '留言内容', letterSend: '发送留言', letterOk: n => `已收到留言 #${n}。我们会通过您留下的联系方式回复。`,
+      orderOk: n => `已收到订单 #${n}`, orderOkP: ph => `我们会联系您确认库存、配送和付款。如有急事，请拨打 ${ph}。`,
     },
   }[lang];
   const LIM = { name: 80, contact: 120, topic: 120, message: 2000, subject: 160, letter: 4000 };
@@ -93,7 +110,7 @@
     for (const k of kids.flat(Infinity)) if (k != null && k !== false) el.append(k instanceof Node ? k : String(k));
     return el;
   }
-  const time = t => new Date(t).toLocaleString(lang === 'en' ? 'en-GB' : 'uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const time = t => new Date(t).toLocaleString({ en: 'en-GB', zh: 'zh-CN' }[lang] || 'uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
   let opened = 0;
   const mark = () => { opened = Date.now(); warm(); };
   /* Поле з лічильником символів: попереджаємо до сервера, а не після. */

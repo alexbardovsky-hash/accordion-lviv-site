@@ -20,6 +20,7 @@ window.ACC_HOME = (() => {
   }
   const spec = (p, lang) => {
     const g = k => p.features.find(f => f[0] === k)?.[1] || '', en = lang === 'en';
+    if (lang === 'zh') { const r = g('右手').split(/[，,]/)[0], b = g('左手').match(/\d+/)?.[0], w = g('重量').match(/^[\d.]+ ?(公斤|kg)/)?.[0]; return [r, b && `低音 ${b}`, w].filter(Boolean).join('，'); }
     const r = g(en ? 'Right hand' : 'Права рука').match(en ? /^\d+ [a-z]+/i : /^\d+ [а-яіїєґ]+/i)?.[0], b = g(en ? 'Left hand' : 'Ліва рука').match(/\d+/)?.[0], w = g(en ? 'Weight' : 'Вага').match(en ? /^[\d.]+ ?kg/ : /^[\d,]+ ?кг/)?.[0];
     return [r, b && `${en ? 'bass' : 'бас'} ${b}`, w].filter(Boolean).join(', ');
   };

@@ -4,7 +4,7 @@
 (() => {
   const API = window.ACC_API || '';
   const { url, go } = window.SITE;
-  const lang = window.I18N?.lang === 'en' ? 'en' : 'uk';
+  const lang = ['en', 'zh'].includes(window.I18N?.lang) ? window.I18N.lang : 'uk';
   const T = {
     uk: {
       account: 'Кабінет', login: 'Вхід', register: 'Реєстрація', loginH: 'Вхід у кабінет', registerH: 'Новий кабінет',
@@ -78,6 +78,43 @@
         rate: s => `Too many attempts. Try again in ${Math.max(1, Math.ceil(s / 60))} min.`, auth: 'Your session has ended, please sign in again.', compare_full: n => `There are already ${n} items in comparison. Remove one first.`,
         too_fast: 'One second, checking you are not a robot. Press again.', pow: 'The check failed. Press again.',
         net: 'Cannot reach the server. Try later.', other: 'Something went wrong. Try again.',
+      },
+    },
+    zh: {
+      account: '个人中心', login: '登录', register: '注册', loginH: '登录', registerH: '创建账户',
+      loginLead: '账户中保存您的订单和与商店的所有对话，收藏和对比在手机与电脑之间同步。',
+      email: '电子邮箱', password: '密码', passwordNew: '新密码', passwordOld: '当前密码', name: '姓名', phone: '电话', phoneOpt: '电话（可选）',
+      pwHint: n => `至少 ${n} 个字符。`, doLogin: '登录', doRegister: '创建账户', google: '使用 Google 登录', or: '或',
+      forgot: '忘记密码？', forgotNoMail: '请通过“咨询我们”留言或致电：我们会给您一个临时密码，登录后可在账户中修改。',
+      sendCode: '发送验证码', codeSent: e => `如果存在 ${e} 的账户，验证码已发送到该邮箱，15 分钟内有效。`, code: '邮件中的验证码', setPw: '保存密码并登录',
+      noAccount: '还没有账户？', haveAccount: '已有账户？', toRegister: '注册', toLogin: '登录',
+      orders: '订单', chats: '咨询', favorites: '收藏', compare: '对比', profile: '个人资料', logout: '退出登录',
+      hello: n => `您好，${n}`, noOrders: '暂无订单。', noChats: '暂无咨询。', toCatalog: '浏览商品目录', ask: '提问',
+      order: (n, d) => `订单 #${n}，${d}`, total: '合计', np: 'Nova Poshta', pickup: '当面自取', abroad: '乌克兰境外，当面交付',
+      payNow: '在线支付', payNote: '通过 PrivatBank 的 LiqPay 安全页面，使用银行卡、Apple Pay 或 Google Pay 支付。', payTest: '测试模式：不会扣款。',
+      payH: n => `订单 #${n} 付款`, paidH: '谢谢，已收到付款', paidP: n => `订单 #${n} 已付款。我们会就配送事宜与您联系。`,
+      payWait: '正在确认付款…', payWaitP: '银行通常几秒内确认。如果您没有付款，可以返回重试。',
+      payFail: '付款未成功，未扣款。请重试或致电我们。', payPaid: '已在线支付', payRetry: '重试',
+      payClosed: '此订单目前无法在线支付。我们会就付款事宜与您联系。', payToAcc: '我的订单', payToShop: '浏览商品目录',
+      status: { new: '已收到', processing: '处理中', paid: '已付款', sent: '已发货', done: '已完成', cancelled: '已取消' },
+      chatOpen: '进行中', chatClosed: '已结束', you: '您：', shop: '商店：', newAnswer: '新回复',
+      save: '保存', saved: '已保存', pwChanged: '密码已修改。其他设备需要重新登录。', changePw: '修改密码', setPwH: '邮箱登录密码',
+      googleLinked: '已关联 Google 登录。', emailFixed: '邮箱是您的登录名，无法修改。',
+      offline: '网站连接商店服务器后即可使用账户。收藏和对比现已可用，保存在本浏览器中。',
+      favCount: n => `收藏 ${n} 件`, cmpCount: n => `对比 ${n} 件`,
+      favAdd: '加入收藏', favDel: '取消收藏', favAdded: '已加入收藏', favH: '收藏',
+      favEmpty: '点击心形标记的商品会显示在这里。未登录时保存在本浏览器中，登录后在所有设备上同步。',
+      cmpAdd: '对比', cmpDel: '移出对比', cmpAdded: '已加入对比', cmpOpen: '立即对比', cmpH: '商品对比',
+      cmpEmpty: n => `在商品卡片或商品页面点击“对比”，最多添加 ${n} 件，它们会在这里并排显示：价格、品牌、规格。`,
+      cmpOne: '请至少再添加一件商品以进行对比。', cmpDiff: '只看差异', cmpClear: '清空', remove: '删除',
+      rowPrice: '价格', rowBrand: '品牌', rowRef: '货号', rowCat: '分类', rowDesc: '描述', loginToKeep: '登录后可在所有设备上保存收藏', signIn: '登录',
+      err: {
+        paid: '此订单已付款。', not_payable: '此订单无法在线支付。', not_found: '未找到订单，请重新打开链接。',
+        login: '邮箱或密码错误。', exists: '该邮箱已有账户。请登录或重置密码。', email: '请检查邮箱地址。',
+        weak: n => `密码少于 ${n} 个字符。`, required: '请填写所有字段。', code: '验证码错误或已过期。', contact: '请检查电话号码。',
+        rate: s => `尝试次数过多，请 ${Math.max(1, Math.ceil(s / 60))} 分钟后再试。`, auth: '会话已过期，请重新登录。', compare_full: n => `对比中已有 ${n} 件商品，请先删除一件。`,
+        too_fast: '请稍等，正在确认您不是机器人。请再点一次。', pow: '验证失败，请再点一次。',
+        net: '无法连接服务器，请稍后再试。', other: '出了点问题，请重试。',
       },
     },
   }[lang];
@@ -159,8 +196,8 @@
     return h('div.field', h('label', { for: id }, label), input, hint ? h('small.acc-hint', hint) : null);
   }
   const show = (el, t) => { el.textContent = t; el.hidden = !t; };
-  const date = t => new Date(t).toLocaleDateString(lang === 'en' ? 'en-GB' : 'uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
-  const dateTime = t => new Date(t).toLocaleString(lang === 'en' ? 'en-GB' : 'uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const date = t => new Date(t).toLocaleDateString({ en: 'en-GB', zh: 'zh-CN' }[lang] || 'uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateTime = t => new Date(t).toLocaleString({ en: 'en-GB', zh: 'zh-CN' }[lang] || 'uk-UA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
   const withBusy = async (btn, fn) => { btn.disabled = true; try { await fn(); } finally { btn.disabled = false; } };
   const human = async () => ({ elapsed: Date.now() - opened, pow: await window.ACC_CHAT.pow(), website: '' });
   let opened = Date.now();
@@ -178,7 +215,7 @@
         } });
         const slot = h('div.acc-google');
         box.replaceChildren(slot, h('p.acc-or', T.or));
-        window.google.accounts.id.renderButton(slot, { theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', locale: lang === 'en' ? 'en' : 'uk', width: 320 });
+        window.google.accounts.id.renderButton(slot, { theme: 'outline', size: 'large', shape: 'pill', text: 'signin_with', locale: { en: 'en', zh: 'zh_CN' }[lang] || 'uk', width: 320 });
       };
       if (window.google?.accounts) return mount();
       const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.onload = mount; document.head.append(s);

@@ -526,3 +526,9 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
   .sheet .cat img { width: 88px; height: 88px; }
 }
 @media (prefers-reduced-motion: reduce) { .mast-name i, .mast-foot, .mast-pic { animation: none; } }
+
+/* Китайська (26.11): ієрогліфів у Unbounded і Golos немає — беремо системні китайські шрифти; від'ємна розрядка зліплює ієрогліфи, тому її скасовано. */
+:root:lang(zh) { --display: "Unbounded", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Arial Black", sans-serif; --ui: "Golos Text", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Segoe UI", system-ui, sans-serif; }
+:lang(zh) *:not(.foot-call, .flag-word, .flag-buy b, .brand-name, .lab-text h2) { letter-spacing: normal !important; }   /* великі латинські написи й цифри лишаються щільними */
+:lang(zh) .top :is(a, button) { white-space: nowrap; }
+:lang(zh) .btn { white-space: nowrap; } :lang(zh) :is([class*="price"], .flag-buy b) { word-break: keep-all; }   /* «格里夫纳» не рвемо посередині */

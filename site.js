@@ -3,20 +3,21 @@
 (() => {
   const BASE = new URL(document.baseURI).pathname.replace(/[^/]*$/, '');
   const inBase = p => p.startsWith(BASE) ? p.slice(BASE.length) : p.replace(/^\//, '');
-  const lang = /^en(\/|$)/.test(inBase(location.pathname)) ? 'en' : 'uk';
+  const LANGS = ['en', 'zh'], PRE = new RegExp(`^(${LANGS.join('|')})(\\/|$)`);   // українська без префікса
+  const lang = inBase(location.pathname).match(PRE)?.[1] || 'uk';
   const HASHED = new Set(['pay', 'paid']);              // одноразові адреси з кодом: окремих сторінок для них немає
   const SLUGS = () => window.SLUGS || { p: {}, c: {} };
   function url(r, l = lang) {
     const [p, qs] = String(r).split('?');
-    const seg = p.split('/').filter(Boolean), pre = BASE + (l === 'en' ? 'en/' : '');
+    const seg = p.split('/').filter(Boolean), pre = BASE + (l === 'uk' ? '' : `${l}/`);
     if (HASHED.has(seg[0])) return `${pre}#/${seg.join('/')}`;
-    if (seg[0] === 'p' || seg[0] === 'c') { const s = SLUGS()[seg[0]][seg[1]]?.[l === 'en' ? 1 : 0]; if (s) seg[1] = `${seg[1]}-${s}`; }
+    if (seg[0] === 'p' || seg[0] === 'c') { const s = SLUGS()[seg[0]][seg[1]]?.[l === 'uk' ? 0 : 1]; if (s) seg[1] = `${seg[1]}-${s}`; }
     return pre + seg.map(x => `${x}/`).join('') + (qs ? `?${qs}` : '');
   }
   // Поточний маршрут у внутрішньому вигляді: /p/301, /search?q=…
   function here() {
     if (location.hash.startsWith('#/')) return location.hash.slice(1);
-    const p = inBase(location.pathname).replace(/^en(\/|$)/, '').replace(/index\.html$/, '');
+    const p = inBase(location.pathname).replace(PRE, '').replace(/index\.html$/, '');
     const seg = p.split('/').filter(Boolean);
     if ((seg[0] === 'p' || seg[0] === 'c') && seg[1]) seg[1] = String(parseInt(seg[1], 10));
     return `/${seg.join('/')}${location.search}`;
@@ -40,7 +41,7 @@
       e.preventDefault(); const t = document.getElementById(raw.slice(1)); t?.focus(); t?.scrollIntoView(); return;
     }
     const rest = inBase(a.pathname);
-    if (/\.[a-z0-9]{2,5}$/i.test(rest) || /^en(\/|$)/.test(rest) !== (lang === 'en')) return;
+    if (/\.[a-z0-9]{2,5}$/i.test(rest) || (rest.match(PRE)?.[1] || 'uk') !== lang) return;
     e.preventDefault();
     if (a.href === location.href) { scrollTo(0, 0); return; }
     saveY(); history.pushState({}, '', a.href); nav(0);
@@ -50,7 +51,7 @@
   addEventListener('pagehide', saveY);   // айфон не завжди шле beforeunload
   document.addEventListener('visibilitychange', () => { if (document.hidden) saveY(); });
   window.SITE = {
-    BASE, lang, url, here, go,
+    BASE, lang, LANGS: ['uk', ...LANGS], url, here, go,
     start: f => { onRoute = f; upgrade(); f(history.state?.y || 0); },
     links: s => s.replace(/href="#(\/[^"]*)"/g, (_, r) => `href="${url(r)}"`),
   };
