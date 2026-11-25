@@ -169,7 +169,7 @@
     let raf = 0;
     function tick() {
       raf = 0;
-      if (!document.body.contains(sec)) return removeEventListener('scroll', ask);
+      if (!document.body.contains(sec)) return;
       const vh = innerHeight;
       let more = false;
       for (const s of stages) {
@@ -195,8 +195,10 @@
       if (more) raf = requestAnimationFrame(tick);
     }
     const ask = () => { if (!raf) raf = requestAnimationFrame(tick); };
-    addEventListener('scroll', ask, { passive: true });
-    addEventListener('resize', () => { stages.forEach(s => { s.drawn = -2; }); ask(); });
+    const ac = new AbortController(), on = (ev, f, o = {}) => addEventListener(ev, f, { signal: ac.signal, ...o });
+    addEventListener('sitenav', () => { ac.abort(); io.disconnect(); cancelAnimationFrame(raf); stages.forEach(s => { s.imgs = []; }); }, { once: true });   // інакше кадри висять у памʼяті телефона
+    on('scroll', ask, { passive: true });
+    on('resize', () => { stages.forEach(s => { s.drawn = -2; }); ask(); });
     // Текст сцени виринає, коли сама сцена вже на екрані.
     const io = new IntersectionObserver(es => es.forEach(e => {
       const s = stages.find(x => x.el === e.target);
@@ -204,7 +206,7 @@
     }), { threshold: .35 });
     stages.forEach(s => io.observe(s.el));
     const wake = () => { if (touched) return; touched = true; ask(); };
-    for (const ev of ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown']) addEventListener(ev, wake, { passive: true, once: true });
+    for (const ev of ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown']) on(ev, wake, { passive: true, once: true });
     tick();
   }
 
@@ -278,6 +280,7 @@
   const basses = p => +(p.features.find(f => /^(Ліва рука|Left hand)$/.test(f[0]))?.[1].match(/^\d+/)?.[0] || p.name.match(/\d{2,3}\s*\/\s*(\d{2,3})/)?.[1] || 0);
   const weight = p => parseFloat((p.features.find(f => /^(Вага|Weight)$/.test(f[0]))?.[1] || '').replace(',', '.')) || 0;
   function listing(root, all, state, brands, base, emptyText) {
+    if (!brands.includes(state.brand)) state.brand = '';
     const inst = all.filter(p => p.price >= 20000).length > 7;
     const bassSet = inst ? [...new Set(all.map(basses).filter(Boolean))].sort((a, b) => a - b) : [];
     const heavy = inst && all.filter(weight).length > 7;
@@ -332,6 +335,7 @@
     if (!p) return notFound();
     title(seoName(p.name, p.cats.find(c => BAYAN_CATS.has(c))));
     const pics = p.imgs.length ? p.imgs : (p.big ? [p.big] : []);
+    setFoot(L.footLeadInst, p);
     const related = inCat.get(p.cat).filter(x => x.id !== p.id).slice(0, 10);
     // Інструменти: без «кількості», спершу питають про наявність і домовляються послухати (варіант A, 25.11).
     const inst = p.price >= 20000 && p.cats.some(c => path(c)[0]?.id === 43 || c === 48);
@@ -492,7 +496,7 @@
 
   const PAGES = {
     delivery: [L.delivery, links(L.pages.delivery)],
-    service: [L.repairFull, `<div class="svc-media" aria-hidden="true"><video src="scenes/web/bellows_macro.webm" poster="scenes/web/bellows-m.webp" muted loop playsinline preload="none"></video><video src="scenes/web/buttons.webm" poster="scenes/web/buttons-m.webp" muted loop playsinline preload="none"></video></div>${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
+    service: [L.repairFull, `<div class="svc-media" aria-hidden="true"><video src="scenes/web/bellows_macro-w.mp4" poster="scenes/web/bellows-m.webp" muted loop playsinline preload="none"></video><video src="scenes/web/buttons-w.mp4" poster="scenes/web/buttons-m.webp" muted loop playsinline preload="none"></video></div>${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
     contacts: [L.contacts, `<p><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>
       <p><a class="contact-big" style="font-size:1.4rem" href="mailto:${MAIL}">${MAIL}</a></p>
       <h2>${L.footTitle}</h2>${links(L.pages.contacts)}<div id="letterBox"></div>`],
@@ -503,7 +507,9 @@
   function notFound() { title(L.nfTitle); out.html = `<div class="wrap empty"><h1>${L.nfH}</h1><p>${L.nfP}</p><a class="btn" href="${url(`/`)}">${L.toCatalog}</a></div>`; }
 
   /* ── Маршрути ── */
+  const setFoot = (t, p) => { const e = $('.foot-lead'); if (e) e.textContent = p && !(p.price >= 20000 && p.cats.some(c => path(c)[0]?.id === 43 || c === 48)) ? L.footLead : t; };
   function route(y = 0) {
+    setFoot(L.footLead);
     const [p, qs] = here().split('?');
     const seg = p.split('/').filter(Boolean), query = new URLSearchParams(qs || '');
     closePanels(); view.onclick = null;

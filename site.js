@@ -47,6 +47,8 @@
   });
   addEventListener('popstate', e => { upgrade(); nav(e.state?.y || 0); });
   addEventListener('beforeunload', saveY);
+  addEventListener('pagehide', saveY);   // айфон не завжди шле beforeunload
+  document.addEventListener('visibilitychange', () => { if (document.hidden) saveY(); });
   window.SITE = {
     BASE, lang, url, here, go,
     start: f => { onRoute = f; upgrade(); f(history.state?.y || 0); },

@@ -26,7 +26,7 @@ window.ACC_HOME = (() => {
 
   function html(x) {
     const { L, esc, url, goods, count, cat, prod, money } = x, N = nodes(x);
-    const vid = (v, p) => `<video src="scenes/web/${v}.webm" poster="scenes/web/${p}-m.webp" muted loop playsinline preload="none" aria-hidden="true"></video>`;
+    const vid = (v, p) => `<video src="scenes/web/${v}-w.mp4" poster="scenes/web/${p}-m.webp" muted loop playsinline preload="none" aria-hidden="true"></video>`;
     const kom = x.inCat(48).find(p => p.img), st = STAGE.filter(s => prod.get(s.id));
     const restCats = x.roots.filter(r => ![3, 43, 48].includes(r.id) && count(r.id));
     return `
@@ -75,7 +75,8 @@ window.ACC_HOME = (() => {
       let K = portrait() ? 'm' : 'd', cur = null, busy = false, cache = new Map();
       const place = () => {
         const W = el.clientWidth, H = el.clientHeight, [fw, fh] = FRAME[K], P = PLACE[K], s = Math.max(W / fw, H / fh), ox = (W - fw * s) / 2, oy = (H - fh * s) / 2;
-        N.forEach((n, i) => { dots[i].style.left = `${ox + (P[0] + n.px / CUT[0] * P[2]) * fw * s}px`; dots[i].style.top = `${oy + (P[1] + n.py / CUT[1] * P[3]) * fh * s}px`; });
+        N.forEach((n, i) => { dots[i].style.transform = `translate(${ox + (P[0] + n.px / CUT[0] * P[2]) * fw * s}px, ${oy + (P[1] + n.py / CUT[1] * P[3]) * fh * s}px)`; });
+        el.classList.add('is-placed');
       };
       on(window, 'resize', () => { const k = portrait() ? 'm' : 'd'; if (k !== K && !cur && !busy) { K = k; cache = new Map(); $$('video', film).forEach(v => v.remove()); } place(); });
       place();
@@ -91,7 +92,7 @@ window.ACC_HOME = (() => {
       /* Прольоти тягнемо наперед, коли людина вже щось робить і не береже трафік */
       const net = navigator.connection || {};
       let warm = false;
-      const heat = () => { if (warm || net.saveData || /2g|3g/.test(net.effectiveType || '')) return; warm = true; (async () => { for (const n of N) { if (ac.signal.aborted) return; await load(n.k).catch(() => {}); } })(); };
+      const heat = () => { if (warm || net.saveData || /2g|3g/.test(net.effectiveType || '')) return; warm = true; (async () => { for (const n of K === 'm' ? N.filter(n => n.k === 'bellows') : N) { if (ac.signal.aborted) return; await load(n.k).catch(() => {}); } })(); };   // телефон: лише один, решту при дотику до точки
       for (const e of ['pointermove', 'touchstart', 'keydown']) on(window, e, heat, { once: true, passive: true });
       dots.forEach((d, i) => { for (const e of ['pointerenter', 'focus', 'touchstart']) on(d, e, () => load(N[i].k).catch(() => {}), { once: true, passive: true }); });
       const only = v => $$('video', film).forEach(o => o.classList.toggle('on', o === v));
