@@ -21,7 +21,9 @@
 .hs::before { content: ""; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 7px rgba(255, 255, 255, .26), 0 4px 16px rgba(0, 0, 0, .6); transition: background .25s, scale .25s; }
 .hs::after { content: ""; position: absolute; inset: 6px; border-radius: 50%; border: 1.5px solid #fff; animation: lab-ping 2.4s ease-out infinite; }
 @keyframes lab-ping { from { scale: .55; opacity: .9; } to { scale: 1.5; opacity: 0; } }
-.hs:hover::before, .hs:focus-visible::before { background: var(--red); scale: 1.15; } .hs.busy::after { animation-duration: .5s; }
+.hs:hover::before, .hs:focus-visible::before { background: var(--red); scale: 1.15; } .hs.busy::before { background: var(--red); }
+.hs.busy::after { animation: none; inset: -4px; border: 0; scale: 1; opacity: 1; background: conic-gradient(#fff calc(var(--p, 0) * 1turn), rgba(255, 255, 255, .25) 0); -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 4px), #000 calc(100% - 3px)); mask: radial-gradient(closest-side, transparent calc(100% - 4px), #000 calc(100% - 3px)); }
+.is-wait .hs:not(.busy) { opacity: .25; }
 .hs:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 50%; }
 .hs span { position: absolute; left: 44px; white-space: nowrap; padding: 5px 13px; border-radius: 999px; background: rgba(18, 14, 15, .84); font-weight: 500; font-size: .95rem; transition: background .2s; } .hs.l span { left: auto; right: 44px; } .hs:hover span { background: var(--red); }
 .is-fly .lab-text, .is-fly .lab-hint, .is-fly .hs { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .25s, visibility 0s .25s; } .is-fly .lab-text { translate: 24px -52%; }
@@ -96,3 +98,4 @@
 /* Слово бренду видно над інструментом, а не лише краями */
 @media (min-width: 861px) { .flag-word { inset: calc(var(--top-h, 74px) + 5.5svh) 0 auto; translate: none; color: rgba(255, 255, 255, .2); } .flag-pic { top: 55%; } }
 .is-placed:not(.is-fly) .hs { visibility: visible; }
+@media (max-aspect-ratio: 1/1) and (max-width: 619px) { .hs.busy span { display: block; font-size: .82rem; padding: 3px 10px; left: 50%; right: auto; top: 54px; translate: -50% 0; background: var(--red); } }

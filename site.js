@@ -55,3 +55,6 @@
     links: s => s.replace(/href="#(\/[^"]*)"/g, (_, r) => `href="${url(r)}"`),
   };
 })();
+/* Дотик до точки «розбору», поки решта коду ще вантажиться: home.js відпрацює його, щойно буде готовий. */
+window.ACC_TAP = { i: -1, t: 0, on: true };
+addEventListener('click', e => { const T = window.ACC_TAP, h = T.on && e.target.closest?.('.hs'); if (h) { T.i = [...document.querySelectorAll('.hs')].indexOf(h); T.t = Date.now(); h.classList.add('busy'); } }, true);

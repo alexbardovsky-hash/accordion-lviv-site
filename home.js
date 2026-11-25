@@ -2,7 +2,7 @@
    далі сцена чотирьох флагманів, мозаїка запчастин і майстерні, партнери. Малює app.js → home(), тут розмітка й поведінка.
    Прольоти: tools/fly.py → tools/fly_web.py, scenes/fly/web/<вузол>_<d|m>[_back].mp4. */
 window.ACC_HOME = (() => {
-  const VID = 'scenes/fly/web/', VER = '?v=3';
+  const VID = 'scenes/fly/web/', VER = '?v=4';
   // Точки в пікселях вирізаного фото виробника (1727×1228); де воно лежить у кадрі — tools/fly_frames.py (frames.json).
   const CUT = [1727, 1228], PLACE = { d: [.159896, .17739, .530208, .665441], m: [.110294, .303125, .780331, .314063] }, FRAME = { d: [1920, 1088], m: [1088, 1920] };
   const NODES = [['buttons', 5, 320, 900, 'l m'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, 'r'], ['bellows', 11, 1211, 330, 'r m'], ['bass', 7, 1520, 690, 'r m'], ['strap', /^(Ремені|Straps)/i, 420, 130, 'l']];
@@ -26,7 +26,7 @@ window.ACC_HOME = (() => {
 
   function html(x) {
     const { L, esc, url, goods, count, cat, prod, money } = x, N = nodes(x);
-    const vid = (v, p) => `<video src="scenes/web/${v}-w.mp4" poster="scenes/web/${p}-m.webp" muted loop playsinline preload="none" aria-hidden="true"></video>`;
+    const vid = (v, p) => `<video src="scenes/web/${v}-w.mp4" data-poster="scenes/web/${p}-m.webp" muted loop playsinline preload="none" aria-hidden="true"></video>`;
     const kom = x.inCat(48).find(p => p.img), st = STAGE.filter(s => prod.get(s.id));
     const restCats = x.roots.filter(r => ![3, 43, 48].includes(r.id) && count(r.id));
     return `
@@ -66,7 +66,7 @@ window.ACC_HOME = (() => {
     lab(); flag();
 
     /* Відео мозаїки грають, лише коли їх видно */
-    const vo = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !calm) e.target.play().catch(() => {}); else e.target.pause(); }), { rootMargin: '120px' });
+    const vo = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && e.target.dataset.poster) { e.target.poster = e.target.dataset.poster; delete e.target.dataset.poster; } if (e.isIntersecting && !calm) e.target.play().catch(() => {}); else e.target.pause(); }), { rootMargin: '400px' });
     $$('.bento video').forEach(v => vo.observe(v));
     ac.signal.addEventListener('abort', () => vo.disconnect());
 
@@ -80,17 +80,32 @@ window.ACC_HOME = (() => {
       };
       on(window, 'resize', () => { const k = portrait() ? 'm' : 'd'; if (k !== K && !cur && !busy) { K = k; cache = new Map(); $$('video', film).forEach(v => v.remove()); } place(); });
       place();
+      /* Повільний інтернет: беремо легкі копії (_l). Де браузер не каже швидкості (айфон), міряємо за першим кадром. */
+      const net = navigator.connection || {}, got = new Map();
+      let lite = null;
+      const isLite = () => {
+        if (lite !== null) return lite;
+        if (net.saveData || /2g|3g/.test(net.effectiveType || '')) return lite = true;
+        if (net.downlink) return lite = net.downlink < 4;
+        const r = performance.getEntriesByType('resource').find(e => /start_[dm]\.webp/.test(e.name)), ms = r ? r.responseEnd - r.requestStart : 0;
+        return lite = !!(r && r.transferSize && ms > 120 && r.transferSize / ms < 200);
+      };
       const load = (k, back) => {
-        const u = `${VID}${k}_${K}${back ? '_back' : ''}.mp4${VER}`;
+        const u = `${VID}${k}_${K}${back ? '_back' : ''}${isLite() ? '_l' : ''}.mp4${VER}`;
+        const read = async r => {   // читаємо частинами, щоб показати, скільки лишилось
+          const total = +r.headers.get('content-length') || 0; if (!r.body?.getReader || !total) return r.blob();
+          const rd = r.body.getReader(), parts = []; let n = 0;
+          for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); n += value.length; if (!back) got.set(k, Math.min(1, n / total)); }
+          return new Blob(parts, { type: 'video/mp4' });
+        };
         // Файл тягнемо цілком самі: айфон не завантажує відео наперед і «canplaythrough» там можна не дочекатись.
-        if (!cache.has(u)) cache.set(u, fetch(u, { signal: ac.signal }).then(r => { if (!r.ok) throw new Error('video'); return r.blob(); }).then(b => {
+        if (!cache.has(u)) cache.set(u, fetch(u, { signal: ac.signal }).then(r => { if (!r.ok) throw new Error('video'); return read(r); }).then(b => {
           const v = document.createElement('video'); v.muted = true; v.defaultMuted = true; v.playsInline = true; v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.preload = 'auto'; v.setAttribute('aria-hidden', 'true');
           const src = URL.createObjectURL(b); ac.signal.addEventListener('abort', () => URL.revokeObjectURL(src)); v.src = src; film.append(v); v.load(); return v;
         }).catch(e => { cache.delete(u); throw e; }));
         return cache.get(u);
       };
       /* Прольоти тягнемо наперед, коли людина вже щось робить і не береже трафік */
-      const net = navigator.connection || {};
       let warm = false;
       const heat = () => { if (warm || net.saveData || /2g|3g/.test(net.effectiveType || '')) return; warm = true; (async () => { for (const n of K === 'm' ? N.filter(n => n.k === 'bellows') : N) { if (ac.signal.aborted) return; await load(n.k).catch(() => {}); } })(); };   // телефон: лише один, решту при дотику до точки
       for (const e of ['pointermove', 'touchstart', 'keydown']) on(window, e, heat, { once: true, passive: true });
@@ -105,9 +120,11 @@ window.ACC_HOME = (() => {
       };
       async function fly(i) {
         if (busy || cur === i) return; busy = true;
-        const d = dots[i], wait = setTimeout(() => d.classList.add('busy'), 160);
-        const v = calm ? null : await Promise.race([load(N[i].k).catch(() => null), new Promise(ok => setTimeout(ok, 8000, null))]);   // повільний інтернет: показуємо деталі без польоту
-        clearTimeout(wait); d.classList.remove('busy');
+        const d = dots[i]; let ring = 0;
+        const tick = () => { d.style.setProperty('--p', Math.max(.04, got.get(N[i].k) || 0)); ring = requestAnimationFrame(tick); };
+        const wait = calm ? 0 : setTimeout(() => { el.classList.add('is-wait'); d.classList.add('busy'); d.setAttribute('aria-busy', 'true'); tick(); }, 90);
+        const v = calm ? null : await Promise.race([load(N[i].k).catch(() => null), new Promise(ok => setTimeout(ok, 6000, null))]);   // повільний інтернет: показуємо деталі без польоту
+        clearTimeout(wait); cancelAnimationFrame(ring); el.classList.remove('is-wait'); d.classList.remove('busy'); d.removeAttribute('aria-busy');
         if (ac.signal.aborted) return;
         fill(i); el.classList.add('is-fly');
         if (v) { const p = play(v); setTimeout(() => el.classList.add('is-open'), Math.max(0, (v.duration || 2.6) * 1000 - 600)); await p; load(N[i].k, true).catch(() => {}); }
@@ -122,7 +139,9 @@ window.ACC_HOME = (() => {
         only(null); el.classList.remove('is-fly'); nav.forEach(b => b.removeAttribute('aria-current')); cur = null; busy = false; if (focus) dots[i].focus({ preventScroll: true });
       }
       const swap = async i => { if (i === cur || busy) return; if (cur !== null) await back(false); await fly(i); };
-      dots.forEach((d, i) => on(d, 'click', () => fly(i))); nav.forEach((b, i) => on(b, 'click', () => swap(i)));
+      dots.forEach((d, i) => on(d, 'click', () => fly(i)));
+      const T = window.ACC_TAP; if (T?.on) { T.on = false; if (T.i >= 0 && Date.now() - T.t < 20000) fly(T.i); }   // торкнулись точки, поки сайт ще вантажився
+      nav.forEach((b, i) => on(b, 'click', () => swap(i)));
       on($('#labX'), 'click', () => back()); on(film, 'click', () => back()); on(window, 'keydown', e => { if (e.key === 'Escape' && cur !== null) back(); });
     }
 
