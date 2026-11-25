@@ -17,6 +17,17 @@
   for (const x of C.products) { const v = window.VARIANTS?.[x.id]?.[lang === 'en' ? 1 : 0]; x.name = nice(x.name) + (v && !x.name.includes(v) ? `, ${v}` : '');if (window.VARIANTS?.[x.id]) x.uk += `, ${window.VARIANTS[x.id][0]}`; }
   // Характеристики з сайтів виробників (data/specs.js) — лише там, де в каталозі їх немає.
   for (const x of C.products) { const s = window.SPECS?.[x.id]; if (s && x.features.length < 3) { x.features = s[lang]; x.maker = true; } }
+  /* Де таблиці виробника немає (69 з 88): права й ліва рука з позначки «82/96» у назві — так магазин пише кількість ґудзиків чи клавіш і басів.
+     Тип клавіатури — з розділу (44, 45, 56 кнопкові; 46, 47 клавішні). Більше нічого не домислюємо. */
+  const pl = (n, f) => { const a = n % 10, b = n % 100; return f[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? 1 : 2]; };
+  for (const x of C.products) {
+    const btn = x.cats.some(c => [44, 45, 56].includes(c)), key = x.cats.some(c => [46, 47].includes(c)); if (x.maker || !(btn || key)) continue;
+    const raw = x.features.map(f => f.join(' ')).join(' '); if (x.features.length === 1 && /аккордеон|Голоса/.test(raw)) x.features = [];   // зламаний рядок з імпорту (126, 127)
+    const m = `${x.name} ${raw}`.match(/(\d{2,3})\s*\/\s*(\d{2,3})/); if (!m || x.features.some(f => /^(Права рука|Right hand)$/.test(f[0]))) continue;
+    const r = +m[1], b = +m[2];
+    x.features = [...x.features, lang === 'en' ? ['Right hand', `${r} ${key ? 'keys' : 'buttons'}`] : ['Права рука', `${r} ${key ? pl(r, ['клавіша', 'клавіші', 'клавіш']) : pl(r, ['ґудзик', 'ґудзики', 'ґудзиків'])}`],
+      lang === 'en' ? ['Left hand', `${b} bass buttons`] : ['Ліва рука', `${b} ${pl(b, ['кнопка', 'кнопки', 'кнопок'])}`]];
+  }
   const BAYAN_CATS = new Set([44, 45, 56]);
   const seoName = (name, id) => lang === 'uk' && BAYAN_CATS.has(id) && !/баян/i.test(name) ? `${name} (баян)` : name;
   // Перезняті фото (білий фон, тінь) лежать у photos/web/; список готових id у data/photos.js. Решта лишається з сайту.
@@ -385,7 +396,8 @@
   function zoom(src, alt) {
     let d = $('#zoom');
     if (!d) { document.body.insertAdjacentHTML('beforeend', `<dialog id="zoom" class="zoom"><img alt=""><button type="button" aria-label="${L.close}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></dialog>`); d = $('#zoom'); d.addEventListener('click', () => d.close()); addEventListener('sitenav', () => d.close()); }
-    const im = $('img', d); im.src = src; im.alt = alt; d.showModal();
+    const im = $('img', d); im.style.maxWidth = im.style.maxHeight = ''; im.onload = () => { const k = 1.5 / (devicePixelRatio || 1); im.style.maxWidth = `${im.naturalWidth * k}px`; im.style.maxHeight = `${im.naturalHeight * k}px`; };   // не розтягуємо фото більше ніж у 1,5 раза: далі воно мильне
+    im.src = src; im.alt = alt; d.showModal();
   }
 
   function checkout() {
