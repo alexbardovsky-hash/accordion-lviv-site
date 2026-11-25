@@ -24,7 +24,8 @@
   const GPT = new Set(window.GPT_PHOTOS || []);
   const LOCAL = new Set([...(window.LOCAL_PHOTOS || []), ...GPT]);
   // Нові фото з ChatGPT: головне чисте, оригінал з підписами (розміри, колір) другим.
-  for (const x of C.products) if (LOCAL.has(x.id)) { x.img = `${PHOTO_DIR}/${x.id}-s.jpg`; x.big = x.img; x.imgs = GPT.has(x.id) ? [`${PHOTO_DIR}/${x.id}.jpg`, `${PHOTO_DIR}/${x.id}-o.jpg`] : [`${PHOTO_DIR}/${x.id}.jpg`]; }
+  const MAKER = new Set(window.ACC_MAKER ? window.MAKER_PHOTOS : []);   // справжні фото виробника, поки вимкнено (data/config.js)
+  for (const x of C.products) if (LOCAL.has(x.id)) { x.img = `${PHOTO_DIR}/${x.id}-s.jpg`; x.big = x.img; x.imgs = GPT.has(x.id) ? [`${PHOTO_DIR}/${x.id}.jpg`, `${PHOTO_DIR}/${x.id}-o.jpg`] : [`${PHOTO_DIR}/${x.id}.jpg`]; if (MAKER.has(x.id)) { x.img = `photos/maker_web/${x.id}-s.jpg`; x.big = x.img; x.imgs.unshift(`photos/maker_web/${x.id}.jpg`); } }
   const PHONE = '+380993339890', PHONE_TEXT = '+38 099 333 98 90', MAIL = 'bajan@accordion.lviv.ua';
   const PAGE = 36;
   const $ = (s, r = document) => r.querySelector(s);
@@ -61,9 +62,9 @@
   /* ── Шматки розмітки ── */
   const pic = (p, cls = '') => p.img ? `<img ${cls} src="${esc(p.img)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'">` : '<span class="ph"></span>';
   // Телефон бере легшу копію головного фото (tools/web_sizes.py).
-  const srcsetOf = u => /^photos\/web5\/\d+(-o)?\.jpg$/.test(u) ? `${u.replace('.jpg', '-m.webp')} 800w, ${u} 1200w` : '';
+  const srcsetOf = u => /^photos\/(web5|maker_web)\/\d+(-o)?\.jpg$/.test(u) ? `${u.replace('.jpg', '-m.webp')} 800w, ${u} 1200w` : '';
   const thumb = u => srcsetOf(u) ? u.replace('.jpg', '-m.webp') : u.replace('thickbox_default', 'cart_default');
-  const photo = p => LOCAL.has(p.id) ? `${PHOTO_DIR}/${p.id}-m.webp` : p.img;
+  const photo = p => LOCAL.has(p.id) ? `${MAKER.has(p.id) ? 'photos/maker_web' : PHOTO_DIR}/${p.id}-m.webp` : p.img;
   const srcset = u => srcsetOf(u) ? ` srcset="${srcsetOf(u)}" sizes="(max-width: 960px) 92vw, 1200px"` : '';
   const priceTag = p => p.price ? `<span class="price">${money(p.price)}</span>` : `<span class="price ask">${L.askPrice}</span>`;
   /* Обране й порівняння (account.js): сердечко й терези на картці та сторінці товару. */
