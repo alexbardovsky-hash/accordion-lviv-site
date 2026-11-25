@@ -1,4 +1,4 @@
-/* Головна (26.11): перший екран — сцена чотирьох флагманів (покупка), далі вибір акордеона, тоді «Розбір» — натискаєш на вузол,
+/* Головна (26.11): обкладинка «Акордеон Центр» (рендер моделі, tools/m3d/hero.py), далі сцена флагманів (покупка), далі вибір акордеона, тоді «Розбір» — натискаєш на вузол,
    камера летить до нього в 3D і панель показує комплектуючі цього вузла; далі порада, комісійний, ремонт і запчастини, партнери. Малює app.js → home(), тут розмітка й поведінка.
    Прольоти з 3D-моделі: tools/m3d/fly3.sh → tools/m3d/fly3_web.py, scenes/fly/model/<вузол>_<d|m>[_back].mp4 (старі: scenes/fly/web). */
 window.ACC_HOME = (() => {
@@ -34,14 +34,18 @@ window.ACC_HOME = (() => {
     const sub = id => cat.get(id) && count(id) ? `<a href="${url(`/c/${id}`)}">${esc(L.pickSub[id] || cat.get(id).name)} <i>${count(id)}</i></a>` : '';
     const pick = (img, h, ids) => `<div class="pk"><a class="pk-go" href="${url(`/c/${ids[0]}`)}" aria-hidden="true" tabindex="-1">${/^m/.test(img) ? `<img class="mk" src="photos/maker_web/${img.slice(1)}.jpg" srcset="photos/maker_web/${img.slice(1)}-m.webp 800w, photos/maker_web/${img.slice(1)}.jpg 1200w, photos/maker_web/${img.slice(1)}-x.jpg 1900w" sizes="(max-width: 960px) 92vw, 46vw" alt="" loading="lazy">` : `<img src="img/stage2/${img}.webp" alt="" loading="lazy">`}</a><h3>${h}</h3><div class="pk-l">${ids.map(sub).join('')}</div></div>`;
     return `
+    <section class="cover" aria-labelledby="coverH">
+      <picture><source media="(max-aspect-ratio: 1/1)" srcset="img/cover/a_m-s.webp 720w, img/cover/a_m.webp 1440w" sizes="100vw"><img class="cover-pic" src="img/cover/a_d.webp" srcset="img/cover/a_d-s.webp 1600w, img/cover/a_d.webp 3200w" sizes="100vw" alt="${L.coverAlt}" fetchpriority="high"></picture>
+      <div class="cover-text"><h1 id="coverH">${L.mast.map(w => `<span>${esc(w)}</span>`).join(' ')}</h1><p>${L.slogan}</p><a class="btn" href="${url('/c/43')}">${L.heroCta}</a></div>
+    </section>
     <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="${L.instruments}">
-      <h1 class="flag-h1">${L.homeH1}</h1>
-      <div class="flag-word" id="flagWord" aria-hidden="true">${L.mast.map(w => `<span>${esc(w)}</span>`).join('')}</div>
+      <h2 class="flag-h1">${L.homeH1}</h2>
+      <div class="flag-word" id="flagWord" aria-hidden="true">${st[0] ? esc(st[0].w) : ''}</div>
       <img class="flag-pic" id="flagPic" src="${st[0] ? st[0].src : ''}" alt="${st[0] ? esc(st[0].n) : ''}" fetchpriority="high" draggable="false">
       <div class="flag-info" aria-live="polite"><h2 id="flagN">${st[0] ? esc(st[0].n) : ''}</h2><p id="flagS">${st[0] ? esc(spec(prod.get(st[0].id), x.lang)) : ''}</p></div>
       <div class="flag-buy"><b id="flagP">${st[0] ? money(prod.get(st[0].id).price) : ''}</b><a class="btn" id="flagA" href="${st[0] ? url(`/p/${st[0].id}`) : '#'}">${L.flagOpen}</a></div>
       <button type="button" class="flag-arr p" aria-label="${L.shelfPrev}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="flag-arr n" aria-label="${L.shelfNext}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-      <div class="flag-tabs">${st.map((s, i) => `<button type="button" class="flag-dot" data-s="${i}" aria-pressed="${i === 0}" aria-label="${esc(s.n)}"></button>`).join('')}<a href="${url('/c/43')}">${L.all(goods(count(43)))}</a></div>
+      <div class="flag-tabs">${st.map((s, i) => `<button type="button" data-s="${i}" aria-pressed="${i === 0}">${esc(s.w)}</button>`).join('')}<a href="${url('/c/43')}">${L.all(goods(count(43)))}</a></div>
     </section>
     <section class="pick" id="pick" aria-labelledby="pickH">
       <h2 id="pickH">${L.pickH}</h2>
@@ -161,15 +165,15 @@ window.ACC_HOME = (() => {
       const el = $('#flag'), S = STAGE.filter(s => x.prod.get(s.id)), pic = $('#flagPic'), word = $('#flagWord'), tabs = $$('.flag-tabs button', el);
       if (!S.length) return;
       let cur = 0, busy = false;
-      const size = () => innerWidth > 860 ? `min(${Math.min(7.4, 98 / x.L.mast.join(' ').length)}vw, 12svh)` : `${Math.min(17, 92 / Math.max(...x.L.mast.map(w => w.length)))}vw`;   // ПК: одним рядком над інструментом; телефон: два рядки   // 26.11 Алекс: на першому екрані лише «Акордеон Центр», без чужих брендів
-      const paint = i => { const s = S[i], p = x.prod.get(s.id); el.style.setProperty('--tone', s.tone); word.style.fontSize = size(); pic.src = s.src; pic.alt = s.n; $('#flagN').textContent = s.n; $('#flagS').textContent = spec(p, x.lang); $('#flagP').textContent = x.money(p.price); $('#flagA').href = x.url(`/p/${s.id}`); tabs.forEach((b, k) => b.setAttribute('aria-pressed', k === i)); };
-      paint(0); on(window, 'resize', () => { word.style.fontSize = size(); });
+      const size = w => `${innerWidth > 860 ? Math.min(23, 150 / w.length) : Math.min(24, 126 / w.length)}vw`;
+      const paint = i => { const s = S[i], p = x.prod.get(s.id); el.style.setProperty('--tone', s.tone); word.textContent = s.w; word.style.fontSize = size(s.w); pic.src = s.src; pic.alt = s.n; $('#flagN').textContent = s.n; $('#flagS').textContent = spec(p, x.lang); $('#flagP').textContent = x.money(p.price); $('#flagA').href = x.url(`/p/${s.id}`); tabs.forEach((b, k) => b.setAttribute('aria-pressed', k === i)); };
+      paint(0); on(window, 'resize', () => { word.style.fontSize = size(S[cur].w); });
       const seen = new IntersectionObserver(es => { if (es[0].isIntersecting) { seen.disconnect(); S.forEach(s => { new Image().src = s.src; }); } }, { rootMargin: '300px' }); seen.observe(el);
       async function show(i, d) {
         i = (i + S.length) % S.length; if (busy || i === cur) return; busy = true; d = d || (i > cur ? 1 : -1); cur = i;
-        if (!calm) { const o = { duration: 260, easing: 'ease-in', fill: 'forwards' }; await pic.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-d * 22}vw) rotate(${-d * 5}deg) scale(.9)` }], o).finished.catch(() => {}); }
-        paint(i); await pic.decode().catch(() => {}); pic.getAnimations().forEach(a => a.cancel());
-        if (!calm) { const o = { duration: 620, easing: 'cubic-bezier(.16,.9,.2,1)' }; pic.animate([{ opacity: 0, transform: `translateX(${d * 26}vw) rotate(${d * 6}deg) scale(.88)` }, { opacity: 1, transform: 'none' }], o); }
+        if (!calm) { const o = { duration: 260, easing: 'ease-in', fill: 'forwards' }; word.animate([{ opacity: 1 }, { opacity: 0, transform: `translateX(${-d * 6}vw)` }], o); await pic.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-d * 22}vw) rotate(${-d * 5}deg) scale(.9)` }], o).finished.catch(() => {}); }
+        paint(i); await pic.decode().catch(() => {}); [...pic.getAnimations(), ...word.getAnimations()].forEach(a => a.cancel());
+        if (!calm) { const o = { duration: 620, easing: 'cubic-bezier(.16,.9,.2,1)' }; word.animate([{ opacity: 0, transform: `translateX(${d * 6}vw)` }, { opacity: 1, transform: 'none' }], o); pic.animate([{ opacity: 0, transform: `translateX(${d * 26}vw) rotate(${d * 6}deg) scale(.88)` }, { opacity: 1, transform: 'none' }], o); }
         busy = false;
       }
       tabs.forEach((b, i) => on(b, 'click', () => show(i))); on($('.flag-arr.p', el), 'click', () => show(cur - 1, -1)); on($('.flag-arr.n', el), 'click', () => show(cur + 1, 1));

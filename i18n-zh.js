@@ -26,7 +26,7 @@ window.I18N_ZH = (num) => ({
   heroText: (g, price) => `${g}，用于维修、演奏和学习：从 ${price} 的配件到 Pigini 音乐会级乐器。`,
   parts: '配件', instruments: '乐器',
   slogan: '好的手风琴在任何人手中都动听，在大师手中则奏出完美的音乐。',
-  labH: '每个部位的配件', labAll: '全部配件', homeH1: 'Pigini、Scandalli、Bugari、Fisitalia 手风琴', labLabel: '手风琴内部结构', labAlt: 'Scandalli 键钮手风琴', labHint: '点击乐器的任一部位，镜头会飞过去。', labFly: n => `${n}：近距离查看`, labBack: '返回乐器', labRepair: (n, g) => `维修用：${n}，${g}`,
+  coverAlt: '黑暗中光束下的 Scandalli AIR 键钮手风琴', labH: '每个部位的配件', labAll: '全部配件', homeH1: 'Pigini、Scandalli、Bugari、Fisitalia 手风琴', labLabel: '手风琴内部结构', labAlt: 'Scandalli 键钮手风琴', labHint: '点击乐器的任一部位，镜头会飞过去。', labFly: n => `${n}：近距离查看`, labBack: '返回乐器', labRepair: (n, g) => `维修用：${n}，${g}`,
   labFacts: { buttons: ['键钮', '右手 67 个键钮。', '键钮更多的型号'], registers: ['变音器', '右手 9 个变音器，低音 3 个。', '缪赛特音色'], grille: ['琴身', '尺寸 38 × 18.5 厘米。', 'AIR 系列其他型号'], bellows: ['风箱', '为右手四组簧片供气：16、8、8、4。', '带共鸣腔（cassotto）'], bass: ['低音', '96 个键钮，4 组音。', '带自由低音转换'], strap: ['背带', '乐器重 8.8 公斤。', '键盘手风琴'] },
   heroCta: '挑选手风琴', heroThis: '查看这一款', pickH: '您在找哪种手风琴？', pickBtn: '键钮手风琴', pickKeys: '键盘手风琴', pickBrand: '按品牌', pickSub: { 44: '标准低音', 45: '自由低音转换', 46: '标准低音', 47: '自由低音转换', 54: '数码', 56: '缪赛特' },
   adviceH: '不知道选哪一款？', adviceP: '告诉我们谁来演奏、演奏什么音乐。我们会推荐型号并安排试奏。', ownersH: '为您的乐器',
