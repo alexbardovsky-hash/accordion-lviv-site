@@ -362,8 +362,8 @@
           </ul>`}
           ${!inst ? desc : ''}
         </div>
-        ${inst ? `<div class="p-full">${desc}</div>` : ''}
       </div>
+      ${inst ? `<div class="wrap p-full">${desc}</div>` : ''}
       ${related.length ? `<section class="section wrap"><div class="section-head"><h2>${L.related}</h2><a href="${url(`/c/${p.cat}`)}">${L.all(goods(count(p.cat)))}</a></div><div class="row-scroll">${related.map(card).join('')}</div></section>` : ''}`;
     view.onclick = e => {
       const t = e.target.closest('[data-pic]');
@@ -630,8 +630,9 @@
   let toastT;
   function toast(text, action, fn) {
     const t = $('#toast'); t.innerHTML = `<span>${esc(text)}</span>${action ? `<button>${esc(action)}</button>` : ''}`;
-    if (action) $('button', t).onclick = () => { t.classList.remove('is-on'); fn(); };
-    t.classList.add('is-on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('is-on'), 4000);
+    if (action) $('button', t).onclick = () => { t.classList.remove('is-on'); document.body.classList.remove('toast-on'); fn(); };
+    const off = () => { t.classList.remove('is-on'); document.body.classList.remove('toast-on'); };
+    t.classList.add('is-on'); document.body.classList.add('toast-on'); clearTimeout(toastT); toastT = setTimeout(off, 4000);
   }
 
   /* Шапка: сердечко, терези й кабінет; лічильники й позначки на картках оновлюються, щойно щось змінилось (і після входу). */
@@ -653,7 +654,7 @@
     paintAcc();
   }
 
-  // На телефоні кнопка чату ховається, поки гортають униз (не закриває «+» і «Додати в кошик»), і вертається, щойно гортнули вгору.
+  // Кнопка чату ховається, поки гортають униз (не закриває «+» і «Додати в кошик»), і вертається, щойно гортнули вгору.
   let lastY = 0;
   addEventListener('scroll', () => {
     $('#top').classList.toggle('is-stuck', scrollY > 8);
