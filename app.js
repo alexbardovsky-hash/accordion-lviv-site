@@ -13,7 +13,7 @@
     .replace(/(\d)\|/g, '$1/').replace(/\|(?=[A-Z])/g, '/').replace(/\b(87|96)120\b/g, '$1/120')
     .replace(/["“”]([^"“”]*)["“”]/g, (_, q) => `«${q.trim()}»`).replace(/«(Pigini|Bugari Armando|Bugari|Scandalli)\s+([^»]+)»/g, '$1 «$2»').replace(/«(Bugari|Pigini|Scandalli|Fisitalia)»/g, '$1')
     .replace(/(?:\s[–-])?\s(?:mod\.|мод\.|модель|model)\s*/gi, ' ').replace(/«Mod\. /g, '«').replace(/\s*\(convertor\)/g, '').replace(/\s[–-]\s(?=[а-яіїєґ]|button|converter|accordion|piano)/gi, ', ').replace(/\s[–-]\s(?=[\d«A-ZА-Я])/g, ' ').replace(/(\d)\s\/\s(?=[A-ZА-Я])/g, '$1/')
-    .replace(/,\s*,/g, ',').replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ').trim().replace(/[«»]/g, q => lang === 'en' ? { '«': '“', '»': '”' }[q] : q);
+    .replace(/» готово-виборний/g, '», готово-виборний').replace(/41\.45, [ТT][СC] /, '41.45 TC ').replace(/«AIR I C 77\/120»/, '«AIR I C» 77/120').replace(/,\s*,/g, ',').replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ').trim().replace(/[«»]/g, q => lang === 'en' ? { '«': '“', '»': '”' }[q] : q);
   for (const x of C.products) { const v = window.VARIANTS?.[x.id]?.[lang === 'en' ? 1 : 0]; x.name = nice(x.name) + (v && !x.name.includes(v) ? `, ${v}` : '');if (window.VARIANTS?.[x.id]) x.uk += `, ${window.VARIANTS[x.id][0]}`; }
   // Характеристики з сайтів виробників (data/specs.js) — лише там, де в каталозі їх немає.
   for (const x of C.products) { const s = window.SPECS?.[x.id]; if (s && x.features.length < 3) { x.features = s[lang]; x.maker = true; } }

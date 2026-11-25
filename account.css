@@ -111,7 +111,7 @@
 .cmp-name { font-weight: 500; line-height: 1.3; text-decoration: none; }
 .cmp-name:hover { color: var(--red); }
 .cmp-buy { min-height: 44px; padding: 0 16px; font-size: .92rem; }
-.cmp-x { position: absolute; top: 6px; right: 6px; z-index: 1; width: 32px; height: 32px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .85); font-size: 1.3rem; line-height: 1; cursor: pointer; color: var(--ink); }
+.cmp-x { position: absolute; top: 4px; right: 4px; z-index: 1; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .85); font-size: 1.3rem; line-height: 1; cursor: pointer; color: var(--ink); }
 .cmp-x:hover { background: var(--ink); color: var(--on-ink); }
 
 /* Оплата */
@@ -142,6 +142,6 @@
   .acc-order li { grid-template-columns: 40px minmax(0, 1fr) auto; }
   .acc-order li > b { grid-column: 2 / -1; }
   .cmp-table { width: max(100%, calc(120px + var(--n) * 180px)); }
-  .cmp-table tbody th, .cmp-table thead th:first-child { width: 120px; position: sticky; left: 0; z-index: 1; background: #d6dbd3; }
+  .cmp-table tbody th, .cmp-table thead th:first-child { width: 120px; position: sticky; left: 0; z-index: 1; background: #efefee; }
 }
 @media (prefers-reduced-motion: reduce) { .act { transition: none; } }
