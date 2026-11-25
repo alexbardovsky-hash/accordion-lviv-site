@@ -142,3 +142,27 @@ body:has(#scrim:not([hidden])) .ask-fab, body:has(dialog[open]) .ask-fab, body:h
 @media (max-width: 700px) { .toast { left: 12px; right: 12px; width: auto; max-width: none; transform: translate(0, 120px); border-radius: 18px; justify-content: space-between; } .toast.is-on { transform: none; } .toast span { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; } }
 .toast button { color: #fff; text-decoration: underline; text-underline-offset: 4px; min-height: 32px; }
 .p-full .p-spec + p, .p-full .p-spec + small { margin-top: 18px; }
+
+/* Власні випадні списки, поля чисел, пошуку й перемикачі без системного вигляду */
+.sl { position: relative; display: inline-block; }
+.sl-b { min-height: 42px; padding: 0 40px 0 16px; border: 1.5px solid var(--line); border-radius: 999px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23141112' stroke-width='2'%3E%3Cpath d='M6 9.5l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center / 16px; color: var(--ink); font: 500 .95rem var(--ui); white-space: nowrap; cursor: pointer; transition: border-color .2s; }
+.sl-b:hover, .sl-b[aria-expanded="true"] { border-color: var(--ink); }
+.sl-b:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.sl-l { position: absolute; z-index: 45; left: 0; top: calc(100% + 8px); min-width: 100%; max-height: min(60vh, 340px); overflow: auto; margin: 0; padding: 6px; list-style: none; background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 24px 50px -22px rgba(20, 17, 18, .45); animation: sl-in .16s ease-out; }
+.sl-l[hidden] { display: none; } .sl-l.up { top: auto; bottom: calc(100% + 8px); } .sl-l.right { left: auto; right: 0; }
+@keyframes sl-in { from { opacity: 0; translate: 0 -6px; } }
+.sl-l li { padding: 10px 38px 10px 14px; border-radius: 12px; color: var(--ink); font-size: .95rem; white-space: nowrap; cursor: pointer; }
+.sl-l li.on { background-color: #f0eeeb; }
+.sl-l li[aria-selected="true"] { font-weight: 600; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c01a33' stroke-width='2.4'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; }
+@media (max-width: 960px) { .sl-b { min-height: 46px; } .sl-l li { padding-block: 13px; } }
+@media (prefers-reduced-motion: reduce) { .sl-l { animation: none; } }
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; } input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; width: 18px; height: 18px; cursor: pointer; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a5455' stroke-width='2.2'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E") center / 16px no-repeat; }
+.radio input[type="radio"] { appearance: none; -webkit-appearance: none; flex: none; width: 20px; height: 20px; margin: 2px 0 0; padding: 0; border: 1.5px solid #8c8587; border-radius: 50%; background: #fff; display: grid; place-items: center; } .radio input[type="radio"]::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--red); scale: 0; transition: scale .15s; } .radio input[type="radio"]:checked { border-color: var(--red); } .radio input[type="radio"]:checked::after { scale: 1; } .radio input[type="radio"]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+/* Меню: каталог, особисте й покупцям окремо */
+.dr-me { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0 22px; } .dr-me[hidden] { display: none; }
+.dr-me a { display: grid; justify-items: center; gap: 6px; padding: 14px 4px 12px; border-radius: 16px; background: #fff; text-decoration: none; font-size: .88rem; font-weight: 500; } .dr-me svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; stroke-linecap: round; }
+.dr-h { margin: 0 0 8px; font: 500 .9rem var(--ui); letter-spacing: 0; color: var(--muted); } .dr-info { display: grid; margin-bottom: 8px; } .drawer .dr-h ~ .dr-h { margin-top: 26px; }
+.dr-info a { padding: 11px 0; text-decoration: none; font-size: 1rem; }
+.mega-info { display: flex; flex-wrap: wrap; gap: 8px 26px; align-items: baseline; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); font-size: .95rem; } .mega-info b { font-weight: 500; color: var(--muted); }
+.drawer, .cart { background: #efefee; } .mega-info { padding-bottom: 18px; } .sl-l { scrollbar-width: thin; scrollbar-color: #bdb7b4 transparent; }

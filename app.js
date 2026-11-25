@@ -25,7 +25,7 @@
   const LOCAL = new Set([...(window.LOCAL_PHOTOS || []), ...GPT]);
   // Нові фото з ChatGPT: головне чисте, оригінал з підписами (розміри, колір) другим.
   const MAKER = new Set(window.ACC_MAKER ? window.MAKER_PHOTOS : []);   // справжні фото виробника, поки вимкнено (data/config.js)
-  for (const x of C.products) if (LOCAL.has(x.id)) { x.img = `${PHOTO_DIR}/${x.id}-s.jpg`; x.big = x.img; x.imgs = GPT.has(x.id) ? [`${PHOTO_DIR}/${x.id}.jpg`, `${PHOTO_DIR}/${x.id}-o.jpg`] : [`${PHOTO_DIR}/${x.id}.jpg`]; if (MAKER.has(x.id)) { x.img = `photos/maker_web/${x.id}-s.jpg`; x.big = x.img; x.imgs.unshift(`photos/maker_web/${x.id}.jpg`); } }
+  for (const x of C.products) if (LOCAL.has(x.id)) { x.img = `${PHOTO_DIR}/${x.id}-s.jpg`; x.big = x.img; x.imgs = GPT.has(x.id) ? [`${PHOTO_DIR}/${x.id}.jpg`, `${PHOTO_DIR}/${x.id}-o.jpg`] : [`${PHOTO_DIR}/${x.id}.jpg`]; if (MAKER.has(x.id)) { x.img = `photos/maker_web/${x.id}-s.jpg`; x.big = x.img; x.imgs.unshift(`photos/maker_web/${x.id}.jpg`); } if (window.ACC_MAKER && window.MAKER_MORE?.[x.id]) x.imgs.splice(1, 0, ...window.MAKER_MORE[x.id].map(f => `photos/maker_web/${f}.jpg`)); }
   const PHONE = '+380993339890', PHONE_TEXT = '+38 099 333 98 90', MAIL = 'bajan@accordion.lviv.ua';
   const PAGE = 36;
   const $ = (s, r = document) => r.querySelector(s);
@@ -62,7 +62,7 @@
   /* ── Шматки розмітки ── */
   const pic = (p, cls = '') => p.img ? `<img ${cls} src="${esc(p.img)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'">` : '<span class="ph"></span>';
   // Телефон бере легшу копію головного фото (tools/web_sizes.py).
-  const srcsetOf = u => /^photos\/(web5|maker_web)\/\d+(-o)?\.jpg$/.test(u) ? `${u.replace('.jpg', '-m.webp')} 800w, ${u} 1200w` : '';
+  const srcsetOf = u => /^photos\/(web5|maker_web)\/\d+(-(o|\d+))?\.jpg$/.test(u) ? `${u.replace('.jpg', '-m.webp')} 800w, ${u} 1200w` : '';
   const thumb = u => srcsetOf(u) ? u.replace('.jpg', '-m.webp') : u.replace('thickbox_default', 'cart_default');
   const photo = p => LOCAL.has(p.id) ? `${MAKER.has(p.id) ? 'photos/maker_web' : PHOTO_DIR}/${p.id}-m.webp` : p.img;
   const srcset = u => srcsetOf(u) ? ` srcset="${srcsetOf(u)}" sizes="(max-width: 960px) 92vw, 1200px"` : '';
@@ -308,10 +308,10 @@
         ${items.length ? '' : `<div class="empty"><p>${L.fNone}</p></div>`}
         <div class="grid">${items.slice(0, state.shown).map(card).join('')}</div>
         ${items.length > state.shown ? `<button class="btn ghost more" id="more">${L.showMore(Math.min(PAGE, items.length - state.shown), items.length - state.shown)}</button>` : ''}`;
-      $('#sort', root).value = state.sort;
+      $('#sort', root).value = state.sort; window.ACC_SELECT?.(root);
       if (painted) keep(); painted = true;
     };
-    root.addEventListener('change', e => { if (e.target.id === 'sort') { state.sort = e.target.value; state.shown = PAGE; paint(); }
+    root.addEventListener('change', e => { if (e.target.id === 'sort') { state.sort = e.target.value; state.shown = PAGE; paint(); $('#sort', root)?.focus({ preventScroll: true }); }
       const k = e.target.dataset.f; if (k) { f[k] = Math.max(0, +e.target.value || 0); state.shown = PAGE; paint(); $(`[data-f="${k}"]`, root)?.focus({ preventScroll: true }); } });
     root.addEventListener('click', e => {
       const b = e.target.closest('[data-brand]');
@@ -544,12 +544,13 @@
   const megaCols = roots.flatMap(r => r.children.some(k => cat.get(k).children.length) ? r.children.map(k => cat.get(k)) : r.children.length ? [r] : []);
   const megaRest = roots.filter(r => !r.children.length && count(r.id));
   $('#mega').innerHTML = `<div class="wrap mega-grid">${megaCols.filter(c => count(c.id)).map(c => `<div class="mega-col"><a href="${url(`/c/${c.id}`)}">${esc(c.name)}</a>${tree(c.children, 2)}</div>`).join('')}
-    <div class="mega-col">${megaRest.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a>`).join('')}<a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a></div></div>`;
-  $('#drawer').innerHTML = `<div class="panel-head"><h2>${L.catalog}</h2><button class="icon-btn" data-close aria-label="${L.close}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
-    <div class="panel-body">${roots.map(r => r.children.length
+    <div class="mega-col">${megaRest.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a>`).join('')}</div></div>
+    <nav class="wrap mega-info" aria-label="${L.forBuyers}"><b>${L.forBuyers}</b><a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a></nav>`;
+  $('#drawer').innerHTML = `<div class="panel-head"><h2>${L.menu}</h2><button class="icon-btn" data-close aria-label="${L.close}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="panel-body"><nav class="dr-me" id="drMe" hidden></nav><h3 class="dr-h">${L.catalog}</h3>${roots.map(r => r.children.length
       ? `<details><summary>${esc(r.name)}</summary><ul><li><a href="${url(`/c/${r.id}`)}">${L.allInSection}<span>${count(r.id)}</span></a></li>${tree(r.children, 1).slice(4, -5)}</ul></details>`
       : `<div class="plain"><a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a></div>`).join('')}
-      <div class="plain"><a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a></div>
+      <h3 class="dr-h">${L.forBuyers}</h3><nav class="dr-info" aria-label="${L.forBuyers}"><a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a><a href="tel:${PHONE}">${PHONE_TEXT}</a></nav>
       <div class="lang drawer-lang" role="group" aria-label="${L.langLabel}"><button data-lang="uk" lang="uk">Українська</button><button data-lang="en" lang="en">English</button></div></div>`;
   wireLang();
 
@@ -650,7 +651,8 @@
   }
   if (ACC) {
     for (const [id, t] of [['#cmpBtn', AT.cmpH], ['#favBtn', AT.favH]]) { $(id).setAttribute('aria-label', t); $(id).title = t; }
-    $$('#drawer .plain').at(-1)?.insertAdjacentHTML('afterbegin', `<a href="${url(`/account`)}">${esc(AT.account)}</a><a href="${url(`/favorites`)}">${esc(AT.favH)}</a><a href="${url(`/compare`)}">${esc(AT.cmpH)}</a>`);
+    const ic = { a: '<circle cx="12" cy="8" r="4"/><path d="M4.5 20c1.2-3.6 4-5.2 7.5-5.2s6.3 1.6 7.5 5.2"/>', f: '<path d="M12 20S4 14.6 4 9.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 8 2.2C20 14.6 12 20 12 20z"/>', c: '<path d="M12 4v16M7 20h10M5 7h14M5 7l-2.5 6h5zM19 7l-2.5 6h5z"/>' }, li = (p, k, t) => `<a href="${url(p)}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic[k]}</svg>${esc(t)}</a>`;
+    const me = $('#drMe'); me.hidden = false; me.setAttribute('aria-label', AT.account); me.innerHTML = li('/account', 'a', AT.account) + li('/favorites', 'f', AT.favH) + li('/compare', 'c', AT.cmpH);
     ACC.subscribe(paintAcc);
     paintAcc();
   }
