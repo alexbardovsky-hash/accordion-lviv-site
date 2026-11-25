@@ -36,7 +36,7 @@
   const LOCAL = new Set([...(window.LOCAL_PHOTOS || []), ...GPT]);
   // Нові фото з ChatGPT: головне чисте, оригінал з підписами (розміри, колір) другим.
   const MAKER = new Set(window.ACC_MAKER ? window.MAKER_PHOTOS : []);   // справжні фото виробника, поки вимкнено (data/config.js)
-  for (const x of C.products) if (LOCAL.has(x.id)) { x.img = `${PHOTO_DIR}/${x.id}-s.jpg`; x.big = x.img; x.imgs = GPT.has(x.id) ? [`${PHOTO_DIR}/${x.id}.jpg`, `${PHOTO_DIR}/${x.id}-o.jpg`] : [`${PHOTO_DIR}/${x.id}.jpg`]; if (MAKER.has(x.id)) { x.img = `photos/maker_web/${x.id}-s.jpg`; x.big = x.img; x.imgs.unshift(`photos/maker_web/${x.id}.jpg`); } if (window.ACC_MAKER && window.MAKER_MORE?.[x.id]) x.imgs.splice(1, 0, ...window.MAKER_MORE[x.id].map(f => `photos/maker_web/${f}.jpg`)); }
+  for (const x of C.products) if (LOCAL.has(x.id)) { x.img = `${PHOTO_DIR}/${x.id}-s.jpg`; x.big = x.img; x.imgs = GPT.has(x.id) ? [`${PHOTO_DIR}/${x.id}.jpg`, `${PHOTO_DIR}/${x.id}-o.jpg`] : [`${PHOTO_DIR}/${x.id}.jpg`]; if (MAKER.has(x.id)) { x.img = `photos/maker_web/${x.id}-s.jpg`; x.big = x.img; x.imgs.unshift(`photos/maker_web/${x.id}.jpg`); } if (MAKER.has(x.id) && window.MAKER_MORE?.[x.id]) x.imgs.splice(1, 0, ...window.MAKER_MORE[x.id].map(f => `photos/maker_web/${f}.jpg`)); }
   const PHONE = '+380993339890', PHONE_TEXT = '+38 099 333 98 90', MAIL = 'bajan@accordion.lviv.ua';
   const PAGE = 36;
   const $ = (s, r = document) => r.querySelector(s);
@@ -388,11 +388,12 @@
       if (e.target.id === 'buy') add(p.id, Math.max(1, +$('#qty').value || 1));
       if (e.target.id === 'askP') window.ACC_CHAT.open({ topic: window.ACC_CHAT.t.productTopic(p.name), productId: p.id });
       if (e.target.id === 'askL') window.ACC_CHAT.open({ topic: `${L.instListen}: ${p.name}`.slice(0, 120), productId: p.id });
-      if (e.target.closest('#zoomBtn')) zoom($('#mainPic').dataset.full || $('#mainPic').getAttribute('src'), p.name);
+      if (e.target.closest('#zoomBtn')) zoom(big($('#mainPic').dataset.full || $('#mainPic').getAttribute('src')), p.name);
     };
   }
 
   /* Фото на весь екран */
+  const BIG = new Set(window.MAKER_BIG || []), big = u => { const m = /^photos\/maker_web\/(\d+)\.jpg$/.exec(u || ''); return m && BIG.has(+m[1]) ? `photos/maker_web/${m[1]}-x.jpg` : u; };   // різкі фото виробника — до 2000 px
   function zoom(src, alt) {
     let d = $('#zoom');
     if (!d) { document.body.insertAdjacentHTML('beforeend', `<dialog id="zoom" class="zoom"><img alt=""><button type="button" aria-label="${L.close}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></dialog>`); d = $('#zoom'); d.addEventListener('click', () => d.close()); addEventListener('sitenav', () => d.close()); }

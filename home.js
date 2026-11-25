@@ -31,7 +31,7 @@ window.ACC_HOME = (() => {
     const restCats = x.roots.filter(r => ![3, 38, 43, 48].includes(r.id) && count(r.id));
     const brands = Object.entries(x.inCat(43).reduce((o, p) => (p.brand && (o[p.brand] = (o[p.brand] || 0) + 1), o), {})).sort((a, b) => b[1] - a[1]);
     const sub = id => cat.get(id) && count(id) ? `<a href="${url(`/c/${id}`)}">${esc(L.pickSub[id] || cat.get(id).name)} <i>${count(id)}</i></a>` : '';
-    const pick = (img, h, ids) => `<div class="pk"><a class="pk-go" href="${url(`/c/${ids[0]}`)}" aria-hidden="true" tabindex="-1"><img src="img/stage2/${img}.webp" alt="" loading="lazy"></a><h3>${h}</h3><div class="pk-l">${ids.map(sub).join('')}</div></div>`;
+    const pick = (img, h, ids) => `<div class="pk"><a class="pk-go" href="${url(`/c/${ids[0]}`)}" aria-hidden="true" tabindex="-1">${/^m/.test(img) ? `<img class="mk" src="photos/maker_web/${img.slice(1)}.jpg" srcset="photos/maker_web/${img.slice(1)}-m.webp 800w, photos/maker_web/${img.slice(1)}.jpg 1200w, photos/maker_web/${img.slice(1)}-x.jpg 1900w" sizes="(max-width: 960px) 92vw, 46vw" alt="" loading="lazy">` : `<img src="img/stage2/${img}.webp" alt="" loading="lazy">`}</a><h3>${h}</h3><div class="pk-l">${ids.map(sub).join('')}</div></div>`;
     return `
     <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="${L.instruments}">
       <h1 class="flag-h1">${L.homeH1}</h1>
@@ -44,8 +44,8 @@ window.ACC_HOME = (() => {
     </section>
     <section class="pick" id="pick" aria-labelledby="pickH">
       <h2 id="pickH">${L.pickH}</h2>
-      ${pick(561, L.pickBtn, [44, 45, 56])}
-      ${pick(492, L.pickKeys, [46, 47, 54])}
+      ${pick(window.ACC_MAKER ? 'm561' : 561, L.pickBtn, [44, 45, 56])}
+      ${pick(window.ACC_MAKER ? 'm565' : 492, L.pickKeys, [46, 47, 54])}
       <div class="pk-brands"><span>${L.pickBrand}</span>${brands.map(([b, n]) => `<a href="${url(`/c/43?brand=${encodeURIComponent(b)}`)}">${esc(b)} <i>${n}</i></a>`).join('')}<a href="${url('/c/43')}">${L.wallAll} <i>${count(43)}</i></a></div>
     </section>
     <section class="lab" id="lab" aria-label="${L.labLabel}">
