@@ -130,3 +130,7 @@ body:has(#scrim:not([hidden])) .ask-fab, body:has(dialog[open]) .ask-fab, body:h
 .near-cats { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 60px; }
 .near-cats p { flex-basis: 100%; margin: 0 0 4px; }
 .near-cats .chip { display: inline-flex; align-items: center; min-height: 44px; }
+/* Вузькі телефони: ціна й кнопка вміщаються в картку, пошта в контактах переноситься */
+@media (max-width: 400px) { .card { min-width: 0; } .card-foot { gap: 4px; } .card-foot .price { font-size: clamp(.82rem, 4.1vw, 1.05rem); letter-spacing: -.055em; } .card-foot .add { flex: none; } .contact-big { font-size: clamp(1.2rem, 6.4vw, 1.6rem); } }
+@media (max-width: 345px) { .contact-big { font-size: 1.2rem !important; } .card-foot .add { width: 36px; height: 36px; } .card-foot .add::before { content: ""; position: absolute; inset: -5px; } }
+.acc-forgot { min-height: 44px; display: inline-flex; align-items: center; }
