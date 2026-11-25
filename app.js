@@ -406,7 +406,8 @@
           <div class="field"><label for="f-phone">${L.fPhone}</label><input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+380" required value="${esc(ACC?.user?.phone || '')}"><p class="err" hidden>${L.fPhoneErr}</p></div>
           <div class="field"><span class="sr" id="del-l">${L.fDelivery}</span><div class="radio" role="radiogroup" aria-labelledby="del-l">
             <label><input type="radio" name="delivery" value="np" checked><span><b>${L.np}</b><br>${L.npNote}</span></label>
-            <label><input type="radio" name="delivery" value="pickup"><span><b>${L.pickup}</b><br>${L.pickupNote}</span></label></div></div>
+            <label><input type="radio" name="delivery" value="pickup"><span><b>${L.pickup}</b><br>${L.pickupNote}</span></label>${window.ACC_ABROAD ? `
+            <label><input type="radio" name="delivery" value="abroad"><span><b>${L.abroad}</b><br>${L.abroadNote}</span></label>` : ''}</div></div>
           <div class="field" id="np"><label for="f-city">${L.fCity}</label><input id="f-city" name="city" autocomplete="address-level2"></div>
           <div class="field"><label for="f-note">${L.fNote}</label><textarea id="f-note" name="note" rows="3" placeholder="${L.fNotePh}"></textarea></div>
           <div class="ask-hp" aria-hidden="true"><input name="website" tabindex="-1" autocomplete="off"></div>
@@ -420,7 +421,7 @@
           <p class="p-note">${L.payDelivery}</p></aside>
       </div>`;
     const form = $('#order');
-    form.addEventListener('change', e => { if (e.target.name === 'delivery') $('#np').hidden = e.target.value !== 'np'; });
+    form.addEventListener('change', e => { if (e.target.name === 'delivery') { $('#np').hidden = e.target.value === 'pickup'; $('#np label').textContent = e.target.value === 'abroad' ? L.fCountry : L.fCity; } });
     form.addEventListener('submit', e => {
       e.preventDefault();
       const d = Object.fromEntries(new FormData(form));
@@ -429,7 +430,7 @@
       for (const k of ['name', 'phone']) { const i = form.elements[k]; i.nextElementSibling.hidden = !bad[k]; i.setAttribute('aria-invalid', bad[k]); if (bad[k] && !first) first = i; }
       if (first) { first.focus(); return; }
       const body = [`Замовлення з сайту`, '', ...lines.map(l => `${l.p.uk}${l.p.ref ? ` (арт. ${l.p.ref})` : ''} × ${l.q}${l.p.price ? ` = ${UK.money(l.p.price * l.q)}` : ''}`), '', `Разом: ${UK.money(cartTotal())}`, '',
-        `Ім'я: ${d.name}`, `Телефон: ${d.phone}`, `Доставка: ${UK[d.delivery]}${d.delivery === 'np' && d.city ? `, ${d.city}` : ''}`, d.note ? `Коментар: ${d.note}` : '', lang === 'en' ? 'Покупець користувався англійською версією сайту.' : ''].filter((x, i, a) => x || a[i - 1]).join('\n');
+        `Ім'я: ${d.name}`, `Телефон: ${d.phone}`, `Доставка: ${UK[d.delivery]}${d.delivery !== 'pickup' && d.city ? `, ${d.city}` : ''}`, d.note ? `Коментар: ${d.note}` : '', lang === 'en' ? 'Покупець користувався англійською версією сайту.' : ''].filter((x, i, a) => x || a[i - 1]).join('\n');
       const viaMail = () => {
         location.href = `mailto:${MAIL}?subject=${encodeURIComponent('Замовлення з сайту')}&body=${encodeURIComponent(body)}`;
         out.html = `<div class="wrap empty"><h1>${L.sentH}</h1><p>${L.sentP(PHONE_TEXT)}</p><a class="btn" href="tel:${PHONE}">${L.call}</a></div>`;
@@ -501,6 +502,7 @@
       <p><a class="contact-big" style="font-size:1.4rem" href="mailto:${MAIL}">${MAIL}</a></p>
       <h2>${L.footTitle}</h2>${links(L.pages.contacts)}<div id="letterBox"></div>`],
   };
+  for (const [k, v] of Object.entries(window.LEGAL?.[lang] || {})) PAGES[k] = [v[0], links(v[1])];   // правові сторінки (data/legal.js)
   function page(key) { const [h, body] = PAGES[key]; title(h); out.html = `${crumbs([{ name: h }])}<article class="wrap page"><h1>${h}</h1>${body}</article>`; if (key === 'contacts') window.ACC_CHAT?.mountLetter($('#letterBox'));
     if (key === 'service' && !matchMedia('(prefers-reduced-motion: reduce)').matches) { const vo = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.play().catch(() => {}); else e.target.pause(); })); $$('.svc-media video').forEach(v => vo.observe(v)); }
   }
@@ -542,6 +544,7 @@
     };
   });
   $$('[data-r]').forEach(a => { a.href = url(a.dataset.r); });
+  $('#footLegal').innerHTML = Object.entries(window.LEGAL?.[lang] || {}).map(([k, v]) => `<br><a href="${url(`/${k}`)}">${esc(v[0])}</a>`).join('');
   $('#footCats p')?.remove();   // у готовій сторінці список уже є
   $('#footCats').insertAdjacentHTML('beforeend', `<p>${roots.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a>`).join('<br>')}</p>`);
   // Найбільший розділ розкладаємо на групи, щоб колонки меню були рівними.

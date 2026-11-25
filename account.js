@@ -16,7 +16,7 @@
       noAccount: 'Ще немає кабінету?', haveAccount: 'Вже є кабінет?', toRegister: 'Зареєструватись', toLogin: 'Увійти',
       orders: 'Замовлення', chats: 'Питання', favorites: 'Обране', compare: 'Порівняння', profile: 'Профіль', logout: 'Вийти',
       hello: n => `Вітаємо, ${n}`, noOrders: 'Замовлень ще немає.', noChats: 'Питань ще не було.', toCatalog: 'До каталогу', ask: 'Поставити питання',
-      order: (n, d) => `Замовлення №${n} від ${d}`, total: 'Разом', np: 'Нова Пошта', pickup: 'Самовивіз у Львові',
+      order: (n, d) => `Замовлення №${n} від ${d}`, total: 'Разом', np: 'Нова Пошта', pickup: 'Самовивіз у Львові', abroad: 'За кордон, особиста передача',
       payNow: 'Оплатити онлайн', payNote: 'Карткою, Apple Pay чи Google Pay на захищеній сторінці LiqPay від ПриватБанку.', payTest: 'Тестовий режим: гроші не списуються.',
       payH: n => `Оплата замовлення №${n}`, paidH: 'Дякуємо, оплату отримано', paidP: n => `Замовлення №${n} оплачено. Ми звʼяжемося з вами щодо доставки.`,
       payWait: 'Перевіряємо оплату…', payWaitP: 'Підтвердження від банку зазвичай приходить за кілька секунд. Якщо ви не оплатили, можна повернутись і спробувати ще раз.',
@@ -53,7 +53,7 @@
       noAccount: 'No account yet?', haveAccount: 'Already have an account?', toRegister: 'Sign up', toLogin: 'Sign in',
       orders: 'Orders', chats: 'Questions', favorites: 'Favourites', compare: 'Compare', profile: 'Profile', logout: 'Sign out',
       hello: n => `Hello, ${n}`, noOrders: 'No orders yet.', noChats: 'No questions yet.', toCatalog: 'Browse the catalogue', ask: 'Ask a question',
-      order: (n, d) => `Order #${n}, ${d}`, total: 'Total', np: 'Nova Poshta', pickup: 'Pickup in Lviv',
+      order: (n, d) => `Order #${n}, ${d}`, total: 'Total', np: 'Nova Poshta', pickup: 'Pickup in Lviv', abroad: 'Outside Ukraine, handed over in person',
       payNow: 'Pay online', payNote: 'By card, Apple Pay or Google Pay on the secure LiqPay page of PrivatBank.', payTest: 'Test mode: no money is charged.',
       payH: n => `Payment for order #${n}`, paidH: 'Thank you, payment received', paidP: n => `Order #${n} is paid. We will contact you about delivery.`,
       payWait: 'Checking the payment…', payWaitP: 'The bank usually confirms within a few seconds. If you did not pay, you can go back and try again.',
@@ -324,7 +324,7 @@
       body.replaceChildren(h('h2', T.orders), ...list.map(o => h('article.acc-order',
         h('header', h('h3', T.order(o.id, date(o.created_at))), h(`span.acc-status.s-${o.status}`, T.status[o.status] || o.status)),
         h('ul', o.items.map(i => { const pr = ctx.prod(i.id); return h('li', pr ? ctx.thumb(pr) : h('span.ph'), h('a', { href: url(`/p/${i.id}`) }, pr?.name || i.name), h('span', `× ${i.q}`), h('b', i.price ? ctx.money(i.price * i.q) : '')); })),
-        h('footer', h('span', o.delivery === 'pickup' ? T.pickup : `${T.np}${o.city ? `, ${o.city}` : ''}`), h('b', `${T.total}: ${ctx.money(o.total)}`)),
+        h('footer', h('span', o.delivery === 'pickup' ? T.pickup : `${o.delivery === 'abroad' ? T.abroad : T.np}${o.city ? `, ${o.city}` : ''}`), h('b', `${T.total}: ${ctx.money(o.total)}`)),
         o.pay === 'success' ? h('p.acc-ok.pay-done', T.payPaid) : o.payable ? payButton(o.id) : null)));
     }).catch(fail);
     if (tab === 'chats') call('/api/me/chats').then(list => {
