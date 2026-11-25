@@ -1,18 +1,11 @@
-/* Головна (25.11): «Розбір» — натискаєш на вузол акордеона, камера летить до нього в 3D, панель продає цей і схожі акордеони
-   (деталі для ремонту — тихе посилання внизу); далі вибір акордеона, сцена чотирьох флагманів, запчастини й майстерня, партнери. Малює app.js → home(), тут розмітка й поведінка.
+/* Головна (26.11): перший екран — сцена чотирьох флагманів (покупка), далі вибір акордеона, тоді «Розбір» — натискаєш на вузол,
+   камера летить до нього в 3D і панель показує комплектуючі цього вузла; далі порада, комісійний, ремонт і запчастини, партнери. Малює app.js → home(), тут розмітка й поведінка.
    Прольоти з 3D-моделі: tools/m3d/fly3.sh → tools/m3d/fly3_web.py, scenes/fly/model/<вузол>_<d|m>[_back].mp4 (старі: scenes/fly/web). */
 window.ACC_HOME = (() => {
   const VID = 'scenes/fly/model/', VER = '?v=1';
   // Точки в пікселях вирізаного фото виробника (1727×1228); де воно лежить у кадрі — tools/fly_frames.py (frames.json).
   const CUT = [1727, 1228], PLACE = { d: [.159896, .17739, .530208, .665441], m: [.110294, .303125, .780331, .314063] }, FRAME = { d: [1920, 1088], m: [1088, 1920] };
   const NODES = [['buttons', 5, 320, 900, 'l m'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, 'r'], ['bellows', 11, 1211, 330, 'r m'], ['bass', 7, 1520, 690, 'r m'], ['strap', /^(Ремені|Straps)/i, 420, 130, 'l']];
-  // Інструмент першого екрана й добірки до вузлів: схожі за ціною, без самого інструмента. Числа в L.labFacts — з його сторінки в каталозі.
-  const HERO = { id: 543, n: 'Scandalli AIR Junior C' };
-  const ALIKE = {
-    buttons: p => [44, 45].some(c => p.cats.includes(c)) && +(p.name.match(/(\d{2,3})\s*\/\s*\d{2,3}/)?.[1]) > 67, registers: p => p.cats.includes(56), grille: p => /\bAIR\b/.test(p.name),
-    bellows: p => /касот|cassotto/i.test(`${p.uk || ''} ${p.name} ${p.short}`), bass: p => p.cats.includes(45), strap: p => p.cats.includes(46),
-  };
-  const alike = (k, x) => { const base = x.prod.get(HERO.id)?.price || 0; return x.inCat(43).filter(p => p.id !== HERO.id && p.price && p.img && ALIKE[k](p)).sort((a, b) => Math.abs(a.price - base) - Math.abs(b.price - base)).slice(0, 3); };
   const STAGE = [
     { id: 301, w: 'Pigini', n: 'Pigini Nova', src: 'img/flag/301.webp', tone: '#7d1528' }, { id: 554, w: 'Bugari', n: 'Bugari Armando 2 RC Cassotto', src: 'img/flag/554.webp', tone: '#8b4a1f' },
     { id: 541, w: 'Scandalli', n: 'Scandalli Super VI', src: 'img/stage2/541.webp', tone: '#3d4650' }, { id: 387, w: 'Fisitalia', n: 'Fisitalia B-61', src: 'img/flag/387.webp', tone: '#0e5a52' },
@@ -35,19 +28,19 @@ window.ACC_HOME = (() => {
     const { L, esc, url, goods, count, cat, prod, money } = x, N = nodes(x);
     const vid = (v, p) => `<video src="scenes/web/${v}-w.mp4" data-poster="scenes/web/${p}-m.webp" muted loop playsinline preload="none" aria-hidden="true"></video>`;
     const kom = x.inCat(48).find(p => p.img), st = STAGE.filter(s => prod.get(s.id));
-    const restCats = x.roots.filter(r => ![3, 38, 43, 48].includes(r.id) && count(r.id)), hero = prod.get(HERO.id);
+    const restCats = x.roots.filter(r => ![3, 38, 43, 48].includes(r.id) && count(r.id));
     const brands = Object.entries(x.inCat(43).reduce((o, p) => (p.brand && (o[p.brand] = (o[p.brand] || 0) + 1), o), {})).sort((a, b) => b[1] - a[1]);
     const sub = id => cat.get(id) && count(id) ? `<a href="${url(`/c/${id}`)}">${esc(L.pickSub[id] || cat.get(id).name)} <i>${count(id)}</i></a>` : '';
     const pick = (img, h, ids) => `<div class="pk"><a class="pk-go" href="${url(`/c/${ids[0]}`)}" aria-hidden="true" tabindex="-1"><img src="img/stage2/${img}.webp" alt="" loading="lazy"></a><h3>${h}</h3><div class="pk-l">${ids.map(sub).join('')}</div></div>`;
     return `
-    <section class="lab" id="lab" aria-label="${L.labLabel}">
-      <div class="lab-film" id="labFilm"><picture><source media="(max-aspect-ratio: 1/1)" srcset="${VID}start_m.webp${VER}"><img src="${VID}start_d.webp${VER}" alt="${L.labAlt}" fetchpriority="high"></picture></div>
-      <div class="lab-text"><h1>${L.mast.map(w => `<span>${w}</span>`).join(' ')}</h1><p class="lab-hint m">${L.labHint}</p><p class="lab-slogan">${L.slogan}</p>
-        <div class="lab-cta"><a class="btn" href="${url('/c/43')}">${L.heroCta}</a>${hero ? `<a class="btn ghost" href="${url(`/p/${HERO.id}`)}">${L.heroThis}</a>` : ''}</div>${hero ? `<p class="lab-model"><span>${HERO.n}</span> <b>${money(hero.price)}</b></p>` : ''}</div>
-      <p class="lab-hint d" aria-hidden="true">${L.labHint}</p>
-      <div class="lab-dots" id="labDots">${N.map((n, i) => `<button type="button" class="hs ${n.side}" data-n="${i}" aria-label="${esc(L.labFly(L.labFacts[n.k][0]))}"><span>${esc(L.labFacts[n.k][0])}</span></button>`).join('')}</div>
-      <nav class="lab-nav" aria-label="${L.labLabel}">${N.map((n, i) => `<button type="button" data-n="${i}">${esc(L.labFacts[n.k][0])}</button>`).join('')}</nav>
-      <aside class="lab-panel" id="labPanel" aria-live="polite"><button type="button" class="lab-x" id="labX" aria-label="${L.labBack}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><h2 id="labH"></h2><p id="labP"></p>${hero ? `<div class="lab-own"><p>${HERO.n}<b>${money(hero.price)}</b></p><a class="btn" href="${url(`/p/${HERO.id}`)}">${L.flagOpen}</a></div>` : ''}<h3 id="labM"></h3><ul id="labL"></ul><a class="lab-parts" id="labA"></a></aside>
+    <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="${L.instruments}">
+      <h1 class="flag-h1">${L.homeH1}</h1>
+      <div class="flag-word" id="flagWord" aria-hidden="true">${st[0] ? esc(st[0].w) : ''}</div>
+      <img class="flag-pic" id="flagPic" src="${st[0] ? st[0].src : ''}" alt="${st[0] ? esc(st[0].n) : ''}" fetchpriority="high" draggable="false">
+      <div class="flag-info" aria-live="polite"><h2 id="flagN">${st[0] ? esc(st[0].n) : ''}</h2><p id="flagS">${st[0] ? esc(spec(prod.get(st[0].id), x.lang)) : ''}</p></div>
+      <div class="flag-buy"><b id="flagP">${st[0] ? money(prod.get(st[0].id).price) : ''}</b><a class="btn" id="flagA" href="${st[0] ? url(`/p/${st[0].id}`) : '#'}">${L.flagOpen}</a></div>
+      <button type="button" class="flag-arr p" aria-label="${L.shelfPrev}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="flag-arr n" aria-label="${L.shelfNext}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="flag-tabs">${st.map((s, i) => `<button type="button" data-s="${i}" aria-pressed="${i === 0}">${esc(s.w)}</button>`).join('')}<a href="${url('/c/43')}">${L.all(goods(count(43)))}</a></div>
     </section>
     <section class="pick" id="pick" aria-labelledby="pickH">
       <h2 id="pickH">${L.pickH}</h2>
@@ -55,13 +48,14 @@ window.ACC_HOME = (() => {
       ${pick(492, L.pickKeys, [46, 47, 54])}
       <div class="pk-brands"><span>${L.pickBrand}</span>${brands.map(([b, n]) => `<a href="${url(`/c/43?brand=${encodeURIComponent(b)}`)}">${esc(b)} <i>${n}</i></a>`).join('')}<a href="${url('/c/43')}">${L.wallAll} <i>${count(43)}</i></a></div>
     </section>
-    <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="${L.instruments}">
-      <div class="flag-word" id="flagWord" aria-hidden="true">${st[0] ? esc(st[0].w) : ''}</div>
-      <img class="flag-pic" id="flagPic" src="${st[0] ? st[0].src : ''}" alt="${st[0] ? esc(st[0].n) : ''}" loading="lazy" draggable="false">
-      <div class="flag-info" aria-live="polite"><h2 id="flagN">${st[0] ? esc(st[0].n) : ''}</h2><p id="flagS">${st[0] ? esc(spec(prod.get(st[0].id), x.lang)) : ''}</p></div>
-      <div class="flag-buy"><b id="flagP">${st[0] ? money(prod.get(st[0].id).price) : ''}</b><a class="btn" id="flagA" href="${st[0] ? url(`/p/${st[0].id}`) : '#'}">${L.flagOpen}</a></div>
-      <button type="button" class="flag-arr p" aria-label="${L.shelfPrev}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="flag-arr n" aria-label="${L.shelfNext}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-      <div class="flag-tabs">${st.map((s, i) => `<button type="button" data-s="${i}" aria-pressed="${i === 0}">${esc(s.w)}</button>`).join('')}<a href="${url('/c/43')}">${L.all(goods(count(43)))}</a></div>
+    <section class="lab" id="lab" aria-label="${L.labLabel}">
+      <div class="lab-film" id="labFilm"><picture><source media="(max-aspect-ratio: 1/1)" srcset="${VID}start_m.webp${VER}"><img src="${VID}start_d.webp${VER}" alt="${L.labAlt}" loading="lazy"></picture></div>
+      <div class="lab-text"><h2>${L.labH}</h2><p class="lab-hint m">${L.labHint}</p><p class="lab-slogan">${L.slogan}</p>
+        <div class="lab-cta"><a class="btn" href="${url('/c/3')}">${L.parts}</a><a class="btn ghost" href="${url('/service')}">${L.repair}</a></div></div>
+      <p class="lab-hint d" aria-hidden="true">${L.labHint}</p>
+      <div class="lab-dots" id="labDots">${N.map((n, i) => `<button type="button" class="hs ${n.side}" data-n="${i}" aria-label="${esc(L.labFly(n.c.name))}"><span>${esc(n.c.name)}</span></button>`).join('')}</div>
+      <nav class="lab-nav" aria-label="${L.labLabel}">${N.map((n, i) => `<button type="button" data-n="${i}">${esc(n.c.name)}</button>`).join('')}</nav>
+      <aside class="lab-panel" id="labPanel" aria-live="polite"><button type="button" class="lab-x" id="labX" aria-label="${L.labBack}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button><h2 id="labH"></h2><p id="labP"></p><ul id="labL"></ul><a class="btn" id="labA"></a></aside>
     </section>
     <section class="bento" aria-labelledby="bentoH">
       <div class="t t-e"><h3>${L.adviceH}</h3><p>${L.adviceP}</p><div class="t-cta"><a class="btn" href="tel:+380993339890">${L.phoneShow}</a><a class="btn ghost" href="${url('/contacts')}">${L.contacts}</a></div></div>
@@ -130,8 +124,8 @@ window.ACC_HOME = (() => {
       const only = v => $$('video', film).forEach(o => o.classList.toggle('on', o === v));
       const play = v => new Promise(ok => { v.currentTime = 0; v.onended = ok; v.play().then(() => requestAnimationFrame(() => requestAnimationFrame(() => only(v)))).catch(() => { try { v.currentTime = Math.max(0, v.duration - .02); } catch { /* */ } only(v); ok(); }); setTimeout(ok, 6000); });
       const fill = i => {
-        const c = N[i].c, k = N[i].k, [t, fact, more] = x.L.labFacts[k], list = alike(k, x);
-        $('#labH').textContent = t; $('#labP').textContent = fact; $('#labM').textContent = more; const a = $('#labA'); a.href = x.url(`/c/${c.id}`); a.textContent = x.L.labRepair(c.name.toLowerCase(), x.goods(x.count(c.id)));
+        const c = N[i].c, list = x.inCat(c.id).filter(p => p.price && p.img).slice(0, 5);
+        $('#labH').textContent = c.name; $('#labP').textContent = x.goods(x.count(c.id)); const a = $('#labA'); a.href = x.url(`/c/${c.id}`); a.textContent = x.L.labAll;
         $('#labL').innerHTML = list.map(p => `<li><a href="${x.url(`/p/${p.id}`)}"><img src="${x.esc(x.photo(p))}" alt="" width="64" height="64"><span>${x.esc(p.name)}</span><b>${x.money(p.price)}</b></a></li>`).join('');
         nav.forEach((b, k) => b.setAttribute('aria-current', k === i));
       };
@@ -144,18 +138,18 @@ window.ACC_HOME = (() => {
         clearTimeout(wait); cancelAnimationFrame(ring); el.classList.remove('is-wait'); d.classList.remove('busy'); d.removeAttribute('aria-busy');
         if (ac.signal.aborted) return;
         fill(i); el.classList.add('is-fly');
-        if (v) { const p = play(v); setTimeout(() => el.classList.add('is-open'), Math.max(0, (v.duration || 2.6) * 1000 - 600)); await p; load(N[i].k, true).catch(() => {}); }
-        el.classList.add('is-open'); if (v) film.classList.add('rest');
+        if (v) { const p = play(v); setTimeout(() => { el.classList.add('is-open'); el.classList.remove('is-swap'); }, Math.max(0, (v.duration || 2.6) * 1000 - 600)); await p; load(N[i].k, true).catch(() => {}); }
+        el.classList.add('is-open'); el.classList.remove('is-swap');
         cur = i; busy = false; $('#labX').focus({ preventScroll: true });
       }
-      async function back(focus = true) {
+      async function back(focus = true, keep = false) {   // keep: перемикаємо вузол, кадр лишається зсунутим, щоб не їздив туди-сюди
         if (busy || cur === null) return; busy = true;
-        const i = cur; el.classList.remove('is-open'); film.classList.remove('rest');
+        const i = cur; if (keep) el.classList.add('is-swap'); el.classList.remove('is-open');
         const v = calm ? null : await load(N[i].k, true).catch(() => null);
         if (v) await play(v);
         only(null); el.classList.remove('is-fly'); nav.forEach(b => b.removeAttribute('aria-current')); cur = null; busy = false; if (focus) dots[i].focus({ preventScroll: true });
       }
-      const swap = async i => { if (i === cur || busy) return; if (cur !== null) await back(false); await fly(i); };
+      const swap = async i => { if (i === cur || busy) return; if (cur !== null) await back(false, true); await fly(i); };
       dots.forEach((d, i) => on(d, 'click', () => fly(i)));
       const T = window.ACC_TAP; if (T?.on) { T.on = false; if (T.i >= 0 && Date.now() - T.t < 20000) fly(T.i); }   // торкнулись точки, поки сайт ще вантажився
       nav.forEach((b, i) => on(b, 'click', () => swap(i)));

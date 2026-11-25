@@ -4,13 +4,11 @@
 .lab, .flag, .bento { --pad: clamp(18px, 3.2vw, 56px); }
 
 /* ── Розбір ── */
-.lab { position: relative; height: 100svh; min-height: 620px; margin-top: calc(var(--top-h, 74px) * -1); overflow: clip; isolation: isolate; background: #120e0f; color: var(--night-ink); }
+.lab { position: relative; height: 100svh; min-height: 620px; overflow: clip; isolation: isolate; background: #120e0f; color: var(--night-ink); }
 .lab-film, .lab-film picture, .lab-film img, .lab-film video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .lab-film { z-index: 0; } .lab-film video { opacity: 0; } .lab-film video.on { opacity: 1; } .is-open .lab-film { cursor: zoom-out; }
-.lab-film.rest video.on { animation: lab-drift 14s ease-in-out infinite alternate; }
-@keyframes lab-drift { to { transform: scale(1.06); } }
 .lab-text { position: absolute; z-index: 1; right: var(--pad); top: 50%; translate: 0 -52%; width: min(27vw, 480px); text-align: right; display: grid; gap: 20px; justify-items: end; transition: opacity .3s, translate .5s; }
-.lab-text h1 { font: 700 clamp(1.9rem, 3.75vw, 5rem)/.94 var(--display); letter-spacing: -.06em; } .lab-text h1 span { display: block; }
+.lab-text h2 { font: 700 clamp(1.9rem, 3.75vw, 5rem)/.94 var(--display); letter-spacing: -.06em; } .lab-text h2 span { display: block; }
 .lab-slogan { font: 500 clamp(.98rem, 1.15vw, 1.2rem)/1.42 var(--display); color: var(--night-ink); text-wrap: balance; }
 .lab-cta { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
 .lab .btn, .flag .btn { min-height: 54px; display: inline-flex; align-items: center; justify-content: center; padding: 0 30px; border-radius: 999px; }
@@ -69,14 +67,13 @@
   .lab { min-height: 560px; }
   .lab-text { inset: calc(var(--top-h, 74px) + clamp(10px, 3svh, 40px)) var(--pad) 78px; width: auto; translate: none; text-align: left; display: flex; flex-direction: column; gap: 12px; align-items: stretch; pointer-events: none; }
   .is-fly .lab-text { translate: none; }
-  .lab-text h1 { font-size: clamp(2.2rem, 12vw, 5.4rem); } .lab-text h1 span { display: inline; }
+  .lab-text h2 { font-size: clamp(2.2rem, 12vw, 5.4rem); } .lab-text h2 span { display: inline; }
   .lab-hint.d { display: none; } .lab-hint.m { display: block; position: static; margin-top: auto; max-width: none; font-size: .95rem; }
   .lab-slogan { font-size: clamp(.95rem, 3.9vw, 1.5rem); line-height: 1.36; } .lab-cta { justify-content: flex-start; pointer-events: auto; flex-wrap: nowrap; } .lab-cta .btn { padding: 0 clamp(16px, 5.4vw, 30px); }
   .hs span { display: none; } .hs { width: 46px; height: 46px; }
   .lab-panel { top: auto; width: 100%; height: 58%; padding: 24px 20px 20px; border-radius: 28px 28px 0 0; translate: 0 103%; } .lab-x { top: 14px; right: 14px; } .lab-nav { display: none; }
-  .lab-film.rest video.on { animation: none; }
 }
-@media (max-aspect-ratio: 1/1) and (min-width: 620px) { .lab-text h1 { font-size: 8.3vw; } .hs span { display: block; } .lab-panel { height: 48%; } }
+@media (max-aspect-ratio: 1/1) and (min-width: 620px) { .lab-text h2 { font-size: 8.3vw; } .hs span { display: block; } .lab-panel { height: 48%; } }
 @media (max-aspect-ratio: 1/1) and (max-height: 720px) { .lab-hint.m { display: none; } .lab-slogan { margin-top: auto; } .lab-text { bottom: 72px; } }
 @media (max-height: 520px) and (min-aspect-ratio: 1/1) { .lab, .flag { min-height: 360px; } .lab-slogan, .lab-hint { display: none; } .lab-text { gap: 10px; } .lab .btn, .flag .btn { min-height: 44px; } .flag-pic { top: 46%; } .flag-info p { display: none; } .flag-info, .flag-buy { bottom: 84px; } .lab-panel { padding-top: 74px; } .lab-x { top: 66px; } }
 @media (max-width: 860px) {
@@ -85,12 +82,12 @@
   .bento { grid-template-rows: none; grid-auto-rows: auto; } .t { min-height: 200px; } .t-a { grid-column: 1 / -1; min-height: 56svh; } .t-b, .t-e, .t-f { grid-column: span 6; } .t p { font-size: .93rem; line-height: 1.35; } .t h3 { font-size: 1.15rem; }
 }
 @media (max-height: 640px) and (min-aspect-ratio: 1/1) { .lab-slogan { display: none; } }
-@media (prefers-reduced-motion: reduce) { .hs::after, .lab-film.rest video.on { animation: none; } .lab *, .flag * { transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { .hs::after { animation: none; } .lab *, .flag * { transition: none !important; } }
 
 /* Список деталей займає правий край: кадр плавно відходить ліворуч, щоб вузол було видно */
 .lab-film { transition: translate .8s cubic-bezier(.2, .8, .2, 1); }
-@media (min-aspect-ratio: 1/1) { .is-open .lab-film { translate: calc(min(440px, 100%) * -.42) 0; } }
-@media (max-aspect-ratio: 1/1) { .is-open .lab-film { translate: 0 -20%; } }
+@media (min-aspect-ratio: 1/1) { .is-open .lab-film, .is-swap .lab-film { translate: calc(min(440px, 100%) * -.42) 0; } }
+@media (max-aspect-ratio: 1/1) { .is-open .lab-film, .is-swap .lab-film { translate: 0 -20%; } }
 @media (prefers-reduced-motion: reduce) { .lab-film { transition: none; } }
 
 /* Телефон: підписи хоч на трьох точках, щоб було видно, що їх можна торкати */
@@ -145,3 +142,9 @@
 @media (min-width: 961px) and (max-width: 1240px) { .top-row { gap: 10px; } .top-row .cart-label { display: none; } .top-row .nav-cat { padding: 0 15px; } }
 @media (max-width: 1100px) and (min-aspect-ratio: 1/1) { .lab-slogan { display: none; } }
 @media (max-width: 380px) { .lab-cta { gap: 8px; } .lab-cta .btn { font-size: .95rem; padding: 0 10px; } }
+
+/* 26.11: перший екран — сцена флагманів (покупка); проліт з комплектуючими нижче */
+.flag { margin-top: calc(var(--top-h, 74px) * -1); }
+.flag-h1 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.lab-text h2 { font-size: clamp(1.8rem, 2.9vw, 3.6rem); line-height: 1; text-wrap: balance; }
+@media (max-aspect-ratio: 1/1) { .lab-text h2 { font-size: clamp(1.9rem, 8.4vw, 3.4rem); } }
