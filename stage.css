@@ -127,6 +127,6 @@ body:has(#scrim:not([hidden])) .ask-fab, body:has(dialog[open]) .ask-fab, body:h
 /* Пошук: підказки, коли точного збігу немає */
 .near { margin: -6px 0 20px; color: var(--muted, #555); }
 .near a { text-decoration: underline; }
-.near-cats { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 4px 0 60px; }
-.near-cats p { flex-basis: 100%; text-align: center; margin: 0 0 4px; }
+.near-cats { display: flex; flex-wrap: wrap; gap: 10px; margin: 4px 0 60px; }
+.near-cats p { flex-basis: 100%; margin: 0 0 4px; }
 .near-cats .chip { display: inline-flex; align-items: center; min-height: 44px; }
