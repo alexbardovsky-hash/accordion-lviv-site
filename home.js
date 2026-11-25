@@ -1,4 +1,4 @@
-/* Головна (26.11): обкладинка «Акордеон Центр» (рендер моделі, tools/m3d/hero.py), далі сцена флагманів (покупка), далі вибір акордеона, тоді «Розбір» — натискаєш на вузол,
+/* Головна (26.11): обкладинка «Акордеон Центр» (справжнє фото Pigini Nova на сцені, tools/cover_stage.py), далі сцена флагманів (покупка), далі вибір акордеона, тоді «Розбір» — натискаєш на вузол,
    камера летить до нього в 3D і панель показує комплектуючі цього вузла; далі порада, комісійний, ремонт і запчастини, партнери. Малює app.js → home(), тут розмітка й поведінка.
    Прольоти з 3D-моделі: tools/m3d/fly3.sh → tools/m3d/fly3_web.py, scenes/fly/model/<вузол>_<d|m>[_back].mp4 (старі: scenes/fly/web). */
 window.ACC_HOME = (() => {
@@ -35,7 +35,7 @@ window.ACC_HOME = (() => {
     const pick = (img, h, ids) => `<div class="pk"><a class="pk-go" href="${url(`/c/${ids[0]}`)}" aria-hidden="true" tabindex="-1">${/^m/.test(img) ? `<img class="mk" src="photos/maker_web/${img.slice(1)}.jpg" srcset="photos/maker_web/${img.slice(1)}-m.webp 800w, photos/maker_web/${img.slice(1)}.jpg 1200w, photos/maker_web/${img.slice(1)}-x.jpg 1900w" sizes="(max-width: 960px) 92vw, 46vw" alt="" loading="lazy">` : `<img src="img/stage2/${img}.webp" alt="" loading="lazy">`}</a><h3>${h}</h3><div class="pk-l">${ids.map(sub).join('')}</div></div>`;
     return `
     <section class="cover" aria-labelledby="coverH">
-      <picture><source media="(max-aspect-ratio: 1/1)" srcset="img/cover/a_m-s.webp 720w, img/cover/a_m.webp 1440w" sizes="100vw"><img class="cover-pic" src="img/cover/a_d.webp" srcset="img/cover/a_d-s.webp 1600w, img/cover/a_d.webp 3200w" sizes="100vw" alt="${L.coverAlt}" fetchpriority="high"></picture>
+      <picture><source media="(max-aspect-ratio: 1/1)" srcset="img/cover/nova_m-s.webp 540w, img/cover/nova_m.webp 1080w" sizes="100vw"><img class="cover-pic" src="img/cover/nova_d.webp" srcset="img/cover/nova_d-s.webp 1200w, img/cover/nova_d.webp 2400w" sizes="100vw" alt="${L.coverAlt}" fetchpriority="high"></picture>
       <div class="cover-text"><h1 id="coverH">${L.mast.map(w => `<span>${esc(w)}</span>`).join(' ')}</h1><p>${L.slogan}</p><a class="btn" href="${url('/c/43')}">${L.heroCta}</a></div>
     </section>
     <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="${L.instruments}">
