@@ -1,8 +1,8 @@
 /* Головна (25.11): «Розбір» — натискаєш на вузол акордеона, камера летить до нього в 3D і показує деталі;
    далі сцена чотирьох флагманів, мозаїка запчастин і майстерні, партнери. Малює app.js → home(), тут розмітка й поведінка.
-   Прольоти: tools/fly.py → tools/fly_web.py, scenes/fly/web/<вузол>_<d|m>[_back].mp4. */
+   Прольоти з 3D-моделі: tools/m3d/fly3.sh → tools/m3d/fly3_web.py, scenes/fly/model/<вузол>_<d|m>[_back].mp4 (старі: scenes/fly/web). */
 window.ACC_HOME = (() => {
-  const P3 = /[?&]proba3d/.test(globalThis.location?.search || ''), VID = P3 ? 'scenes/proba3/' : 'scenes/fly/web/', VER = P3 ? '?v=m2' : '?v=5';
+  const VID = 'scenes/fly/model/', VER = '?v=1';
   // Точки в пікселях вирізаного фото виробника (1727×1228); де воно лежить у кадрі — tools/fly_frames.py (frames.json).
   const CUT = [1727, 1228], PLACE = { d: [.159896, .17739, .530208, .665441], m: [.110294, .303125, .780331, .314063] }, FRAME = { d: [1920, 1088], m: [1088, 1920] };
   const NODES = [['buttons', 5, 320, 900, 'l m'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, 'r'], ['bellows', 11, 1211, 330, 'r m'], ['bass', 7, 1520, 690, 'r m'], ['strap', /^(Ремені|Straps)/i, 420, 130, 'l']];
@@ -71,7 +71,7 @@ window.ACC_HOME = (() => {
     ac.signal.addEventListener('abort', () => vo.disconnect());
 
     function lab() {
-      if (P3) { const q = $('#labFilm picture'); if (q) q.innerHTML = `<source media="(max-aspect-ratio: 1/1)" srcset="${VID}start_m.webp${VER}"><img src="${VID}start_d.webp${VER}" alt="">`; } const el = $('#lab'), film = $('#labFilm'), N = nodes(x), dots = $$('.hs', el), nav = $$('.lab-nav button', el);
+      const el = $('#lab'), film = $('#labFilm'), N = nodes(x), dots = $$('.hs', el), nav = $$('.lab-nav button', el);
       let K = portrait() ? 'm' : 'd', cur = null, busy = false, cache = new Map();
       const place = () => {
         const W = el.clientWidth, H = el.clientHeight, [fw, fh] = FRAME[K], P = PLACE[K], s = Math.max(W / fw, H / fh), ox = (W - fw * s) / 2, oy = (H - fh * s) / 2;
