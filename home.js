@@ -2,7 +2,7 @@
    далі сцена чотирьох флагманів, мозаїка запчастин і майстерні, партнери. Малює app.js → home(), тут розмітка й поведінка.
    Прольоти: tools/fly.py → tools/fly_web.py, scenes/fly/web/<вузол>_<d|m>[_back].mp4. */
 window.ACC_HOME = (() => {
-  const VID = typeof location !== 'undefined' && /[?&]proba3d/.test(location.search) && innerWidth > innerHeight ? 'scenes/proba/' : 'scenes/fly/web/', VER = '?v=5';
+  const VID = 'scenes/fly/web/', VER = /[?&]proba3d/.test(globalThis.location?.search || '') ? '?v=5p2' : '?v=5';
   // Точки в пікселях вирізаного фото виробника (1727×1228); де воно лежить у кадрі — tools/fly_frames.py (frames.json).
   const CUT = [1727, 1228], PLACE = { d: [.159896, .17739, .530208, .665441], m: [.110294, .303125, .780331, .314063] }, FRAME = { d: [1920, 1088], m: [1088, 1920] };
   const NODES = [['buttons', 5, 320, 900, 'l m'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, 'r'], ['bellows', 11, 1211, 330, 'r m'], ['bass', 7, 1520, 690, 'r m'], ['strap', /^(Ремені|Straps)/i, 420, 130, 'l']];
@@ -91,7 +91,7 @@ window.ACC_HOME = (() => {
         return lite = !!(r && r.transferSize && ms > 120 && r.transferSize / ms < 200);
       };
       const load = (k, back) => {
-        const u = `${VID}${k}_${K}${back ? '_back' : ''}${isLite() ? '_l' : ''}.mp4${VER}`;
+        const u = `${/[?&]proba3d/.test(location.search) && k === 'buttons' && K === 'd' ? 'scenes/proba/' : VID}${k}_${K}${back ? '_back' : ''}${isLite() ? '_l' : ''}.mp4${VER}`;
         const read = async r => {   // читаємо частинами, щоб показати, скільки лишилось
           const total = +r.headers.get('content-length') || 0; if (!r.body?.getReader || !total) return r.blob();
           const rd = r.body.getReader(), parts = []; let n = 0;
