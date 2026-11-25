@@ -161,15 +161,8 @@ footer { padding: clamp(30px, 5vw, 70px) var(--pad) 34px; display: grid; gap: 26
   const vo = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting && !calm) e.target.play().catch(() => {}); else e.target.pause(); }), { rootMargin: '120px' });
   document.querySelectorAll('video').forEach(v => vo.observe(v));
 
-  /* Перший екран: акордеон розтискається від гортання */
-  const cv = $('#cv'), ctx = cv.getContext('2d'), set = innerWidth <= 860 ? 'ma' : 'da', N = 72, F = []; let want = 0, pos = 0, raf = 0, woke = false;
-  cv.style.backgroundImage = `url(scenes/web/open-${set}.webp)`;
-  const near = i => { for (let d = 0; d < N; d++) { if (F[i - d]) return F[i - d]; if (F[i + d]) return F[i + d]; } };
-  const tick = () => { raf = 0; want = Math.min(1, scrollY / (innerHeight * .8)); pos += (want - pos) * .2; const a = near(Math.round(pos * (N - 1))); if (a && scrollY < innerHeight) { const b = cv.getBoundingClientRect(), W = Math.round(Math.min(b.width * Math.min(devicePixelRatio, 1.5), a.naturalWidth)); if (cv.width !== W) { cv.width = W; cv.height = Math.round(W * a.naturalHeight / a.naturalWidth); } ctx.clearRect(0, 0, cv.width, cv.height); ctx.drawImage(a, 0, 0, cv.width, cv.height); cv.classList.add('on'); } if (Math.abs(want - pos) > .001) raf = requestAnimationFrame(tick); };
-  const ask = () => { if (!raf) raf = requestAnimationFrame(tick); };
-  const wake = () => { if (woke) return; woke = true; const ord = [], seen = new Set(); for (const s of [8, 4, 2, 1]) for (let i = 0; i < N; i += s) if (!seen.has(i)) { seen.add(i); ord.push(i); } let k = 0, n = 0; const next = () => { while (n < 6 && k < ord.length) { const i = ord[k++], m = new Image(); n++; m.onload = () => m.decode().catch(() => {}).then(() => { F[i] = m; n--; ask(); next(); }); m.onerror = () => { n--; next(); }; m.src = `scenes/frames2/open/${set}/${String(i + 1).padStart(3, '0')}.webp?v=8`; } }; next(); };
-  for (const ev of ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown']) addEventListener(ev, wake, { passive: true, once: true });
-  if (!calm) addEventListener('scroll', ask, { passive: true });
+  /* Перший екран: нерухомий розкритий акордеон (25.11 Алекс: розкриття за гортанням прибрати) */
+  $('#cv').style.backgroundImage = `url(scenes/frames2/open/${innerWidth <= 860 ? 'ma' : 'da'}/072.webp)`;
 }
 </script>
 </body>
