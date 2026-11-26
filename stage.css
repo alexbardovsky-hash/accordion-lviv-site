@@ -174,3 +174,5 @@ input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; w
 @media (min-width: 961px) and (max-width: 1100px) { .top-row .lang button { padding: 0 7px; } .top-row .nav-cat { padding-inline: 14px; } }
 /* Збільшене фото (QA 26.11): на білому тлі проступав сірий прямокутник фото; тло як у галереї, фото множиться на нього. */
 .zoom, .zoom::backdrop { background: #f1eeea; } .zoom img { mix-blend-mode: multiply; }
+/* Пошук у темній шапці (QA 26.11): у фокусі поле біле, а підказка лишалась світлою й зникала. */
+.top-row .search input:focus::placeholder { color: #8a8284; }
