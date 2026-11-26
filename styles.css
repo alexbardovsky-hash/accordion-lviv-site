@@ -532,3 +532,4 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 :lang(zh) *:not(.foot-call, .flag-word, .flag-buy b, .brand-name, .lab-text h2) { letter-spacing: normal !important; }   /* великі латинські написи й цифри лишаються щільними */
 :lang(zh) .top :is(a, button) { white-space: nowrap; }
 :lang(zh) .btn { white-space: nowrap; } :lang(zh) :is([class*="price"], .flag-buy b) { word-break: keep-all; }   /* «格里夫纳» не рвемо посередині */
+.foot-brand { margin-top: clamp(6px, 1vw, 14px); color: rgba(246, 241, 234, .55); font: 700 clamp(1.3rem, 3.6vw, 3.6rem)/1 var(--display); letter-spacing: -.04em; text-transform: uppercase; }   /* 26.11: назва магазину під номером */
