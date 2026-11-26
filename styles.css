@@ -533,3 +533,10 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 :lang(zh) .top :is(a, button) { white-space: nowrap; }
 :lang(zh) .btn { white-space: nowrap; } :lang(zh) :is([class*="price"], .flag-buy b) { word-break: keep-all; }   /* «格里夫纳» не рвемо посередині */
 .foot-brand { margin-top: clamp(6px, 1vw, 14px); color: rgba(246, 241, 234, .55); font: 700 clamp(1.3rem, 3.6vw, 3.6rem)/1 var(--display); letter-spacing: -.04em; text-transform: uppercase; }   /* 26.11: назва магазину під номером */
+
+/* Сенсорні цілі на телефоні (QA 26.11): посилання підвалу й хлібних крихт були 20–22 px заввишки, тепер ≥ 40 px без зміни відступів між рядками. */
+@media (max-width: 960px) {
+  .foot-grid p { line-height: 1.5; }
+  .foot-grid p a { display: inline-block; padding-block: 9px; }
+  .crumbs a { display: inline-block; padding-block: 10px; margin-block: -10px; }
+}
