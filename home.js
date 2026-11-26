@@ -38,7 +38,7 @@ window.ACC_HOME = (() => {
     const pick = (img, h, ids) => `<div class="pk"><a class="pk-go" href="${url(`/c/${ids[0]}`)}" aria-hidden="true" tabindex="-1">${/^m/.test(img) ? `<img class="mk" src="photos/maker_web/${img.slice(1)}.jpg" srcset="photos/maker_web/${img.slice(1)}-m.webp 800w, photos/maker_web/${img.slice(1)}.jpg 1200w, photos/maker_web/${img.slice(1)}-x.jpg 1900w" sizes="(max-width: 960px) 92vw, 46vw" alt="" loading="lazy">` : `<img src="img/stage2/${img}.webp" alt="" loading="lazy">`}</a><h3>${h}</h3><div class="pk-l">${ids.map(sub).join('')}</div></div>`;
     return `
     <section class="cover" aria-labelledby="coverH">
-      <picture><source media="(max-aspect-ratio: 1/1)" srcset="img/cover/nova_m-s.webp 540w, img/cover/nova_m.webp 1080w" sizes="100vw"><img class="cover-pic" src="img/cover/nova_d.webp" srcset="img/cover/nova_d-s.webp 1200w, img/cover/nova_d.webp 2400w" sizes="100vw" alt="${L.coverAlt}" fetchpriority="high"></picture>
+      <picture><source media="(max-aspect-ratio: 1/1)" srcset="img/cover/kb_m-s.webp 540w, img/cover/kb_m.webp 1080w" sizes="100vw"><img class="cover-pic" src="img/cover/kb_d.webp" srcset="img/cover/kb_d-s.webp 1200w, img/cover/kb_d.webp 2400w" sizes="100vw" alt="${L.coverAlt}" fetchpriority="high"></picture>
       <div class="cover-text"><h1 id="coverH">${L.mast.map(w => `<span>${esc(w)}</span>`).join(' ')}</h1><p>${L.slogan}</p><a class="btn" href="${url('/c/43')}">${L.heroCta}</a></div>
     </section>
     <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="${L.instruments}">

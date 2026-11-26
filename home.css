@@ -152,12 +152,12 @@
 @media (max-aspect-ratio: 1/1) { .lab-text h2 { font-size: clamp(1.9rem, 8.4vw, 3.4rem); } }
 .pk-go:has(.mk) { overflow: clip; } .pk-go img.mk { filter: none; mix-blend-mode: multiply; scale: 1.3; }   /* фото виробника на білому: біле зливається з тлом, тінь уже є на фото */
 /* 26.11: обкладинка — «АКОРДЕОН ЦЕНТР», слоган і рендер моделі в темряві; флагмани йдуть другим екраном */
-.cover { position: relative; height: 100svh; min-height: 620px; margin-top: calc(var(--top-h, 74px) * -1); overflow: clip; background: #120e0f; color: #fff; isolation: isolate; }
+.cover { position: relative; height: 100svh; min-height: 620px; margin-top: calc(var(--top-h, 74px) * -1); overflow: clip; background: #000; color: #fff; isolation: isolate; }
 .cover-pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 50%; z-index: -1; }
-.cover::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(18, 14, 15, .75), transparent 46%); pointer-events: none; }
-@media (max-aspect-ratio: 1/1) { .cover-pic { object-position: 50% 50%; } .cover::after { background: linear-gradient(180deg, rgba(18, 14, 15, .7), transparent 38%); } }
+.cover::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(0, 0, 0, .7), transparent 46%); pointer-events: none; }
+@media (max-aspect-ratio: 1/1) { .cover-pic { object-position: 50% 0%; } .cover::after { background: linear-gradient(0deg, #000 0, rgba(0, 0, 0, .55) 34%, transparent 58%); } }
 .cover-text { position: absolute; left: var(--pad, clamp(18px, 3.2vw, 56px)); top: 52%; translate: 0 -50%; max-width: min(44vw, 640px); display: grid; gap: clamp(18px, 2.4vw, 30px); justify-items: start; }
 .cover h1 { font: 700 clamp(2.6rem, 4.7vw, 6rem)/.88 var(--display); letter-spacing: -.05em; text-transform: uppercase; } .cover h1 span { display: block; }
 .cover p { font-size: clamp(1rem, 1.25vw, 1.3rem); line-height: 1.45; color: rgba(255, 255, 255, .8); max-width: 34ch; }
 .cover .btn { background: var(--red); border-color: var(--red); color: #fff; } .cover .btn:hover { background: #fff; border-color: #fff; color: #1a1213; }
-@media (max-aspect-ratio: 1/1) { .cover-text { top: calc(var(--top-h, 74px) + 4svh); translate: none; right: var(--pad, 18px); max-width: none; gap: 14px; } .cover h1 { font-size: clamp(2.2rem, 12.2vw, 5rem); } .cover .btn { position: absolute; top: calc(100svh - var(--top-h, 74px) - 4svh - 120px); } }
+@media (max-aspect-ratio: 1/1) { .cover-text { top: auto; bottom: max(6svh, 28px); translate: none; right: var(--pad, 18px); max-width: none; gap: 14px; } .cover h1 { font-size: clamp(2rem, 11vw, 5rem); } }
