@@ -302,10 +302,20 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .card-meta { color: var(--muted); font-size: .85rem; margin-top: 2px; }
 .card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 10px; }
 .price { font: 600 1.05rem/1 var(--display); letter-spacing: -0.04em; white-space: nowrap; }
-.price.ask { font: 400 .9rem var(--ui); color: var(--muted); letter-spacing: 0; }
+/* не «ask»: так зветься вікно чату (chat.css, position: fixed) — збігалось і ціна летіла в кут екрана */
+.price.no-price { font: 400 .9rem var(--ui); color: var(--muted); letter-spacing: 0; }
 .add { position: relative; z-index: 1; width: 42px; height: 42px; border-radius: 50%; border: 0; background: var(--ink); color: var(--on-ink); display: grid; place-items: center; transition: background .2s, transform .3s var(--ease); }
 .add:hover { background: var(--red); color: #fff; transform: rotate(90deg); }
 .ph { background: repeating-linear-gradient(90deg, #e3e1db 0 10px, #efede8 10px 20px); width: 100%; height: 100%; display: block; }
+/* «Фото незабаром»: темне тло сайту, напівпрозора емблема й великий напис */
+.ph.soon { position: relative; display: grid; place-items: center; overflow: hidden; container-type: inline-size; background: radial-gradient(120% 90% at 30% 20%, #3a2226 0%, #1a1214 55%, #120e0f 100%); color: #f6f1ea; }
+.ph.soon::before { content: ""; position: absolute; inset: 12% 8%; background: url(img/logo-cover.webp) center / contain no-repeat; opacity: .11; filter: grayscale(1); }
+.ph.soon::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, #0057b7 0 50%, #ffd700 50%); opacity: .8; }
+.soon-in { position: relative; display: grid; gap: 6px; padding: 0 9%; text-align: center; }
+.soon-in b { font: 700 clamp(1.2rem, 11cqi, 3.4rem)/.95 var(--display); letter-spacing: -.04em; }
+.card .soon-in { padding: 0 20% 0 9%; } .card .soon-in b { font-size: 1.05rem; } @media (min-width: 700px) { .card .soon-in b { font-size: 1.45rem; } } .card .soon-in small { font-size: .72rem; }   /* праворуч кнопки «обране» й «порівняти» */
+.soon-in small { color: rgba(246, 241, 234, .72); font: 500 clamp(.72rem, 3.6cqi, 1rem)/1.3 var(--ui); }
+.suggest .ph.soon .soon-in, .line .ph.soon .soon-in, .thumbs .ph.soon .soon-in { display: none; }   /* у дрібних мініатюрах — лише тло з емблемою */
 .row-scroll { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr); gap: 20px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x proximity; }
 .row-scroll > * { scroll-snap-align: start; }
 .help { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: clamp(56px, 8vw, 128px); }
@@ -359,6 +369,22 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .thumbs button { width: 72px; height: 72px; padding: 0; border: 2px solid transparent; background: var(--plate); border-radius: 10px; overflow: hidden; }
 .thumbs button[aria-pressed="true"] { border-color: var(--ink); }
 .gallery-main { position: relative; }
+/* Наявність із CRM */
+.p-stock { display: inline-flex; align-items: center; gap: 8px; margin: -2px 0 14px; font: 600 .92rem var(--ui); } .p-stock::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+.st-in { color: #1f7a45; } .st-order { color: #9a6a12; } .st-none { color: var(--muted); }
+.card-meta b { font-weight: 600; }
+.tune { margin: 4px 0 22px; padding: 0; border: 0; display: grid; gap: 10px; }
+.tune legend { margin-bottom: 10px; font: 600 .95rem var(--ui); }
+.tune label { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; padding: 12px 16px 12px 12px; border: 1.5px solid var(--line); border-radius: 18px; background: var(--paper, #fff); cursor: pointer; transition: border-color .2s, box-shadow .2s; }
+.tune label:hover { border-color: var(--ink); }
+.tune label:has(input:checked) { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.tune label:has(input:focus-visible) { outline: 2px solid var(--red); outline-offset: 2px; }
+.tune input { position: absolute; opacity: 0; pointer-events: none; }
+.tune-ic { position: relative; display: grid; place-items: center; width: 52px; height: 52px; }
+.tune-ic .reg { width: 52px; height: 52px; fill: none; stroke: var(--ink); stroke-width: 1.6; } .tune-ic .reg .dot { fill: var(--ink); stroke: none; }
+.tune-ic b { position: absolute; right: -6px; bottom: -4px; display: grid; place-items: center; min-width: 22px; height: 22px; padding: 0 5px; border-radius: 999px; background: var(--ink); color: #fff; font: 700 .78rem/1 var(--ui); }
+.tune label:has(input:checked) .tune-ic b { background: var(--red); }
+.tune-t strong { display: block; font: 600 1rem var(--ui); } .tune-t small { display: block; margin-top: 3px; color: var(--muted); font-size: .86rem; line-height: 1.35; }
 .v3d { position: absolute; inset: 0; z-index: 2; border-radius: inherit; overflow: hidden; background: #fff; } .v3d iframe { width: 100%; height: 100%; border: 0; display: block; }
 .thumbs .t3d { display: grid; place-content: center; gap: 2px; background: var(--ink); color: var(--on-ink, #fff); font: 700 1.05rem/1 var(--display); } .thumbs .t3d small { font: 600 .62rem/1 var(--ui); letter-spacing: .12em; opacity: .75; }
 .thumbs img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }

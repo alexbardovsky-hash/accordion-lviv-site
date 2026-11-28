@@ -6,4 +6,4 @@ window.ARCHIVE = [
   562,                  // Mengascini Bambino 44/60
   565, 566, 567, 568,   // Hohner Bravo II 48, Bravo III 80 / 96 / 120
 ];
-if (window.CATALOG) window.CATALOG.products = window.CATALOG.products.filter(p => !window.ARCHIVE.includes(p.id));
+if (window.CATALOG) { window.ARCHIVED = window.CATALOG.products.filter(p => window.ARCHIVE.includes(p.id)); window.CATALOG.products = window.CATALOG.products.filter(p => !window.ARCHIVE.includes(p.id)); }   // ARCHIVED: CRM може повернути товар на сайт

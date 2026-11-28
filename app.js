@@ -37,7 +37,30 @@
   const LOCAL = new Set([...(window.LOCAL_PHOTOS || []), ...GPT]);
   // Нові фото з ChatGPT: головне чисте, оригінал з підписами (розміри, колір) другим.
   const MAKER = new Set(window.ACC_MAKER ? window.MAKER_PHOTOS : []);   // справжні фото виробника, поки вимкнено (data/config.js)
-  for (const x of C.products) if (LOCAL.has(x.id)) { x.img = `${PHOTO_DIR}/${x.id}-s.jpg`; x.big = x.img; x.imgs = GPT.has(x.id) ? [`${PHOTO_DIR}/${x.id}.jpg`, `${PHOTO_DIR}/${x.id}-o.jpg`] : [`${PHOTO_DIR}/${x.id}.jpg`]; if (MAKER.has(x.id)) { x.img = `photos/maker_web/${x.id}-s.jpg`; x.big = x.img; x.imgs.unshift(`photos/maker_web/${x.id}.jpg`); } if (MAKER.has(x.id) && window.MAKER_MORE?.[x.id]) x.imgs.splice(1, 0, ...window.MAKER_MORE[x.id].map(f => `photos/maker_web/${f}.jpg`)); }
+  // Оригінал зі старого магазину другим кадром — лише в комплектуючих (там підписи розмірів і кольору); в інструментах це просто старе фото (Алекс 28.11).
+  const INSTR = new Set([43, 44, 45, 46, 47, 48, 54, 55, 56, 74]);
+  for (const x of C.products) if (LOCAL.has(x.id)) { x.img = `${PHOTO_DIR}/${x.id}-s.jpg`; x.big = x.img; x.imgs = GPT.has(x.id) && !x.cats.some(c => INSTR.has(c)) ? [`${PHOTO_DIR}/${x.id}.jpg`, `${PHOTO_DIR}/${x.id}-o.jpg`] : [`${PHOTO_DIR}/${x.id}.jpg`]; if (MAKER.has(x.id)) { x.img = `photos/maker_web/${x.id}-s.jpg`; x.big = x.img; x.imgs.unshift(`photos/maker_web/${x.id}.jpg`); } if (MAKER.has(x.id) && window.MAKER_MORE?.[x.id]) x.imgs.splice(1, 0, ...window.MAKER_MORE[x.id].map(f => `photos/maker_web/${f}.jpg`)); }
+  /* Правки товарів із CRM (сервер віддає /data/edits.js; на тестовій копії файл порожній). Застосовуємо після всіх правил сайту,
+     тож те, що змінив адмін, перемагає: назву, опис, характеристики (своєю мовою), ціну, артикул, розділ, фото, наявність, показ. */
+  for (const [k, e] of Object.entries(window.PRODUCT_EDITS || {})) {
+    const id = +k; let x = C.products.find(p => p.id === id);
+    if (!x && e.hidden === false) { x = (window.ARCHIVED || []).find(p => p.id === id); if (x) C.products.push(x); }   // повернули з архіву
+    if (!x && e.isNew) { x = { id, name: '', price: null, ref: '', img: '', big: '', imgs: [], short: '', desc: '', features: [], cat: e.cat, cats: [e.cat], brand: '', buy: true }; C.products.push(x); x.uk = ''; }
+    if (!x) continue;
+    if (e.hidden) { C.products.splice(C.products.indexOf(x), 1); continue; }
+    const tl = o => o?.[lang] || (lang === 'zh' ? o?.en : '') || o?.uk;
+    if (tl(e.name)) x.name = tl(e.name); if (e.name?.uk) x.uk = e.name.uk;
+    if (e.desc && tl(e.desc) !== undefined) { x.desc = tl(e.desc) || ''; x.short = ''; }
+    if (e.features?.[lang] || (lang !== 'uk' && !e.features?.[lang] && e.features?.en && lang === 'zh')) { x.features = e.features[lang] || e.features.en; x.maker = true; }
+    if ('price' in e) { x.price = e.price; x.order = !e.price && x.order; }
+    if ('ref' in e) x.ref = e.ref; if ('brand' in e) x.brand = e.brand;
+    if (e.cat) { x.cats = [e.cat, ...x.cats.filter(c => c !== e.cat && c !== x.cat)]; x.cat = e.cat; }
+    if (e.imgs) { const u = e.imgs.map(v => v.startsWith('/photos/') ? v.slice(1) : v); x.imgs = u; x.img = u[0] || ''; x.big = u[0] || ''; x.eimg = u[0] || ''; }
+    if (e.stock) x.stock = e.stock;
+    if ('buy' in e) x.buy = e.buy; if ('src' in e) x.src = e.src;
+    if (e.tunings) (window.TUNINGS ||= {})[id] = e.tunings;
+    if ('view3d' in e) { window.VIEW3D ||= {}; if (e.view3d) window.VIEW3D[id] = e.view3d; else delete window.VIEW3D[id]; }
+  }
   const PHONE = '+380993339890', PHONE_TEXT = '+38 099 333 98 90', MAIL = 'bajan@accordion.lviv.ua';
   const PAGE = 36;
   const STEP = L.rate > 20 ? 100 : 1000;   // крок поля «ціна від/до»: 1000 грн чи юанів, 100 доларів чи євро
@@ -75,15 +98,22 @@
   const setQty = (id, q) => { if (q <= 0) delete cart[id]; else cart[id] = Math.min(999, q); saveCart(); };
 
   /* ── Шматки розмітки ── */
-  const pic = (p, cls = '') => p.img ? `<img ${cls} src="${esc(p.img)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'">` : '<span class="ph"></span>';
+  // Без фото (у виробника теж немає, Алекс 28.11): заглушка з написом «Фото незабаром».
+  const soon = `<span class="ph soon"><span class="soon-in"><b>${L.photoSoon}</b><small>${L.photoSoonSub}</small></span></span>`;   // не соромимось: велико, на темному тлі з емблемою (Алекс 28.11)
+  const pic = (p, cls = '') => p.img ? `<img ${cls} src="${esc(p.img)}" alt="" loading="lazy" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'">` : soon;
   // Телефон бере легшу копію головного фото (tools/web_sizes.py).
   const srcsetOf = u => /^photos\/(web5|maker_web)\/\d+(-(o|\d+))?\.jpg$/.test(u) ? `${u.replace('.jpg', '-m.webp')} 800w, ${u} 1200w` : '';
   const thumb = u => srcsetOf(u) ? u.replace('.jpg', '-m.webp') : u.replace('thickbox_default', 'cart_default');
-  const photo = p => LOCAL.has(p.id) ? `${MAKER.has(p.id) ? 'photos/maker_web' : PHOTO_DIR}/${p.id}-m.webp` : p.img;
+  const photo = p => p.eimg !== undefined ? p.eimg : LOCAL.has(p.id) ? `${MAKER.has(p.id) ? 'photos/maker_web' : PHOTO_DIR}/${p.id}-m.webp` : p.img;
   const srcset = u => srcsetOf(u) ? ` srcset="${srcsetOf(u)}" sizes="(max-width: 960px) 92vw, 1200px"` : '';
   const toPay = () => L.cur === 'UAH' || !cartTotal() ? '' : `<div class="sum-line sum-uah"><span>${L.toPay}</span><span>${L.uah(cartTotal())}</span></div><p class="p-note">${L.payUah(L.ratesDate)}</p>`;
+  /* Звучання на вибір (Алекс 28.11): мюзет чи піколо — літера й знак регістру в кружечку, як на самому інструменті.
+     Знак: коло, поділене на три смуги (низькі, середні, високі голоси), крапки — голоси, що звучать. */
+  const REG = { musette: [[12, 18], [18, 18], [24, 18]], piccolo: [[18, 9.5]] };
+  const regIcon = k => `<svg class="reg" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16"/><path d="M4 13.5h28M4 22.5h28"/>${REG[k].map(([x, y]) => `<circle class="dot" cx="${x}" cy="${y}" r="2.6"/>`).join('')}</svg>`;
+  const tuneBox = list => `<fieldset class="tune"><legend>${L.tuneH}</legend>${list.map((k, i) => `<label><input type="radio" name="tune" value="${k}"${i ? '' : ' checked'}><span class="tune-ic">${regIcon(k)}<b>${k === 'musette' ? 'M' : 'P'}</b></span><span class="tune-t"><strong>${L.tune[k][0]}</strong><small>${L.tune[k][1]}</small></span></label>`).join('')}</fieldset>`;
   const askTag = p => p.order ? L.orderPrice : L.askPrice;   // «під замовлення» — моделі з сайтів виробників без ціни
-  const priceTag = p => p.price ? `<span class="price">${money(p.price)}</span>` : `<span class="price ask">${askTag(p)}</span>`;
+  const priceTag = p => p.price ? `<span class="price">${money(p.price)}</span>` : `<span class="price no-price">${askTag(p)}</span>`;
   /* Обране й порівняння (account.js): сердечко й терези на картці та сторінці товару. */
   const ACC = window.ACC_ACCOUNT, AT = ACC?.t || {};
   const ICON = {
@@ -98,7 +128,7 @@
     <article class="card">
       <div class="card-img">${pic(p)}${acts(p)}</div>
       <a class="card-name" href="${url(`/p/${p.id}`)}">${esc(p.name)}</a>
-      ${p.ref ? `<span class="card-meta">${L.sku} ${esc(p.ref)}</span>` : ''}
+      ${p.ref || p.stock ? `<span class="card-meta">${[p.ref && `${L.sku} ${esc(p.ref)}`, p.stock && L.stock[p.stock] && `<b class="st-${p.stock}">${L.stock[p.stock]}</b>`].filter(Boolean).join(' · ')}</span>` : ''}
       <div class="card-foot">${priceTag(p)}
         ${p.buy ? `<button class="add" data-add="${p.id}" aria-label="${esc(L.addAria(p.name))}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>` : ''}
       </div>
@@ -357,7 +387,8 @@
     const p = prod.get(id);
     if (!p) return notFound();
     title(seoName(p.name, p.cats.find(c => BAYAN_CATS.has(c))));
-    const pics = p.imgs.length ? p.imgs : (p.big ? [p.big] : []), v3 = window.VIEW3D?.[p.id];
+    const pics = p.imgs.length ? p.imgs : (p.big ? [p.big] : []), v3 = window.VIEW3D?.[p.id], tunes = window.TUNINGS?.[p.id] || [];
+    const tuned = () => { const v = $('input[name="tune"]:checked')?.value; return v ? `${p.name} — ${L.tune[v][0].toLowerCase()}` : p.name; };   // вибране звучання йде в питання про наявність
     setFoot(L.footLeadInst, p);
     const related = inCat.get(p.cat).filter(x => x.id !== p.id).slice(0, 10);
     // Інструменти: без «кількості», спершу питають про наявність і домовляються послухати (варіант A, 25.11).
@@ -369,13 +400,15 @@
       ${crumbs([...path(p.cat).map(x => ({ name: x.name, href: url(`/c/${x.id}`) })), { name: p.name }])}
       <div class="wrap product${inst ? ' inst' : ''}">
         <div>
-          <div class="gallery-main">${pics.length ? `<button type="button" class="zoom-btn" id="zoomBtn" aria-label="${L.zoom}"><img id="mainPic" src="${esc(pics[0])}"${srcset(pics[0])} fetchpriority="high" width="1200" height="1200" alt="${esc(p.name)}" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'"></button>` : '<span class="ph"></span>'}${v3 ? '<div class="v3d" id="v3d" hidden></div>' : ''}</div>
+          <div class="gallery-main">${pics.length ? `<button type="button" class="zoom-btn" id="zoomBtn" aria-label="${L.zoom}"><img id="mainPic" src="${esc(pics[0])}"${srcset(pics[0])} fetchpriority="high" width="1200" height="1200" alt="${esc(p.name)}" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'"></button>` : soon}${v3 ? '<div class="v3d" id="v3d" hidden></div>' : ''}</div>
           ${pics.length > 1 || v3 ? `<div class="thumbs">${pics.map((u, i) => `<button data-pic="${esc(u)}" aria-pressed="${i === 0}" aria-label="${L.photo(i + 1)}"><img src="${esc(thumb(u))}" alt="" width="72" height="72"></button>`).join('')}${v3 ? `<button class="t3d" data-3d aria-pressed="false" aria-label="${L.view3d}" title="${L.view3d}"><b>3D</b><small>AR</small></button>` : ''}</div>` : ''}
         </div>
         <div class="p-info">
           <h1>${esc(p.name)}</h1>
           <p class="p-ref">${[p.ref && `${L.sku} ${esc(p.ref)}`, p.brand && esc(p.brand)].filter(Boolean).join(', ')}</p>
           ${p.price ? `<p class="p-price">${money(p.price)}</p>${L.cur === 'UAH' ? '' : `<p class="p-uah">${L.uah(p.price)} · ${L.payUah(L.ratesDate)}</p>`}` : `<p class="p-price" style="font-size:1.4rem">${askTag(p)}</p>${p.order ? `<p class="p-uah">${L.orderNote}</p>` : ''}`}
+          ${p.stock && L.stock[p.stock] ? `<p class="p-stock st-${p.stock}">${L.stock[p.stock]}</p>` : ''}
+          ${tunes.length > 1 ? tuneBox(tunes) : ''}
           ${inst ? `<div class="p-ask">
               ${window.ACC_CHAT?.enabled ? `<button class="btn" id="askP" type="button">${L.instAsk}</button><button class="btn ghost" id="askL" type="button">${L.instListen}</button>` : `<a class="btn" href="tel:${PHONE}">${L.instAsk}</a><a class="btn ghost" href="${url('/contacts')}">${L.instListen}</a>`}
               ${p.buy ? `<button class="link-btn p-add" data-add="${p.id}">${L.addToCart}</button>` : ''}</div>`
@@ -406,8 +439,8 @@
       const s = e.target.closest('[data-step]');
       if (s && $('#qty')) { const i = $('#qty'); i.value = Math.max(1, Math.min(999, (+i.value || 1) + +s.dataset.step)); }
       if (e.target.id === 'buy') add(p.id, Math.max(1, +$('#qty').value || 1));
-      if (e.target.id === 'askP') window.ACC_CHAT.open({ topic: window.ACC_CHAT.t.productTopic(p.name), productId: p.id });
-      if (e.target.id === 'askL') window.ACC_CHAT.open({ topic: `${L.instListen}: ${p.name}`.slice(0, 120), productId: p.id });
+      if (e.target.id === 'askP') window.ACC_CHAT.open({ topic: window.ACC_CHAT.t.productTopic(tuned()).slice(0, 120), productId: p.id });
+      if (e.target.id === 'askL') window.ACC_CHAT.open({ topic: `${L.instListen}: ${tuned()}`.slice(0, 120), productId: p.id });
       if (e.target.closest('#zoomBtn')) zoom(big($('#mainPic').dataset.full || $('#mainPic').getAttribute('src')), p.name);
     };
   }
@@ -526,7 +559,7 @@
 
   const PAGES = {
     delivery: [L.delivery, links(L.pages.delivery)],
-    service: [L.repairFull, `<div class="svc-media" aria-hidden="true"><video src="scenes/web/bellows_macro-w.mp4" poster="scenes/web/bellows-m.webp" muted loop playsinline preload="none"></video><video src="scenes/web/buttons-w.mp4" poster="scenes/web/buttons-m.webp" muted loop playsinline preload="none"></video></div>${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
+    service: [L.repairFull, `<div class="svc-media" aria-hidden="true"><video src="scenes/web/bellows_macro-w.mp4" poster="scenes/web/bellows-m.webp" muted loop playsinline preload="none"></video><video src="scenes/web/buttons3d-w.mp4" poster="scenes/web/buttons3d-m.webp" muted loop playsinline preload="none"></video></div>${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
     contacts: [L.contacts, `<p><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>
       <p><a class="contact-big" style="font-size:1.4rem" href="mailto:${MAIL}">${MAIL}</a></p>
       <h2>${L.footTitle}</h2>${links(L.pages.contacts)}<div id="letterBox"></div>`],

@@ -14,7 +14,7 @@ window.I18N_ZH = (num) => ({
   footAbout: '全新手风琴、二手乐器、维修、配件与附件。',
   repairFull: '乐器维修与调整',
   added: n => `已加入购物车：${n}`, openCart: '查看购物车',
-  askPrice: '价格请咨询', view3d: '3D 与增强现实查看', orderPrice: '接受订购', orderNote: '价格取决于配置：簧片、颜色、低音系统。请留言或致电，我们为您的配置报价。', sku: '货号', addAria: n => `加入购物车：${n}`,
+  askPrice: '价格请咨询', tuneH: '音色', tune: { musette: ['缪塞特（Musette）', '三组中音簧片相互微调，产生法式颤音。'], piccolo: ['短笛（Piccolo）', '以高八度簧片替代第三组中音簧片：声音明亮清澈。'] }, photoSoon: '图片即将上线', stock: { in: '有现货', order: '接受订购', none: '暂时缺货' }, photoSoonSub: '该型号现已可订购', view3d: '3D 与增强现实查看', orderPrice: '接受订购', orderNote: '价格取决于配置：簧片、颜色、低音系统。请留言或致电，我们为您的配置报价。', sku: '货号', addAria: n => `加入购物车：${n}`,
   youAreHere: '当前位置', homeCrumb: '首页',
   hero: ['手风琴。', '键钮式。', '键盘式。', '及全部配件。'], mast: ['Accordion', 'Centre'],
   mastLead: () => `<b class="slogan">好的手风琴在任何人手中都动听，在大师手中则奏出完美的音乐。</b>Pigini、Scandalli、Bugari、Fisitalia，相关配件与附件，以及我们自己的维修工坊。`,

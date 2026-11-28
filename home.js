@@ -80,7 +80,7 @@ window.ACC_HOME = (() => {
       <h2 class="bento-h" id="bentoH">${L.ownersH}</h2>
       <a class="t v t-b" href="${url('/service')}">${vid('bellows_macro', 'bellows')}<h3>${L.repairFull}</h3><p>${L.bentoRepair}</p></a>
       <a class="t v t-b" href="${url('/c/38')}">${vid('keys', 'keys')}<h3>${esc(cat.get(38)?.name || '')}</h3><p>${goods(count(38))}</p></a>
-      <a class="t v t-b" href="${url('/c/3')}">${vid('buttons', 'buttons')}<h3>${L.parts}</h3><p>${L.bentoParts(goods(count(3)))}</p></a>
+      <a class="t v t-b" href="${url('/c/3')}">${vid('buttons3d', 'buttons3d')}<h3>${L.parts}</h3><p>${L.bentoParts(goods(count(3)))}</p></a>
       <div class="bento-more">${restCats.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)} <i>${count(r.id)}</i></a>`).join('')}</div>
     </section>`;
   }
