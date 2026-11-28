@@ -357,7 +357,7 @@
     const p = prod.get(id);
     if (!p) return notFound();
     title(seoName(p.name, p.cats.find(c => BAYAN_CATS.has(c))));
-    const pics = p.imgs.length ? p.imgs : (p.big ? [p.big] : []);
+    const pics = p.imgs.length ? p.imgs : (p.big ? [p.big] : []), v3 = window.VIEW3D?.[p.id];
     setFoot(L.footLeadInst, p);
     const related = inCat.get(p.cat).filter(x => x.id !== p.id).slice(0, 10);
     // Інструменти: без «кількості», спершу питають про наявність і домовляються послухати (варіант A, 25.11).
@@ -369,8 +369,8 @@
       ${crumbs([...path(p.cat).map(x => ({ name: x.name, href: url(`/c/${x.id}`) })), { name: p.name }])}
       <div class="wrap product${inst ? ' inst' : ''}">
         <div>
-          <div class="gallery-main">${pics.length ? `<button type="button" class="zoom-btn" id="zoomBtn" aria-label="${L.zoom}"><img id="mainPic" src="${esc(pics[0])}"${srcset(pics[0])} fetchpriority="high" width="1200" height="1200" alt="${esc(p.name)}" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'"></button>` : '<span class="ph"></span>'}</div>
-          ${pics.length > 1 ? `<div class="thumbs">${pics.map((u, i) => `<button data-pic="${esc(u)}" aria-pressed="${i === 0}" aria-label="${L.photo(i + 1)}"><img src="${esc(thumb(u))}" alt="" width="72" height="72"></button>`).join('')}</div>` : ''}
+          <div class="gallery-main">${pics.length ? `<button type="button" class="zoom-btn" id="zoomBtn" aria-label="${L.zoom}"><img id="mainPic" src="${esc(pics[0])}"${srcset(pics[0])} fetchpriority="high" width="1200" height="1200" alt="${esc(p.name)}" onerror="this.outerHTML='<span class=&quot;ph&quot;></span>'"></button>` : '<span class="ph"></span>'}${v3 ? '<div class="v3d" id="v3d" hidden></div>' : ''}</div>
+          ${pics.length > 1 || v3 ? `<div class="thumbs">${pics.map((u, i) => `<button data-pic="${esc(u)}" aria-pressed="${i === 0}" aria-label="${L.photo(i + 1)}"><img src="${esc(thumb(u))}" alt="" width="72" height="72"></button>`).join('')}${v3 ? `<button class="t3d" data-3d aria-pressed="false" aria-label="${L.view3d}" title="${L.view3d}"><b>3D</b><small>AR</small></button>` : ''}</div>` : ''}
         </div>
         <div class="p-info">
           <h1>${esc(p.name)}</h1>
@@ -398,6 +398,10 @@
       ${related.length ? `<section class="section wrap"><div class="section-head"><h2>${L.related}</h2><a href="${url(`/c/${p.cat}`)}">${L.all(goods(count(p.cat)))}</a></div><div class="row-scroll">${related.map(card).join('')}</div></section>` : ''}`;
     view.onclick = e => {
       const t = e.target.closest('[data-pic]');
+      // 3D і AR: переглядач виробника вантажимо лише після натискання (Pigini, Zakeke)
+      const d3 = e.target.closest('[data-3d]'), box = $('#v3d');
+      if (d3 && box) { if (!box.firstChild) box.innerHTML = `<iframe src="${esc(v3)}" title="${esc(L.view3d)}: ${esc(p.name)}" allow="xr-spatial-tracking; fullscreen; accelerometer; gyroscope; camera" allowfullscreen></iframe>`; box.hidden = false; $$('.thumbs button').forEach(b => b.setAttribute('aria-pressed', b === d3)); }
+      if (t && box) box.hidden = true;
       if (t) { const m = $('#mainPic'), ss = srcsetOf(t.dataset.pic); if (ss) m.srcset = ss; else m.removeAttribute('srcset'); m.src = t.dataset.pic; $$('.thumbs button').forEach(b => b.setAttribute('aria-pressed', b === t)); }
       const s = e.target.closest('[data-step]');
       if (s && $('#qty')) { const i = $('#qty'); i.value = Math.max(1, Math.min(999, (+i.value || 1) + +s.dataset.step)); }

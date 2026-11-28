@@ -77,7 +77,7 @@
 @media (max-aspect-ratio: 1/1) and (max-height: 720px) { .lab-hint.m { display: none; } .lab-slogan { margin-top: auto; } .lab-text { bottom: 72px; } }
 @media (max-height: 520px) and (min-aspect-ratio: 1/1) { .lab, .flag { min-height: 360px; } .lab-slogan, .lab-hint { display: none; } .lab-text { gap: 10px; } .lab .btn, .flag .btn { min-height: 44px; } .flag-pic { top: 46%; } .flag-info p { display: none; } .flag-info, .flag-buy { bottom: 84px; } .lab-panel { padding-top: 74px; } .lab-x { top: 66px; } }
 @media (max-width: 860px) {
-  .flag-word { inset: calc(var(--top-h, 74px) + 2.6svh) 0 auto; translate: none; color: rgba(255, 255, 255, .22); } .flag-pic { top: 41%; width: 96vw; height: 44svh; }
+  .flag-word { inset: calc(var(--top-h, 74px) + 92px) 0 auto; translate: none; color: rgba(255, 255, 255, .22); } .flag-pic { top: 41%; width: 96vw; height: 44svh; }
   .flag-info { right: var(--pad); max-width: none; bottom: 210px; } .flag-buy { left: var(--pad); bottom: 94px; text-align: left; grid-template-columns: 1fr auto; align-items: center; justify-items: start; } .flag-buy b { font-size: clamp(1.2rem, 5.6vw, 1.5rem); } .flag-arr { display: none; } .flag-tabs a { display: none; } .flag-tabs { inset-inline-end: 84px; gap: 14px; } .flag-tabs button { font-size: .95rem; }
   .bento { grid-template-rows: none; grid-auto-rows: auto; } .t { min-height: 200px; } .t-a { grid-column: 1 / -1; min-height: 56svh; } .t-b, .t-e, .t-f { grid-column: span 6; } .t p { font-size: .93rem; line-height: 1.35; } .t h3 { font-size: 1.15rem; }
 }
@@ -164,7 +164,8 @@
 .cover::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(0, 0, 0, .7), transparent 46%); pointer-events: none; }
 @media (max-aspect-ratio: 1/1) { .cover-pic { object-position: 50% 0%; } .cover::after { background: linear-gradient(0deg, #000 0, rgba(0, 0, 0, .55) 34%, transparent 58%); } }
 .cover-text { position: absolute; left: var(--pad, clamp(18px, 3.2vw, 56px)); top: 52%; translate: 0 -50%; max-width: min(44vw, 640px); display: grid; gap: clamp(18px, 2.4vw, 30px); justify-items: start; }
-.cover-logo { width: clamp(130px, 13vw, 250px); height: auto; margin-bottom: clamp(-6px, -.4vw, 0px); filter: drop-shadow(0 4px 18px rgba(0, 0, 0, .55)); }   /* емблема над назвою (Алекс 28.11) */
+.cover-logo { width: clamp(130px, 13vw, 250px); height: auto; margin-bottom: calc(-1 * clamp(18px, 2.4vw, 30px) - clamp(14px, 1.6vw, 30px)); position: relative; z-index: 0; filter: drop-shadow(0 4px 18px rgba(0, 0, 0, .55)); }   /* емблема над назвою; назва трохи заходить на неї (Алекс 28.11) */
+.cover h1 { position: relative; z-index: 1; }
 .cover h1 { font: 700 clamp(2.6rem, 4.7vw, 6rem)/.88 var(--display); letter-spacing: -.05em; text-transform: uppercase; } .cover h1 span { display: block; }
 .cover p { font-size: clamp(1rem, 1.25vw, 1.3rem); line-height: 1.45; color: rgba(255, 255, 255, .8); max-width: 34ch; }
 .cover .btn { background: var(--red); border-color: var(--red); color: #fff; } .cover .btn:hover { background: #fff; border-color: #fff; color: #1a1213; }
