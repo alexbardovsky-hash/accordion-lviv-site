@@ -58,7 +58,7 @@
 .t h3 { font: 600 clamp(1.25rem, 1.75vw, 1.85rem)/1.06 var(--display); letter-spacing: -.045em; } .t p { margin-top: 6px; color: rgba(255, 255, 255, .88); max-width: 36ch; } .t.big h2 { font: 700 clamp(2.1rem, 4.4vw, 4.6rem)/1 var(--display); letter-spacing: -.06em; }
 .t-a { grid-column: span 6; grid-row: span 2; } .t-b, .t-e, .t-f { grid-column: span 3; } .t-e { background: var(--red); transition: background .25s; } .t-e:hover { background: #d8223e; } .t-f { background: #efe8e1; color: #1a1213; } .t-f p { color: #5b4f4b; } .t-f img { height: auto; aspect-ratio: 1; position: absolute; z-index: -1; right: -6%; top: -4%; width: 72%; mix-blend-mode: multiply; transition: scale .6s; } .t-f:hover img { scale: 1.05; }
 .bento-more { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; padding: 8px 2px; } .bento-more a { min-height: 48px; display: inline-flex; align-items: center; gap: 8px; padding: 0 20px; border-radius: 999px; border: 1.5px solid rgba(246, 241, 234, .26); color: var(--night-ink); text-decoration: none; transition: .2s; } .bento-more a:hover { background: var(--night-ink); color: #141112; } .bento-more i { font-style: normal; opacity: .66; }
-.partners.dark { --bg: #120e0f; --ink: #f6f1ea; --muted: #b9afaa; --line: rgba(246, 241, 234, .16); --brass: #d9bb78; background: #120e0f; padding-top: clamp(30px, 4vw, 56px); }
+.partners.dark { --bg: #120e0f; --ink: #f6f1ea; --muted: #b9afaa; --line: rgba(246, 241, 234, .16); --brass: #d9bb78; background: #120e0f; padding-top: clamp(16px, 2vw, 26px); }
 
 @media (max-width: 1180px) and (min-aspect-ratio: 1/1) { .lab-text { width: min(30vw, 340px); } .hs span { font-size: .85rem; } }
 .lab-hint.m { display: none; }
@@ -152,10 +152,10 @@
 @media (max-aspect-ratio: 1/1) { .lab-text h2 { font-size: clamp(1.9rem, 8.4vw, 3.4rem); } }
 .pk-go:has(.mk) { overflow: clip; } .pk-go img.mk { filter: none; mix-blend-mode: multiply; scale: 1.3; }   /* фото виробника на білому: біле зливається з тлом, тінь уже є на фото */
 /* 26.11: обкладинка — «АКОРДЕОН ЦЕНТР», слоган і рендер моделі в темряві; флагмани йдуть другим екраном */
-.partners-h { margin-bottom: clamp(18px, 2.4vw, 30px); padding-inline: var(--pad, clamp(18px, 3.2vw, 56px)); font: 700 clamp(2rem, 4vw, 4rem)/.95 var(--display); letter-spacing: -.04em; color: #f6f1ea; }
+.partners-h { margin-bottom: 12px; padding-inline: var(--pad, clamp(18px, 3.2vw, 56px)); font: 700 clamp(1.3rem, 1.8vw, 1.9rem)/1 var(--display); letter-spacing: -.04em; color: #f6f1ea; }
 /* Офіційні бренди — нерухома смуга нагорі, під шапкою (Алекс 28.11) */
 .official { margin-top: calc(var(--top-h, 74px) * -1); padding: calc(var(--top-h, 74px) + 4px) var(--pad, clamp(18px, 3.2vw, 56px)) 14px; border-bottom: 1px solid var(--line); background: #120e0f; color: #f6f1ea; --ink: #f6f1ea; --muted: #b9afaa; --line: rgba(246, 241, 234, .16); --brass: #d9bb78; }
-.official-row { display: flex; justify-content: space-around; align-items: flex-end; gap: 16px 32px; flex-wrap: wrap; max-width: 1100px; margin: 0 auto; }
+.official-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px 32px; flex-wrap: wrap; padding-inline: clamp(0px, 4vw, 80px); }
 .official .lg { zoom: .78; }
 @media (max-width: 700px) { .official { padding-top: calc(var(--top-h, 74px) + 6px); padding-bottom: 14px; } .official-row { display: grid; grid-template-columns: 1fr 1fr; justify-items: center; align-items: end; gap: 10px 12px; } .official .lg { zoom: .68; } }
 .official + .cover { height: calc(100svh - var(--off-h, 0px)); min-height: 520px; }
