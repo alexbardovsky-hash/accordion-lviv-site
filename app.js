@@ -39,6 +39,7 @@
   for (const x of C.products) if (LOCAL.has(x.id)) { x.img = `${PHOTO_DIR}/${x.id}-s.jpg`; x.big = x.img; x.imgs = GPT.has(x.id) ? [`${PHOTO_DIR}/${x.id}.jpg`, `${PHOTO_DIR}/${x.id}-o.jpg`] : [`${PHOTO_DIR}/${x.id}.jpg`]; if (MAKER.has(x.id)) { x.img = `photos/maker_web/${x.id}-s.jpg`; x.big = x.img; x.imgs.unshift(`photos/maker_web/${x.id}.jpg`); } if (MAKER.has(x.id) && window.MAKER_MORE?.[x.id]) x.imgs.splice(1, 0, ...window.MAKER_MORE[x.id].map(f => `photos/maker_web/${f}.jpg`)); }
   const PHONE = '+380993339890', PHONE_TEXT = '+38 099 333 98 90', MAIL = 'bajan@accordion.lviv.ua';
   const PAGE = 36;
+  const STEP = L.rate > 20 ? 100 : 1000;   // крок поля «ціна від/до»: 1000 грн чи юанів, 100 доларів чи євро
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -79,6 +80,7 @@
   const thumb = u => srcsetOf(u) ? u.replace('.jpg', '-m.webp') : u.replace('thickbox_default', 'cart_default');
   const photo = p => LOCAL.has(p.id) ? `${MAKER.has(p.id) ? 'photos/maker_web' : PHOTO_DIR}/${p.id}-m.webp` : p.img;
   const srcset = u => srcsetOf(u) ? ` srcset="${srcsetOf(u)}" sizes="(max-width: 960px) 92vw, 1200px"` : '';
+  const toPay = () => L.cur === 'UAH' || !cartTotal() ? '' : `<div class="sum-line sum-uah"><span>${L.toPay}</span><span>${L.uah(cartTotal())}</span></div><p class="p-note">${L.payUah(L.ratesDate)}</p>`;
   const priceTag = p => p.price ? `<span class="price">${money(p.price)}</span>` : `<span class="price ask">${L.askPrice}</span>`;
   /* Обране й порівняння (account.js): сердечко й терези на картці та сторінці товару. */
   const ACC = window.ACC_ACCOUNT, AT = ACC?.t || {};
@@ -111,7 +113,10 @@
     if (fresh && view.firstElementChild) { const t = document.createElement('template'); t.innerHTML = v; fresh = false; if (t.innerHTML.trim() === view.innerHTML.trim()) return; }
     fresh = false; view.innerHTML = v;
   } };
-  const title = t => { document.title = t ? `${t} — ${L.brand}` : L.titleHome; };
+  // Назву сайту Google показує окремим рядком, тож для довгої назви товару приписку «— Акордеон Центр» прибираємо, щоб не обрізало саму назву.
+  // Перша сторінка вже має готову назву від збірки (з артикулом, якщо назви товарів однакові); не перезаписуємо її, далі — як завжди.
+  let ssrTitle = document.title && document.title !== L.brand;
+  const title = t => { if (ssrTitle) { ssrTitle = false; return; } const full = `${t} — ${L.brand}`; document.title = t ? (full.length > 65 ? t : full) : L.titleHome; };
 
 
   /* ── Вітрина: стіна підсвічених полиць, на кожній інструмент. Клік знімає інструмент з полиці й ставить
@@ -236,14 +241,16 @@
   function home() {
     title('');
     const x = { L, lang, esc, url, goods, money, count, cat, prod, inCat: id => inCat.get(id) || [], cats: C.cats, roots, photo,
-      partners: [0, 1].map(() => `<div>${PARTNERS.map(logo).join('')}</div>`).join('') };
+      // Алекс 28.11: офіційні бренди — окремою нерухомою смугою нагорі, партнери — біжучим рядком під обкладинкою.
+      official: PARTNERS.filter(p => p.tier === 'official').map(logo).join(''),
+      partners: [0, 1].map(() => `<div>${[0, 1].map(() => PARTNERS.filter(p => p.tier !== 'official').map(logo).join('')).join('')}</div>`).join('') };
     out.html = window.ACC_HOME.html(x);
     logoFonts();
     window.ACC_HOME.init(view, x);
   }
   // Шрифти знаків партнерів потрібні лише в тому рядку: беремо їх, коли він близько.
   function logoFonts() {
-    const p = $('.partners', view);
+    const p = $('.official, .partners', view);
     if (p) new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect(); if (!$('#logoFonts')) document.head.insertAdjacentHTML('beforeend', '<link id="logoFonts" rel="stylesheet" href="fonts-logos.css">'); }, { rootMargin: '800px' }).observe(p);
   }
 
@@ -313,7 +320,7 @@
           <label>${L.sort} <select id="sort"><option value="default">${L.sortDefault}</option><option value="cheap">${L.sortCheap}</option><option value="dear">${L.sortDear}</option><option value="name">${L.sortName}</option></select></label>
           ${brands.length > 1 ? `<div class="brands" role="group" aria-label="${L.maker}">${brands.map(b => `<button class="chip" data-brand="${esc(b)}" aria-pressed="${state.brand === b}">${esc(b)}</button>`).join('')}</div>` : ''}
           ${inst ? `<div class="filters">
-            <label>${L.fPrice} <input type="number" data-f="min" min="0" step="1000" inputmode="numeric" placeholder="${L.fFrom}" aria-label="${L.fPrice}: ${L.fFrom}" value="${f.min || ''}"></label><input type="number" data-f="max" min="0" step="1000" inputmode="numeric" placeholder="${L.fTo}" aria-label="${L.fPrice}: ${L.fTo}" value="${f.max || ''}">
+            <label>${L.fPrice} <input type="number" data-f="min" min="0" step="${STEP}" inputmode="numeric" placeholder="${L.fFrom}" aria-label="${L.fPrice}: ${L.fFrom}" value="${f.min ? Math.round(f.min / L.rate) : ''}"></label><input type="number" data-f="max" min="0" step="${STEP}" inputmode="numeric" placeholder="${L.fTo}" aria-label="${L.fPrice}: ${L.fTo}" value="${f.max ? Math.round(f.max / L.rate) : ''}">
             ${bassSet.length > 1 ? sel('bass', L.fBass, [[0, L.fAny], ...bassSet.map(x => [x, x])]) : ''}
             ${heavy ? sel('kg', L.fWeight, [[0, L.fAny], ...[6, 8, 10, 12].map(x => [x, L.fUpTo(x)])]) : ''}
             ${f.min || f.max || f.bass || f.kg || state.brand ? `<button class="link-btn" data-clear>${L.fClear}</button>` : ''}
@@ -326,7 +333,7 @@
       if (painted) keep(); painted = true;
     };
     root.addEventListener('change', e => { if (e.target.id === 'sort') { state.sort = e.target.value; state.shown = PAGE; paint(); $('#sort', root)?.focus({ preventScroll: true }); }
-      const k = e.target.dataset.f; if (k) { f[k] = Math.max(0, +e.target.value || 0); state.shown = PAGE; paint(); $(`[data-f="${k}"]`, root)?.focus({ preventScroll: true }); } });
+      const k = e.target.dataset.f; if (k) { f[k] = Math.max(0, +e.target.value || 0); if (k === 'min' || k === 'max') f[k] = Math.round(f[k] * L.rate); state.shown = PAGE; paint(); $(`[data-f="${k}"]`, root)?.focus({ preventScroll: true }); } });
     root.addEventListener('click', e => {
       const b = e.target.closest('[data-brand]');
       if (b) { state.brand = state.brand === b.dataset.brand ? '' : b.dataset.brand; state.shown = PAGE; paint(); }
@@ -359,7 +366,7 @@
         <div class="p-info">
           <h1>${esc(p.name)}</h1>
           <p class="p-ref">${[p.ref && `${L.sku} ${esc(p.ref)}`, p.brand && esc(p.brand)].filter(Boolean).join(', ')}</p>
-          ${p.price ? `<p class="p-price">${money(p.price)}</p>` : `<p class="p-price" style="font-size:1.4rem">${L.askPrice}</p>`}
+          ${p.price ? `<p class="p-price">${money(p.price)}</p>${L.cur === 'UAH' ? '' : `<p class="p-uah">${L.uah(p.price)} · ${L.payUah(L.ratesDate)}</p>`}` : `<p class="p-price" style="font-size:1.4rem">${L.askPrice}</p>`}
           ${inst ? `<div class="p-ask">
               ${window.ACC_CHAT?.enabled ? `<button class="btn" id="askP" type="button">${L.instAsk}</button><button class="btn ghost" id="askL" type="button">${L.instListen}</button>` : `<a class="btn" href="tel:${PHONE}">${L.instAsk}</a><a class="btn ghost" href="${url('/contacts')}">${L.instListen}</a>`}
               ${p.buy ? `<button class="link-btn p-add" data-add="${p.id}">${L.addToCart}</button>` : ''}</div>`
@@ -426,7 +433,7 @@
         </form>
         <aside class="summary" aria-label="${L.yourOrder}"><h2>${L.yourOrder}</h2>
           ${lines.map(l => `<div class="sum-line"><span>${esc(l.p.name)} × ${l.q}</span><b>${l.p.price ? money(l.p.price * l.q) : ''}</b></div>`).join('')}
-          <div class="sum-line sum-total"><span>${L.total}</span><span>${money(cartTotal())}</span></div>
+          <div class="sum-line sum-total"><span>${L.total}</span><span>${money(cartTotal())}</span></div>${toPay()}
           <p class="p-note">${L.payDelivery}</p></aside>
       </div>`;
     const form = $('#order');
@@ -499,7 +506,7 @@
   }
   // Для сторінок кабінету (account.js): спільні шматки сайту.
   const accCtx = {
-    title, prod: id => prod.get(id), money,
+    title, prod: id => prod.get(id), money: L.uah,   // замовлення й оплата завжди в гривнях
     thumb: p => { const d = document.createElement('span'); d.className = 'acc-thumb'; d.innerHTML = pic(p); return d; },
     crumbsEl: name => { const d = document.createElement('div'); d.innerHTML = crumbs([{ name }]); return d.firstElementChild; },
   };
@@ -569,8 +576,16 @@
       ? `<details${r.id === 43 ? ' open class="dr-main"' : ''}><summary>${esc(r.name)}</summary><ul><li><a href="${url(`/c/${r.id}`)}">${L.allInSection}<span>${count(r.id)}</span></a></li>${tree(r.children, 1).slice(4, -5)}</ul></details>`
       : `<div class="plain"><a href="${url(`/c/${r.id}`)}">${esc(r.name)}</a></div>`).join('')}
       <h3 class="dr-h">${L.forBuyers}</h3><nav class="dr-info" aria-label="${L.forBuyers}"><a href="${url(`/service`)}">${L.repair}</a><a href="${url(`/delivery`)}">${L.delivery}</a><a href="${url(`/contacts`)}">${L.contacts}</a><a href="tel:${PHONE}">${PHONE_TEXT}</a></nav>
-      <div class="lang drawer-lang" role="group" aria-label="${L.langLabel}"><button data-lang="uk" lang="uk">Українська</button><button data-lang="en" lang="en">English</button><button data-lang="zh" lang="zh">中文</button></div></div>`;
+      <div class="lang drawer-lang" role="group" aria-label="${L.langLabel}"><button data-lang="uk" lang="uk">Українська</button><button data-lang="en" lang="en">English</button><button data-lang="zh" lang="zh">中文</button></div><div class="lang cur drawer-lang" role="group" aria-label="${L.curLabel}" data-cur-sw></div></div>`;
   wireLang();
+  $$('[data-cur-sw]').forEach(g => {
+    g.innerHTML = L.curs.map(c => `<button type="button" data-cur="${c}" aria-pressed="${c === L.cur}" aria-label="${esc(L.curName(c))}" title="${esc(L.curName(c))}">${L.sym(c)}</button>`).join('')
+      // на вузькому комп'ютері кнопки не влазять у шапку — там той самий вибір списком
+      + (g.closest('.top') ? `<select aria-label="${L.curLabel}">${L.curs.map(c => `<option value="${c}"${c === L.cur ? ' selected' : ''}>${L.sym(c)} ${c}</option>`).join('')}</select>` : '');
+    g.onclick = e => { const b = e.target.closest('[data-cur]'); if (b) L.setCur(b.dataset.cur); };
+    g.onchange = e => L.setCur(e.target.value);
+    window.ACC_SELECT?.(g);
+  });
 
   const scrim = $('#scrim'), panels = { cart: $('#cart'), drawer: $('#drawer') }, btns = { cart: $('#cartBtn'), drawer: $('#menuBtn') };
   let lastFocus;
@@ -612,7 +627,7 @@
           <div><a href="${url(`/p/${l.p.id}`)}">${esc(l.p.name)}</a>
             <div class="qty"><button data-q="${l.p.id}" data-d="-1" aria-label="${L.less}"><svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button><input type="number" min="1" max="999" value="${l.q}" data-qi="${l.p.id}" aria-label="${esc(L.qtyOf(l.p.name))}"><button data-q="${l.p.id}" data-d="1" aria-label="${L.more}"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div></div>
           <div class="line-side"><b class="price">${l.p.price ? money(l.p.price * l.q) : ''}</b><button class="link-btn" data-rm="${l.p.id}">${L.remove}</button></div></div>`).join('')}</div>
-        <div class="panel-foot"><div class="sum-line sum-total"><span>${L.total}</span><span>${money(cartTotal())}</span></div><a class="btn wide" href="${url(`/checkout`)}">${L.placeOrder}</a><button class="btn ghost wide" data-close>${L.keepShopping}</button></div>`
+        <div class="panel-foot"><div class="sum-line sum-total"><span>${L.total}</span><span>${money(cartTotal())}</span></div>${toPay()}<a class="btn wide" href="${url(`/checkout`)}">${L.placeOrder}</a><button class="btn ghost wide" data-close>${L.keepShopping}</button></div>`
         : `<div class="panel-body"><div class="empty"><h2>${L.cartEmpty}</h2><p>${L.cartEmptyP}</p><button class="btn" data-close>${L.toCatalog}</button></div></div>`}`;
   }
   panels.cart.addEventListener('click', e => {

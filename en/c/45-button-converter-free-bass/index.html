@@ -28,12 +28,12 @@
 <link rel="icon" type="image/png" sizes="512x512" href="img/icon-512.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#151112">
-<link rel="stylesheet" href="styles.css?v=3486d30f">
+<link rel="stylesheet" href="styles.css?v=60b771ab">
 <link rel="stylesheet" href="glass.css?v=c507504f">
 <link rel="stylesheet" href="chat.css?v=0c9ea9ee">
 <link rel="stylesheet" href="account.css?v=4210dcfd">
-<link rel="stylesheet" href="stage.css?v=5b9a1372">
-<link rel="stylesheet" href="home.css?v=1daf3dfa">
+<link rel="stylesheet" href="stage.css?v=94f0219e">
+<link rel="stylesheet" href="home.css?v=586712f8">
 </head>
 <body>
 <a class="skip" href="#view" data-t="skip">Skip to content</a>
@@ -65,6 +65,7 @@
     <div class="lang" role="group" aria-label="Site language" data-ta="aria-label:langLabel">
       <button data-lang="uk" lang="uk" aria-label="Українська">UA</button><button data-lang="en" lang="en" aria-label="English">EN</button><button data-lang="zh" lang="zh" aria-label="中文">中文</button>
     </div>
+    <div class="lang cur" role="group" aria-label="Price currency" data-ta="aria-label:curLabel" data-cur-sw></div>
     <button class="icon-btn search-btn" id="searchBtn" type="button" aria-controls="searchForm" aria-expanded="false" aria-label="Search products" data-ta="aria-label:searchLabel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button>
     <a class="phone" href="tel:+380993339890" aria-label="Call +38 099 333 98 90" data-ta="aria-label:callAria">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
@@ -94,12 +95,12 @@
           <div id="list">
         <button type="button" class="chip filt-btn" aria-expanded="false">Filters and sorting</button>
         <div class="toolbar can-fold">
-          <label>Sort <span class="sl"><button type="button" class="sl-b" id="sl49" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="sl49l" aria-label="Sort: as in catalogue">as in catalogue</button><ul aria-label="Sort" class="sl-l" id="sl49l" hidden="" role="listbox" tabindex="-1"><li id="sl49o0" role="option" aria-selected="true">as in catalogue</li><li id="sl49o1" role="option" aria-selected="false">cheapest first</li><li id="sl49o2" role="option" aria-selected="false">most expensive first</li><li id="sl49o3" role="option" aria-selected="false">by name</li></ul><select id="sort" hidden="" tabindex="-1" aria-hidden="true"><option value="default">as in catalogue</option><option value="cheap">cheapest first</option><option value="dear">most expensive first</option><option value="name">by name</option></select></span></label>
+          <label>Sort <span class="sl"><button type="button" class="sl-b" id="sl50" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="sl50l" aria-label="Sort: as in catalogue">as in catalogue</button><ul aria-label="Sort" class="sl-l" id="sl50l" hidden="" role="listbox" tabindex="-1"><li id="sl50o0" role="option" aria-selected="true">as in catalogue</li><li id="sl50o1" role="option" aria-selected="false">cheapest first</li><li id="sl50o2" role="option" aria-selected="false">most expensive first</li><li id="sl50o3" role="option" aria-selected="false">by name</li></ul><select id="sort" hidden="" tabindex="-1" aria-hidden="true"><option value="default">as in catalogue</option><option value="cheap">cheapest first</option><option value="dear">most expensive first</option><option value="name">by name</option></select></span></label>
           <div class="brands" role="group" aria-label="Brand"><button class="chip" data-brand="Bugari" aria-pressed="false">Bugari</button><button class="chip" data-brand="Fisitalia" aria-pressed="false">Fisitalia</button><button class="chip" data-brand="Pigini" aria-pressed="false">Pigini</button><button class="chip" data-brand="Scandalli" aria-pressed="false">Scandalli</button></div>
           <div class="filters">
             <label>Price, UAH <input type="number" data-f="min" min="0" step="1000" inputmode="numeric" placeholder="from" aria-label="Price, UAH: from" value=""></label><input type="number" data-f="max" min="0" step="1000" inputmode="numeric" placeholder="to" aria-label="Price, UAH: to" value="">
-            <label>Bass buttons <span class="sl"><button type="button" class="sl-b" id="sl50" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="sl50l" aria-label="Bass buttons: any">any</button><ul aria-label="Bass buttons" class="sl-l" id="sl50l" hidden="" role="listbox" tabindex="-1"><li id="sl50o0" role="option" aria-selected="true">any</li><li id="sl50o1" role="option" aria-selected="false">66</li><li id="sl50o2" role="option" aria-selected="false">72</li><li id="sl50o3" role="option" aria-selected="false">78</li><li id="sl50o4" role="option" aria-selected="false">96</li><li id="sl50o5" role="option" aria-selected="false">102</li><li id="sl50o6" role="option" aria-selected="false">108</li><li id="sl50o7" role="option" aria-selected="false">120</li></ul><select data-f="bass" hidden="" tabindex="-1" aria-hidden="true"><option value="0" selected="">any</option><option value="66">66</option><option value="72">72</option><option value="78">78</option><option value="96">96</option><option value="102">102</option><option value="108">108</option><option value="120">120</option></select></span></label>
-            <label>Weight <span class="sl"><button type="button" class="sl-b" id="sl51" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="sl51l" aria-label="Weight: any">any</button><ul aria-label="Weight" class="sl-l" id="sl51l" hidden="" role="listbox" tabindex="-1"><li id="sl51o0" role="option" aria-selected="true">any</li><li id="sl51o1" role="option" aria-selected="false">up to 6 kg</li><li id="sl51o2" role="option" aria-selected="false">up to 8 kg</li><li id="sl51o3" role="option" aria-selected="false">up to 10 kg</li><li id="sl51o4" role="option" aria-selected="false">up to 12 kg</li></ul><select data-f="kg" hidden="" tabindex="-1" aria-hidden="true"><option value="0" selected="">any</option><option value="6">up to 6 kg</option><option value="8">up to 8 kg</option><option value="10">up to 10 kg</option><option value="12">up to 12 kg</option></select></span></label>
+            <label>Bass buttons <span class="sl"><button type="button" class="sl-b" id="sl51" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="sl51l" aria-label="Bass buttons: any">any</button><ul aria-label="Bass buttons" class="sl-l" id="sl51l" hidden="" role="listbox" tabindex="-1"><li id="sl51o0" role="option" aria-selected="true">any</li><li id="sl51o1" role="option" aria-selected="false">66</li><li id="sl51o2" role="option" aria-selected="false">72</li><li id="sl51o3" role="option" aria-selected="false">78</li><li id="sl51o4" role="option" aria-selected="false">96</li><li id="sl51o5" role="option" aria-selected="false">102</li><li id="sl51o6" role="option" aria-selected="false">108</li><li id="sl51o7" role="option" aria-selected="false">120</li></ul><select data-f="bass" hidden="" tabindex="-1" aria-hidden="true"><option value="0" selected="">any</option><option value="66">66</option><option value="72">72</option><option value="78">78</option><option value="96">96</option><option value="102">102</option><option value="108">108</option><option value="120">120</option></select></span></label>
+            <label>Weight <span class="sl"><button type="button" class="sl-b" id="sl52" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="sl52l" aria-label="Weight: any">any</button><ul aria-label="Weight" class="sl-l" id="sl52l" hidden="" role="listbox" tabindex="-1"><li id="sl52o0" role="option" aria-selected="true">any</li><li id="sl52o1" role="option" aria-selected="false">up to 6 kg</li><li id="sl52o2" role="option" aria-selected="false">up to 8 kg</li><li id="sl52o3" role="option" aria-selected="false">up to 10 kg</li><li id="sl52o4" role="option" aria-selected="false">up to 12 kg</li></ul><select data-f="kg" hidden="" tabindex="-1" aria-hidden="true"><option value="0" selected="">any</option><option value="6">up to 6 kg</option><option value="8">up to 8 kg</option><option value="10">up to 10 kg</option><option value="12">up to 12 kg</option></select></span></label>
             
             <span class="filters-n" role="status">31 items</span></div>
         </div>
@@ -442,8 +443,9 @@
 
 <script src="data/slugs.js?v=92688474"></script>
 <script src="site.js?v=ab8dfc3f"></script>
-<script src="i18n-zh.js?v=edc5b691"></script>
-<script src="i18n.js?v=5adeac97"></script>
+<script src="i18n-zh.js?v=a1a065fc"></script>
+<script src="data/rates.js?v=5ff803f2"></script>
+<script src="i18n.js?v=ac2a4b8e"></script>
 <script src="data/catalog.js?v=3e521e80"></script>
 <script src="data/catalog-i18n.js?v=8ebef863"></script>
 <script src="data/variants.js?v=0d3eb89b"></script>
@@ -457,9 +459,9 @@
 <script src="chat.js?v=245e3bc4"></script>
 <script src="account.js?v=eb7559c0"></script>
 <script src="data/scene_frames.js?v=3cf973db"></script>
-<script src="home.js?v=f6283ac7"></script>
+<script src="home.js?v=db64bf2c"></script>
 <script src="search.js?v=a226326a"></script>
 <script src="select.js?v=5963a03c"></script>
-<script src="app.js?v=046dd178"></script>
+<script src="app.js?v=f3b5fa04"></script>
 </body>
 </html>

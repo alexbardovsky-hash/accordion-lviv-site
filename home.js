@@ -11,7 +11,8 @@ window.ACC_HOME = (() => {
     { id: 301, w: 'Pigini', t: 'Pigini Nova', n: 'Pigini Nova', src: 'img/flag/301.webp', tone: '#7d1528' }, { id: 554, w: 'Bugari', t: 'Bayan 2 RC', n: 'Bugari Armando 2 RC Cassotto', src: 'img/flag/554.webp', tone: '#8b4a1f' },
     { id: 541, w: 'Scandalli', t: 'Super VI', n: 'Scandalli Super VI', src: 'img/stage2/541.webp', tone: '#3d4650' }, { id: 387, w: 'Fisitalia', t: 'B-61', n: 'Fisitalia B-61', src: 'img/flag/387.webp', tone: '#0e5a52' },
     { id: 551, w: 'Bugari', t: '540 ARS C', n: 'Bugari 540 ARS C', src: 'img/stage2/551.webp', tone: '#5a2a1c' }, { id: 506, w: 'Scandalli', t: 'AIR I C', n: 'Scandalli AIR I C', src: 'img/stage2/506.webp', tone: '#2c3440' },
-    { id: 559, w: 'Bugari', t: '289 ARS C', n: 'Bugari 289 ARS C', src: 'img/stage2/559.webp', tone: '#6b1d2e' }, { id: 568, w: 'Hohner', t: 'Bravo III 120', n: 'Hohner Bravo III 120', src: 'img/stage2/568.webp', tone: '#1d3557' },
+    { id: 559, w: 'Bugari', t: '289 ARS C', n: 'Bugari 289 ARS C', src: 'img/stage2/559.webp', tone: '#6b1d2e' },
+    // Hohner прибрано 28.11 (Алекс): у «Легендах» лише італійські марки.
   ];
   const portrait = () => matchMedia('(max-aspect-ratio: 1/1)').matches;
 
@@ -36,11 +37,14 @@ window.ACC_HOME = (() => {
     const brands = Object.entries(x.inCat(43).reduce((o, p) => (p.brand && (o[p.brand] = (o[p.brand] || 0) + 1), o), {})).sort((a, b) => b[1] - a[1]);
     const sub = id => cat.get(id) && count(id) ? `<a href="${url(`/c/${id}`)}">${esc(L.pickSub[id] || cat.get(id).name)} <i>${count(id)}</i></a>` : '';
     const pick = (img, h, ids) => `<div class="pk"><a class="pk-go" href="${url(`/c/${ids[0]}`)}" aria-hidden="true" tabindex="-1">${/^m/.test(img) ? `<img class="mk" src="photos/maker_web/${img.slice(1)}.jpg" srcset="photos/maker_web/${img.slice(1)}-m.webp 800w, photos/maker_web/${img.slice(1)}.jpg 1200w, photos/maker_web/${img.slice(1)}-x.jpg 1900w" sizes="(max-width: 960px) 92vw, 46vw" alt="" loading="lazy">` : `<img src="img/stage2/${img}.webp" alt="" loading="lazy">`}</a><h3>${h}</h3><div class="pk-l">${ids.map(sub).join('')}</div></div>`;
+    // Нагорі нерухома смуга офіційних брендів, під обкладинкою біжучий рядок партнерів (Алекс 28.11).
     return `
+    <section class="official dark" aria-label="${L.officialLabel}"><div class="official-row">${x.official}</div></section>
     <section class="cover" aria-labelledby="coverH">
       <picture><source media="(max-aspect-ratio: 1/1)" srcset="img/cover/kb_m-s.webp 540w, img/cover/kb_m.webp 1080w" sizes="100vw"><img class="cover-pic" src="img/cover/kb_d.webp" srcset="img/cover/kb_d-s.webp 1200w, img/cover/kb_d.webp 2400w" sizes="100vw" alt="${L.coverAlt}" fetchpriority="high"></picture>
       <div class="cover-text"><h1 id="coverH">${L.mast.map(w => `<span>${esc(w)}</span>`).join(' ')}</h1><p>${L.slogan}</p><a class="btn" href="${url('/c/43')}">${L.heroCta}</a></div>
     </section>
+    <section class="partners dark" aria-labelledby="partnersH"><h2 class="partners-h" id="partnersH">${L.partnersH}</h2><div class="marquee" aria-hidden="true">${x.partners}</div></section>
     <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="${L.instruments}">
       <div class="flag-head"><h2>${L.legendsH}</h2><p>${L.legendsP}</p></div>
       <div class="flag-word" id="flagWord" aria-hidden="true">${st[0] ? esc(st[0].w) : ''}</div>
@@ -73,8 +77,7 @@ window.ACC_HOME = (() => {
       <a class="t v t-b" href="${url('/c/38')}">${pic('strap')}<h3>${esc(cat.get(38)?.name || '')}</h3><p>${goods(count(38))}</p></a>
       <a class="t v t-b" href="${url('/c/3')}">${pic('buttons')}<h3>${L.parts}</h3><p>${L.bentoParts(goods(count(3)))}</p></a>
       <div class="bento-more">${restCats.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)} <i>${count(r.id)}</i></a>`).join('')}</div>
-    </section>
-    <section class="partners dark"><p class="partners-lead wrap"><span>${L.partnersLead}</span></p><div class="marquee" aria-hidden="true">${x.partners}</div></section>`;
+    </section>`;
   }
 
   function init(view, x) {
@@ -82,6 +85,9 @@ window.ACC_HOME = (() => {
     const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const ac = new AbortController(), on = (t, e, f, o = {}) => t.addEventListener(e, f, { signal: ac.signal, ...o });
     addEventListener('sitenav', () => ac.abort(), { once: true });
+    // Смуга офіційних брендів + обкладинка = рівно один екран: обкладинка коротшає на висоту смуги (смуга починається від верху екрана, під шапкою).
+    const off = $('.official'), fit = () => { if (off) view.style.setProperty("--off-h", `${off.offsetHeight}px`); };
+    fit(); on(window, 'resize', fit);
     lab(); flag();
 
     /* Відео мозаїки грають, лише коли їх видно */
@@ -171,11 +177,14 @@ window.ACC_HOME = (() => {
       const size = w => `${innerWidth > 860 ? Math.min(23, 150 / w.length) : Math.min(24, 126 / w.length)}vw`;
       const paint = i => { const s = S[i], p = x.prod.get(s.id); el.style.setProperty('--tone', s.tone); word.textContent = s.w; word.style.fontSize = size(s.w); pic.src = s.src; pic.alt = s.n; $('#flagN').textContent = s.n; $('#flagS').textContent = spec(p, x.lang); $('#flagL').textContent = x.L.legend[s.id] || ''; $('#flagP').textContent = x.money(p.price); $('#flagA').href = x.url(`/p/${s.id}`); tabs.forEach((b, k) => b.setAttribute('aria-pressed', k === i)); };
       paint(0); on(window, 'resize', () => { word.style.fontSize = size(S[cur].w); });
-      const seen = new IntersectionObserver(es => { if (es[0].isIntersecting) { seen.disconnect(); S.forEach(s => { new Image().src = s.src; }); } }, { rootMargin: '300px' }); seen.observe(el);
+      // Підвантажуємо лише сусідів поточного (стрілка, свайп), а не всі 8 фото одразу: на телефоні це ~1,5 МБ, які більшість не гортає.
+      const got = new Set([0]), near = i => [i - 1, i + 1].forEach(k => { k = (k + S.length) % S.length; if (!got.has(k)) { got.add(k); new Image().src = S[k].src; } });
+      let visible = false;
+      const seen = new IntersectionObserver(es => { if (es[0].isIntersecting) { seen.disconnect(); visible = true; near(cur); } }, { rootMargin: '300px' }); seen.observe(el);
       async function show(i, d) {
         i = (i + S.length) % S.length; if (busy || i === cur) return; busy = true; d = d || (i > cur ? 1 : -1); cur = i;
         if (!calm) { const o = { duration: 260, easing: 'ease-in', fill: 'forwards' }; word.animate([{ opacity: 1 }, { opacity: 0, transform: `translateX(${-d * 6}vw)` }], o); await pic.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-d * 22}vw) rotate(${-d * 5}deg) scale(.9)` }], o).finished.catch(() => {}); }
-        paint(i); await pic.decode().catch(() => {}); [...pic.getAnimations(), ...word.getAnimations()].forEach(a => a.cancel());
+        paint(i); got.add(i); if (visible) near(i); await pic.decode().catch(() => {}); [...pic.getAnimations(), ...word.getAnimations()].forEach(a => a.cancel());
         if (!calm) { const o = { duration: 620, easing: 'cubic-bezier(.16,.9,.2,1)' }; word.animate([{ opacity: 0, transform: `translateX(${d * 6}vw)` }, { opacity: 1, transform: 'none' }], o); pic.animate([{ opacity: 0, transform: `translateX(${d * 26}vw) rotate(${d * 6}deg) scale(.88)` }, { opacity: 1, transform: 'none' }], o); }
         busy = false;
       }

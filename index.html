@@ -30,12 +30,12 @@
 <link rel="icon" type="image/png" sizes="512x512" href="img/icon-512.png">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <meta name="theme-color" content="#151112">
-<link rel="stylesheet" href="styles.css?v=3486d30f">
+<link rel="stylesheet" href="styles.css?v=60b771ab">
 <link rel="stylesheet" href="glass.css?v=c507504f">
 <link rel="stylesheet" href="chat.css?v=0c9ea9ee">
 <link rel="stylesheet" href="account.css?v=4210dcfd">
-<link rel="stylesheet" href="stage.css?v=5b9a1372">
-<link rel="stylesheet" href="home.css?v=1daf3dfa">
+<link rel="stylesheet" href="stage.css?v=94f0219e">
+<link rel="stylesheet" href="home.css?v=586712f8">
 </head>
 <body class="is-home">
 <a class="skip" href="#view" data-t="skip">Перейти до вмісту</a>
@@ -67,6 +67,7 @@
     <div class="lang" role="group" aria-label="Мова сайту" data-ta="aria-label:langLabel">
       <button data-lang="uk" lang="uk" aria-label="Українська">UA</button><button data-lang="en" lang="en" aria-label="English">EN</button><button data-lang="zh" lang="zh" aria-label="中文">中文</button>
     </div>
+    <div class="lang cur" role="group" aria-label="Валюта цін" data-ta="aria-label:curLabel" data-cur-sw></div>
     <button class="icon-btn search-btn" id="searchBtn" type="button" aria-controls="searchForm" aria-expanded="false" aria-label="Пошук товарів" data-ta="aria-label:searchLabel"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></button>
     <a class="phone" href="tel:+380993339890" aria-label="Зателефонувати 099 333 98 90" data-ta="aria-label:callAria">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
@@ -84,18 +85,20 @@
 </header>
 
 <main id="view" tabindex="-1">
+    <section class="official dark" aria-label="Офіційне представництво в Україні"><div class="official-row"><span class="lg lg-fisitalia is-official"><b>Fisitalia</b><small>офіційне представництво</small></span><span class="lg lg-scandalli is-official"><b>Scandalli</b><small>офіційне представництво</small></span><span class="lg lg-bugari is-official"><b>Bugari</b><em>Armando</em><small>офіційне представництво</small></span><span class="lg lg-musictech is-official"><b>Musictech</b><small>офіційне представництво</small></span></div></section>
     <section class="cover" aria-labelledby="coverH">
       <picture><source media="(max-aspect-ratio: 1/1)" srcset="img/cover/kb_m-s.webp 540w, img/cover/kb_m.webp 1080w" sizes="100vw"><img class="cover-pic" src="img/cover/kb_d.webp" srcset="img/cover/kb_d-s.webp 1200w, img/cover/kb_d.webp 2400w" sizes="100vw" alt="Клавіатура кнопкового акордеона в краплях води під теплим світлом" fetchpriority="high"></picture>
       <div class="cover-text"><h1 id="coverH"><span>Акордеон</span> <span>Центр</span></h1><p>Добрий акордеон гарно звучить у будь-яких руках. У руках майстра він творить досконалу музику.</p><a class="btn" href="/accordion-lviv-site/c/43-akordeony/">Обрати акордеон</a></div>
     </section>
+    <section class="partners dark" aria-labelledby="partnersH"><h2 class="partners-h" id="partnersH">Партнери</h2><div class="marquee" aria-hidden="true"><div><span class="lg lg-pigini is-dealer"><svg viewBox="0 0 24 24"><path d="M3 13a9 9 0 0 1 9-9M6 13a6 6 0 0 1 6-6M9 13a3 3 0 0 1 3-3"/></svg><b>Pigini</b></span><span class="lg lg-beltuna is-dealer"><svg class="rays" viewBox="0 0 40 12"><path d="M20 1v10M13 2l4 9M27 2l-4 9M6 5l9 6M34 5l-9 6"/></svg><b>Beltuna</b></span><span class="lg lg-victoria is-dealer"><b>Victoria</b></span><span class="lg lg-mengascini is-partner"><b>Mengascini</b></span><span class="lg lg-serenellini is-partner"><b>Serenellini</b></span><span class="lg lg-baffetti is-partner"><b>Dino Baffetti</b></span><span class="lg lg-pigini is-dealer"><svg viewBox="0 0 24 24"><path d="M3 13a9 9 0 0 1 9-9M6 13a6 6 0 0 1 6-6M9 13a3 3 0 0 1 3-3"/></svg><b>Pigini</b></span><span class="lg lg-beltuna is-dealer"><svg class="rays" viewBox="0 0 40 12"><path d="M20 1v10M13 2l4 9M27 2l-4 9M6 5l9 6M34 5l-9 6"/></svg><b>Beltuna</b></span><span class="lg lg-victoria is-dealer"><b>Victoria</b></span><span class="lg lg-mengascini is-partner"><b>Mengascini</b></span><span class="lg lg-serenellini is-partner"><b>Serenellini</b></span><span class="lg lg-baffetti is-partner"><b>Dino Baffetti</b></span></div><div><span class="lg lg-pigini is-dealer"><svg viewBox="0 0 24 24"><path d="M3 13a9 9 0 0 1 9-9M6 13a6 6 0 0 1 6-6M9 13a3 3 0 0 1 3-3"/></svg><b>Pigini</b></span><span class="lg lg-beltuna is-dealer"><svg class="rays" viewBox="0 0 40 12"><path d="M20 1v10M13 2l4 9M27 2l-4 9M6 5l9 6M34 5l-9 6"/></svg><b>Beltuna</b></span><span class="lg lg-victoria is-dealer"><b>Victoria</b></span><span class="lg lg-mengascini is-partner"><b>Mengascini</b></span><span class="lg lg-serenellini is-partner"><b>Serenellini</b></span><span class="lg lg-baffetti is-partner"><b>Dino Baffetti</b></span><span class="lg lg-pigini is-dealer"><svg viewBox="0 0 24 24"><path d="M3 13a9 9 0 0 1 9-9M6 13a6 6 0 0 1 6-6M9 13a3 3 0 0 1 3-3"/></svg><b>Pigini</b></span><span class="lg lg-beltuna is-dealer"><svg class="rays" viewBox="0 0 40 12"><path d="M20 1v10M13 2l4 9M27 2l-4 9M6 5l9 6M34 5l-9 6"/></svg><b>Beltuna</b></span><span class="lg lg-victoria is-dealer"><b>Victoria</b></span><span class="lg lg-mengascini is-partner"><b>Mengascini</b></span><span class="lg lg-serenellini is-partner"><b>Serenellini</b></span><span class="lg lg-baffetti is-partner"><b>Dino Baffetti</b></span></div></div></section>
     <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="Інструменти">
-      <div class="flag-head"><h2>Легенди акордеонного світу</h2><p>Італійські й німецькі майстерні, на інструментах яких грають солісти світових сцен.</p></div>
+      <div class="flag-head"><h2>Легенди акордеонного світу</h2><p>Італійські майстерні, на інструментах яких грають солісти світових сцен.</p></div>
       <div class="flag-word" id="flagWord" aria-hidden="true">Pigini</div>
       <img class="flag-pic" id="flagPic" src="img/flag/301.webp" alt="Pigini Nova" fetchpriority="high" draggable="false">
       <div class="flag-info" aria-live="polite"><h2 id="flagN">Pigini Nova</h2><p id="flagS">106 ґудзиків, бас 120, 14,6 кг</p><p class="flag-leg" id="flagL">На Pigini Nova грає Мартинас Левіцкіс — переможець Coupe Mondiale, перший акордеоніст, що підписав контракт із Decca Classics.</p></div>
       <div class="flag-buy"><b id="flagP">1 352 590 грн</b><a class="btn" id="flagA" href="/accordion-lviv-site/p/301-knopkovyi-akordeon-pigini-nova-hotovo-vybornyi-106-120/">Розглянути</a></div>
       <button type="button" class="flag-arr p" aria-label="Попередній інструмент"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="flag-arr n" aria-label="Наступний інструмент"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-      <div class="flag-tabs"><button type="button" data-s="0" aria-pressed="true">Pigini Nova</button><button type="button" data-s="1" aria-pressed="false">Bayan 2 RC</button><button type="button" data-s="2" aria-pressed="false">Super VI</button><button type="button" data-s="3" aria-pressed="false">B-61</button><button type="button" data-s="4" aria-pressed="false">540 ARS C</button><button type="button" data-s="5" aria-pressed="false">AIR I C</button><button type="button" data-s="6" aria-pressed="false">289 ARS C</button><button type="button" data-s="7" aria-pressed="false">Bravo III 120</button><a href="/accordion-lviv-site/c/43-akordeony/">Усі 88 товарів</a></div>
+      <div class="flag-tabs"><button type="button" data-s="0" aria-pressed="true">Pigini Nova</button><button type="button" data-s="1" aria-pressed="false">Bayan 2 RC</button><button type="button" data-s="2" aria-pressed="false">Super VI</button><button type="button" data-s="3" aria-pressed="false">B-61</button><button type="button" data-s="4" aria-pressed="false">540 ARS C</button><button type="button" data-s="5" aria-pressed="false">AIR I C</button><button type="button" data-s="6" aria-pressed="false">289 ARS C</button><a href="/accordion-lviv-site/c/43-akordeony/">Усі 88 товарів</a></div>
     </section>
     <section class="pick" id="pick" aria-labelledby="pickH">
       <h2 id="pickH">Який акордеон шукаєте?</h2>
@@ -120,8 +123,7 @@
       <a class="t v t-b" href="/accordion-lviv-site/c/38-aksesuary/"><img class="t-pic" src="scenes/still/strap.webp" srcset="scenes/still/strap-m.webp 800w, scenes/still/strap.webp 1600w" sizes="(max-width: 960px) 100vw, 34vw" alt="" loading="lazy"><h3>Аксесуари</h3><p>54 товари</p></a>
       <a class="t v t-b" href="/accordion-lviv-site/c/3-komplektuiuchi/"><img class="t-pic" src="scenes/still/buttons.webp" srcset="scenes/still/buttons-m.webp 800w, scenes/still/buttons.webp 1600w" sizes="(max-width: 960px) 100vw, 34vw" alt="" loading="lazy"><h3>Комплектуючі</h3><p>236 товарів: клавіатура й механіка, міх, корпус, регістри, голоси</p></a>
       <div class="bento-more"><a href="/accordion-lviv-site/c/65-komplektuiuchi-b-v/">Комплектуючі Б/В <i>1</i></a><a href="/accordion-lviv-site/c/67-suveniry/">Сувеніри <i>7</i></a><a href="/accordion-lviv-site/c/72-melodyky/">Мелодики <i>2</i></a><a href="/accordion-lviv-site/c/73-noty/">Ноти <i>1</i></a></div>
-    </section>
-    <section class="partners dark"><p class="partners-lead wrap"><span><b>Офіційне представництво в Україні:</b> Fisitalia, Scandalli, Bugari Armando, Musictech. Також працюємо з Pigini, Beltuna, Victoria, Mengascini, Serenellini, Dino Baffetti.</span></p><div class="marquee" aria-hidden="true"><div><span class="lg lg-fisitalia is-official"><b>Fisitalia</b><small>офіційне представництво</small></span><span class="lg lg-scandalli is-official"><b>Scandalli</b><small>офіційне представництво</small></span><span class="lg lg-bugari is-official"><b>Bugari</b><em>Armando</em><small>офіційне представництво</small></span><span class="lg lg-musictech is-official"><b>Musictech</b><small>офіційне представництво</small></span><span class="lg lg-pigini is-dealer"><svg viewBox="0 0 24 24"><path d="M3 13a9 9 0 0 1 9-9M6 13a6 6 0 0 1 6-6M9 13a3 3 0 0 1 3-3"/></svg><b>Pigini</b></span><span class="lg lg-beltuna is-dealer"><svg class="rays" viewBox="0 0 40 12"><path d="M20 1v10M13 2l4 9M27 2l-4 9M6 5l9 6M34 5l-9 6"/></svg><b>Beltuna</b></span><span class="lg lg-victoria is-dealer"><b>Victoria</b></span><span class="lg lg-mengascini is-partner"><b>Mengascini</b></span><span class="lg lg-serenellini is-partner"><b>Serenellini</b></span><span class="lg lg-baffetti is-partner"><b>Dino Baffetti</b></span></div><div><span class="lg lg-fisitalia is-official"><b>Fisitalia</b><small>офіційне представництво</small></span><span class="lg lg-scandalli is-official"><b>Scandalli</b><small>офіційне представництво</small></span><span class="lg lg-bugari is-official"><b>Bugari</b><em>Armando</em><small>офіційне представництво</small></span><span class="lg lg-musictech is-official"><b>Musictech</b><small>офіційне представництво</small></span><span class="lg lg-pigini is-dealer"><svg viewBox="0 0 24 24"><path d="M3 13a9 9 0 0 1 9-9M6 13a6 6 0 0 1 6-6M9 13a3 3 0 0 1 3-3"/></svg><b>Pigini</b></span><span class="lg lg-beltuna is-dealer"><svg class="rays" viewBox="0 0 40 12"><path d="M20 1v10M13 2l4 9M27 2l-4 9M6 5l9 6M34 5l-9 6"/></svg><b>Beltuna</b></span><span class="lg lg-victoria is-dealer"><b>Victoria</b></span><span class="lg lg-mengascini is-partner"><b>Mengascini</b></span><span class="lg lg-serenellini is-partner"><b>Serenellini</b></span><span class="lg lg-baffetti is-partner"><b>Dino Baffetti</b></span></div></div></section></main>
+    </section></main>
 
 <footer class="foot">
   <div class="wrap">
@@ -146,8 +148,9 @@
 
 <script src="data/slugs.js?v=92688474"></script>
 <script src="site.js?v=ab8dfc3f"></script>
-<script src="i18n-zh.js?v=edc5b691"></script>
-<script src="i18n.js?v=5adeac97"></script>
+<script src="i18n-zh.js?v=a1a065fc"></script>
+<script src="data/rates.js?v=5ff803f2"></script>
+<script src="i18n.js?v=ac2a4b8e"></script>
 <script src="data/catalog.js?v=3e521e80"></script>
 <script src="data/catalog-i18n.js?v=8ebef863"></script>
 <script src="data/variants.js?v=0d3eb89b"></script>
@@ -161,9 +164,9 @@
 <script src="chat.js?v=245e3bc4"></script>
 <script src="account.js?v=eb7559c0"></script>
 <script src="data/scene_frames.js?v=3cf973db"></script>
-<script src="home.js?v=f6283ac7"></script>
+<script src="home.js?v=db64bf2c"></script>
 <script src="search.js?v=a226326a"></script>
 <script src="select.js?v=5963a03c"></script>
-<script src="app.js?v=046dd178"></script>
+<script src="app.js?v=f3b5fa04"></script>
 </body>
 </html>

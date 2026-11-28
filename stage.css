@@ -86,8 +86,10 @@ body::after { display: none; }
 @media (max-width: 960px) { .product.inst { grid-template-columns: minmax(0, 1fr); } .p-spec { grid-template-columns: minmax(0, 1fr); } .p-spec div { padding: 14px 0; } }
 /* Шапка на всю ширину: пошук має де стояти */
 @media (min-width: 961px) { .top-row.wrap { width: min(1760px, 100% - clamp(32px, 6vw, 96px)); } .top-row .search { flex: 1 1 200px; min-width: 170px; } }
-@media (max-width: 1700px) { .nav-info { display: none; } }
+@media (max-width: 2100px) { .nav-info { display: none; } }   /* із перемикачем валют (28.11) посилання «Ремонт, Доставка, Контакти» влазять лише на дуже широкому; вони є в меню «Каталог» */
 @media (min-width: 961px) and (max-width: 1180px) { .top-row .brand-name { display: none; } }
+/* Перемикач валют (28.11) забрав місце: на вузькому комп'ютері пошук і проміжки трохи менші */
+@media (min-width: 961px) and (max-width: 1100px) { .top-row.wrap { gap: 6px; } .top-row .search { min-width: 110px; } .top .cur .sl-b { padding: 0 9px; } }
 
 /* Сцена над розділом: міх, клавіші, ґудзики */
 .cat-reel { margin-top: calc(var(--top-h, 74px) * -1); } .cat-reel .reel-stage, .cat-reel .reel-stage:first-child { height: min(34svh, 320px); min-height: 0; background: #151112; }

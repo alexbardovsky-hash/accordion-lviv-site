@@ -75,6 +75,20 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .lang button { height: 32px; padding: 0 11px; border: 0; border-radius: 999px; background: none; color: inherit; font: 600 .8rem var(--ui); letter-spacing: .02em; }
 .lang button:hover { color: var(--red); }
 .lang button[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); }
+.lang.cur { margin-left: 8px; }
+.lang.cur button { min-width: 34px; padding: 0 9px; font-size: .9rem; }
+.drawer-lang.cur { margin-top: 0; }
+.lang.cur .sl { display: none; }
+.top .cur .sl-b { min-height: 32px; padding: 0 12px; border: 0; background: none; color: inherit; font: 600 .85rem var(--ui); }
+.top .cur .sl-b::after { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 2px 3px 8px; border: solid currentColor; border-width: 0 1.6px 1.6px 0; transform: rotate(45deg); }
+.top .cur .sl-l { left: auto; right: -3px; min-width: 120px; }
+@media (min-width: 961px) and (max-width: 1200px) {
+  .top .lang button { padding: 0 8px; }
+  .top .lang.cur button[data-cur] { display: none; }
+  .top .lang.cur .sl { display: inline-block; }
+}
+.p-uah { margin: -4px 0 14px; color: var(--muted); font-size: .9rem; }
+.sum-uah { color: var(--muted); }
 .phone { display: flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; white-space: nowrap; padding: 0 6px; }
 .phone:hover { color: var(--red); }
 .cart-btn { display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 18px; border: 1.5px solid var(--ink); border-radius: 999px; background: none; font-weight: 500; }
@@ -540,3 +554,6 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
   .foot-grid p a { display: inline-block; padding-block: 9px; }
   .crumbs a { display: inline-block; padding-block: 10px; margin-block: -10px; }
 }
+/* Фокус у полях: тонкої рамки мало (у темній шапці пошук її майже не міняє), тому кільце в кольорі кнопок. */
+.field input:focus-visible, .field textarea:focus-visible, .search input:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--red) 40%, transparent); }
+.search input:focus-visible { box-shadow: 0 0 0 2px var(--red); }   /* у темній шапці напівпрозоре кільце не видно */

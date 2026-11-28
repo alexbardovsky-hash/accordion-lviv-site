@@ -9,7 +9,7 @@
     metaDesc: 'Нові кнопкові (баяни) й клавішні акордеони Pigini, Scandalli, Bugari, Fisitalia, Hohner: ціни, характеристики, прослуховування перед купівлею. Ремонт, комплектуючі й аксесуари.',
     money: n => `${num(n, 'uk-UA')} грн`,
     goods: n => `${n} ${plural(n, 'товар', 'товари', 'товарів')}`,
-    skip: 'Перейти до вмісту', callAria: 'Зателефонувати 099 333 98 90', phoneShow: '099 333 98 90', openCatalog: 'Відкрити каталог', brandHome: 'Акордеон Центр, на головну', langLabel: 'Мова сайту',
+    skip: 'Перейти до вмісту', callAria: 'Зателефонувати 099 333 98 90', phoneShow: '099 333 98 90', openCatalog: 'Відкрити каталог', brandHome: 'Акордеон Центр, на головну', langLabel: 'Мова сайту', curLabel: 'Валюта цін', payUah: d => `Оплата в гривнях. Інші валюти — за курсом НБУ на ${d}.`, toPay: 'До сплати',
     catalog: 'Каталог', searchLabel: 'Пошук товарів', searchPh: 'Pigini, 41/120, ремені…', accordions: 'Акордеони',
     menu: 'Меню', forBuyers: 'Покупцям', repair: 'Ремонт', delivery: 'Доставка й оплата', contacts: 'Контакти', cart: 'Кошик',
     footLead: 'Не знаєте, яка деталь потрібна? Зателефонуйте, підберемо за моделлю інструмента.',
@@ -29,7 +29,7 @@
     heroText: (g, price) => `${g} для ремонту, гри та навчання: від деталі за ${price} до концертного Pigini. Доставка Новою Поштою по Україні.`,
     parts: 'Комплектуючі', instruments: 'Інструменти',
     slogan: 'Добрий акордеон гарно звучить у будь-яких руках. У руках майстра він творить досконалу музику.',
-    coverAlt: 'Клавіатура кнопкового акордеона в краплях води під теплим світлом', legendsH: 'Легенди акордеонного світу', legendsP: 'Італійські й німецькі майстерні, на інструментах яких грають солісти світових сцен.',
+    coverAlt: 'Клавіатура кнопкового акордеона в краплях води під теплим світлом', legendsH: 'Легенди акордеонного світу', legendsP: 'Італійські майстерні, на інструментах яких грають солісти світових сцен.',
     legend: { 301: 'На Pigini Nova грає Мартинас Левіцкіс — переможець Coupe Mondiale, перший акордеоніст, що підписав контракт із Decca Classics.', 541: 'На Scandalli грає італієць Пʼєтро Роффі, володар премії Orpheus.', 554: 'Акордеон Центр — офіційний представник Bugari Armando в Україні.', 551: 'Касото: тембр глибший і тепліший, ніж у звичайного інструмента.', 559: 'Клавішний готово-виборний Bugari з касото, для музичної школи й сцени.', 387: 'Акордеон Центр — офіційний представник Fisitalia в Україні.', 506: 'Акордеон Центр — офіційний представник Scandalli в Україні.', 568: 'Hohner випустила іменну модель легенди теха-мекс Флако Хіменеса.' }, labH: 'Комплектуючі до кожного вузла', labAll: 'Усі деталі', homeH1: 'Акордеони Pigini, Scandalli, Bugari, Fisitalia', labLabel: 'Будова акордеона', labAlt: 'Кнопковий акордеон Scandalli', labHint: 'Торкніться вузла інструмента, і камера долетить до нього.', labFly: n => `${n}: роздивитися ближче`, labBack: 'Назад до інструмента', labRepair: (n, g) => `Для ремонту: ${n}, ${g}`,
     labFacts: { buttons: ['Ґудзики', '67 ґудзиків під правою рукою.', 'Більше ґудзиків'], registers: ['Регістри', '9 регістрів у правій руці й 3 у басу.', 'З мюзетним звучанням'], grille: ['Корпус', 'Розмір 38 × 18,5 см.', 'Ще із серії AIR'], bellows: ['Міх', 'Подає повітря на чотири голоси правої руки: 16, 8, 8 і 4.', 'З касото'], bass: ['Бас', '96 кнопок, 4 голоси.', 'З готово-виборним басом'], strap: ['Ремені', 'Вага інструмента 8,8 кг.', 'Клавішні акордеони'] },
     heroCta: 'Обрати акордеон', heroThis: 'Розглянути цей', pickH: 'Який акордеон шукаєте?', pickBtn: 'Кнопкові', pickKeys: 'Клавішні', pickBrand: 'За виробником', pickSub: { 44: 'З готовим басом', 45: 'Готово-виборні', 46: 'З готовим басом', 47: 'Готово-виборні', 54: 'Цифровий', 56: 'Мюзет' },
@@ -38,7 +38,7 @@
     zoom: 'Збільшити фото', specH: 'Характеристики', instAsk: 'Чи є в наявності?', instListen: 'Домовитись про прослуховування',
     instSteps: [['Підтверджуємо наявність', 'Уточнюємо модель, комплектацію й коли інструмент буде в нас.'], ['Домовляємося про прослуховування', 'Можна приїхати й пограти перед купівлею.'], ['Узгоджуємо оплату й передачу', 'Обираємо зручний для вас спосіб.']],
     fBtn: 'Фільтри й сортування', footLeadInst: 'Обираєте інструмент? Зателефонуйте, порадимо й домовимось про прослуховування.', abroad: 'За кордон', abroadNote: 'Особиста передача, місце й час узгодимо', fCountry: 'Країна й місто',
-    partnersLead: '<b>Офіційне представництво в Україні:</b> Fisitalia, Scandalli, Bugari Armando, Musictech. Також працюємо з Pigini, Beltuna, Victoria, Mengascini, Serenellini, Dino Baffetti.',
+    partnersH: 'Партнери', officialLabel: 'Офіційне представництво в Україні',
     official: 'офіційне представництво',
     catLead: 'Оберіть розділ або одразу потрібну підгрупу.', moreGroups: n => `ще ${n}`,
     byUnit: 'Комплектуючі за вузлами інструмента', byUnitLead: 'Знаєте, що зламалося? Ідіть одразу до потрібного вузла.',
@@ -100,7 +100,7 @@
     metaDesc: 'New button and piano accordions by Pigini, Scandalli, Bugari, Fisitalia and Hohner: prices, specifications, a try-out before you buy. Repairs, parts and accessories.',
     money: n => `${num(n, 'en-US')} UAH`,
     goods: n => `${n} ${n === 1 ? 'item' : 'items'}`,
-    skip: 'Skip to content', callAria: 'Call +38 099 333 98 90', phoneShow: '+38 099 333 98 90', openCatalog: 'Open catalogue', brandHome: 'Accordion Centre, home page', langLabel: 'Site language',
+    skip: 'Skip to content', callAria: 'Call +38 099 333 98 90', phoneShow: '+38 099 333 98 90', openCatalog: 'Open catalogue', brandHome: 'Accordion Centre, home page', langLabel: 'Site language', curLabel: 'Price currency', payUah: d => `You pay in hryvnias (UAH). Other currencies are shown at the National Bank of Ukraine rate of ${d}.`, toPay: 'Amount charged',
     catalog: 'Catalogue', searchLabel: 'Search products', searchPh: 'Pigini, 41/120, straps…', accordions: 'Accordions',
     menu: 'Menu', forBuyers: 'Customer info', repair: 'Repairs', delivery: 'Delivery and payment', contacts: 'Contacts', cart: 'Cart',
     footLead: 'Not sure which part you need? Call us and we will match it to your instrument model.',
@@ -120,7 +120,7 @@
     heroText: (g, price) => `${g} for repair, playing and learning: from a ${price} part to a concert Pigini. Nova Poshta delivery across Ukraine.`,
     parts: 'Spare parts', instruments: 'Instruments',
     slogan: 'A good accordion sounds good in any hands. In a master’s hands, it makes perfect music.',
-    coverAlt: 'Button accordion keyboard covered in water droplets under warm light', legendsH: 'Legends of the accordion world', legendsP: 'Italian and German workshops whose instruments are played by soloists on the world’s stages.',
+    coverAlt: 'Button accordion keyboard covered in water droplets under warm light', legendsH: 'Legends of the accordion world', legendsP: 'Italian workshops whose instruments are played by soloists on the world’s stages.',
     legend: { 301: 'Martynas Levickis plays a Pigini Nova: Coupe Mondiale winner and the first accordionist signed to Decca Classics.', 541: 'Italian soloist Pietro Roffi, winner of the Orpheus Prize, plays Scandalli.', 554: 'Accordion Centre is the official Bugari Armando representative in Ukraine.', 551: 'Cassotto gives it a deeper, warmer tone than a regular instrument.', 559: 'A Bugari piano accordion with converter bass and cassotto, for music school and the stage.', 387: 'Accordion Centre is the official Fisitalia representative in Ukraine.', 506: 'Accordion Centre is the official Scandalli representative in Ukraine.', 568: 'Hohner made a signature model for Tex-Mex legend Flaco Jiménez.' }, labH: 'Parts for every section', labAll: 'All parts', homeH1: 'Pigini, Scandalli, Bugari and Fisitalia accordions', labLabel: 'Inside the accordion', labAlt: 'Scandalli button accordion', labHint: 'Tap a part of the instrument and the camera will fly to it.', labFly: n => `${n}: take a closer look`, labBack: 'Back to the instrument', labRepair: (n, g) => `For repairs: ${n}, ${g}`,
     labFacts: { buttons: ['Buttons', '67 buttons under the right hand.', 'More buttons'], registers: ['Registers', '9 registers in the right hand and 3 in the bass.', 'Musette sound'], grille: ['Body', 'Size 38 × 18.5 cm.', 'More from the AIR series'], bellows: ['Bellows', 'Feeds air to the four right-hand reeds: 16, 8, 8 and 4.', 'With cassotto'], bass: ['Bass', '96 buttons, 4 reeds.', 'With converter bass'], strap: ['Straps', 'The instrument weighs 8.8 kg.', 'Piano accordions'] },
     heroCta: 'Choose an accordion', heroThis: 'See this one', pickH: 'Which accordion are you looking for?', pickBtn: 'Button accordions', pickKeys: 'Piano accordions', pickBrand: 'By maker', pickSub: { 44: 'Standard bass', 45: 'Converter', 46: 'Standard bass', 47: 'Converter', 54: 'Digital', 56: 'Musette' },
@@ -129,7 +129,7 @@
     zoom: 'Enlarge photo', specH: 'Specifications', instAsk: 'Ask about availability', instListen: 'Arrange a try-out',
     instSteps: [['We confirm availability', 'We check the model, the set and the lead time.'], ['We arrange a try-out', 'You can come and play it before you buy.'], ['We agree on payment and handover', 'We choose the way that suits you.']],
     fBtn: 'Filters and sorting', footLeadInst: 'Choosing an instrument? Call us for advice and to arrange a try-out.', abroad: 'Outside Ukraine', abroadNote: 'Handed over in person, we agree the place and time', fCountry: 'Country and city',
-    partnersLead: '<b>Official representative in Ukraine:</b> Fisitalia, Scandalli, Bugari Armando, Musictech. We also work with Pigini, Beltuna, Victoria, Mengascini, Serenellini, Dino Baffetti.',
+    partnersH: 'Partners', officialLabel: 'Official representative in Ukraine',
     official: 'official representative',
     catLead: 'Pick a section or go straight to the group you need.', moreGroups: n => `${n} more`,
     byUnit: 'Parts by section of the instrument', byUnitLead: 'Know what is broken? Go straight to that section.',
@@ -186,5 +186,21 @@
   };
 
   const lang = window.SITE.lang;   // мова — це адреса: /en/… або без нього
-  window.I18N = { lang, L: lang === 'zh' ? { ...en, ...window.I18N_ZH(num) } : lang === 'en' ? en : uk, uk };
+  const L = lang === 'zh' ? { ...en, ...window.I18N_ZH(num) } : lang === 'en' ? en : uk;
+
+  /* Валюта (Алекс 28.11): гривня, долар, євро, юань. Ціни й оплата — у гривнях, решту показуємо за курсом НБУ (data/rates.js).
+     Вибір тримаємо в localStorage; уперше — гривня українською, юань китайською, англійською євро в Європі й долар деінде. */
+  const R = window.RATES || {}, CURS = ['UAH', 'USD', 'EUR', 'CNY'].filter(c => c === 'UAH' || R[c] > 0);
+  const tz = (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch { return ''; } })();
+  const guess = lang === 'uk' || /Kyiv|Kiev|Simferopol|Uzhgorod|Zaporozhye/.test(tz) ? 'UAH' : lang === 'zh' ? 'CNY' : /^Europe\//.test(tz) ? 'EUR' : 'USD';
+  let cur = guess; try { const c = localStorage.getItem('acc-cur'); if (c) cur = c; } catch {}
+  if (!CURS.includes(cur)) cur = 'UAH';
+  const loc = { uk: 'uk-UA', en: 'en-US' }[L.locale] || L.locale, rate = cur === 'UAH' ? 1 : R[cur];
+  const fx = v => new Intl.NumberFormat(loc, { style: 'currency', currency: cur, currencyDisplay: 'narrowSymbol', maximumFractionDigits: v >= 100 ? 0 : 2, minimumFractionDigits: v >= 100 ? 0 : 2 });
+  const sym = c => c === 'UAH' ? '₴' : new Intl.NumberFormat('en-US', { style: 'currency', currency: c, currencyDisplay: 'narrowSymbol' }).formatToParts(1).find(x => x.type === 'currency').value;
+  const curName = c => { try { return new Intl.DisplayNames([loc], { type: 'currency' }).of(c); } catch { return c; } };
+  const money = cur === 'UAH' ? L.money : n => fx(n / rate).format(n / rate);
+  window.I18N = { lang, uk, L: { ...L, money, uah: L.money, cur, curs: CURS, rate, sym, curName, ratesDate: R.date || '',
+    fPrice: cur === 'UAH' ? L.fPrice : L.fPrice.replace(/грн|UAH|格里夫纳/, sym(cur)),
+    setCur: c => { if (!CURS.includes(c) || c === cur) return; try { localStorage.setItem('acc-cur', c); } catch {} location.reload(); } } };
 })();
