@@ -7,12 +7,16 @@ window.ACC_HOME = (() => {
   const CUT = [1727, 1228], PLACE = { d: [.159896, .17739, .530208, .665441], m: [.110294, .303125, .780331, .314063] }, FRAME = { d: [1920, 1088], m: [1088, 1920] };
   const NODES = [['buttons', 5, 320, 900, 'l m'], ['registers', 26, 470, 640, 'l'], ['grille', 19, 690, 900, 'r'], ['bellows', 11, 1211, 330, 'r m'], ['bass', 7, 1520, 690, 'r m'], ['strap', /^(Ремені|Straps)/i, 420, 130, 'l']];
   const STAGE = [
-    // «Легенди акордеонного світу» (26.11): t — підпис вкладки; рядок про виконавця — L.legend[id], лише перевірені факти (сайти виробників)
-    { id: 301, w: 'Pigini', t: 'Pigini Nova', n: 'Pigini Nova', src: 'img/flag/301.webp', tone: '#7d1528' }, { id: 554, w: 'Bugari', t: 'Bayan 2 RC', n: 'Bugari Armando 2 RC Cassotto', src: 'img/flag/554.webp', tone: '#8b4a1f' },
-    { id: 541, w: 'Scandalli', t: 'Super VI', n: 'Scandalli Super VI', src: 'img/stage2/541.webp', tone: '#3d4650' }, { id: 387, w: 'Fisitalia', t: 'B-61', n: 'Fisitalia B-61', src: 'img/flag/387.webp', tone: '#0e5a52' },
-    { id: 551, w: 'Bugari', t: '540 ARS C', n: 'Bugari 540 ARS C', src: 'img/stage2/551.webp', tone: '#5a2a1c' }, { id: 506, w: 'Scandalli', t: 'AIR I C', n: 'Scandalli AIR I C', src: 'img/stage2/506.webp', tone: '#2c3440' },
-    { id: 559, w: 'Bugari', t: '289 ARS C', n: 'Bugari 289 ARS C', src: 'img/stage2/559.webp', tone: '#6b1d2e' },
-    // Hohner прибрано 28.11 (Алекс): у «Легендах» лише італійські марки.
+    // «Легенди акордеонного світу»: найтоповіші моделі кожної марки, кнопкова й клавішна (Алекс 28.11). t — підпис вкладки; рядок про виконавця — L.legend[id], лише перевірені факти.
+    // Фото: img/flag/<id>.webp (tools/cut_flag.py, tools/cut_flag_maker.py). Без ціни в каталозі — «під замовлення».
+    { id: 301, w: 'Pigini', t: 'Pigini Nova', n: 'Pigini Nova', src: 'img/flag/301.webp', tone: '#7d1528' },
+    { id: 10085, w: 'Bugari', t: 'Bayan Spectrum', n: 'Bugari Armando Bayan Spectrum', src: 'img/flag/10085.webp', tone: '#8b4a1f' },
+    { id: 10067, w: 'Scandalli', t: 'Extreme Plus', n: 'Scandalli Extreme Plus', src: 'img/flag/10067.webp', tone: '#3d4650' },
+    { id: 10187, w: 'Fisitalia', t: 'Bayan iKON', n: 'Fisitalia Bayan-iKON', src: 'img/flag/10187.webp', tone: '#0e5a52' },
+    { id: 290, w: 'Pigini', t: 'Nova Piano', n: 'Pigini Nova Piano', src: 'img/flag/290.webp', tone: '#6b1d2e' },
+    { id: 10044, w: 'Scandalli', t: 'Super VI Extreme', n: 'Scandalli Super VI Extreme', src: 'img/flag/10044.webp', tone: '#2c3440' },
+    { id: 10098, w: 'Bugari', t: 'Spectrum Piano', n: 'Bugari Armando Bayan Spectrum Piano', src: 'img/flag/10098.webp', tone: '#5a2a1c' },
+    { id: 10171, w: 'Fisitalia', t: 'Supertone', n: 'Fisitalia Supertone', src: 'img/flag/10171.webp', tone: '#24463f' },
   ];
   const portrait = () => matchMedia('(max-aspect-ratio: 1/1)').matches;
 
@@ -30,7 +34,7 @@ window.ACC_HOME = (() => {
   };
 
   function html(x) {
-    const { L, esc, url, goods, count, cat, prod, money } = x, N = nodes(x);
+    const { L, esc, url, goods, count, cat, prod, money } = x, N = nodes(x), price = p => p.price ? money(p.price) : L.orderPrice;
     const vid = (v, p) => `<video src="scenes/web/${v}-w.mp4" data-poster="scenes/web/${p}-m.webp" muted loop playsinline preload="none" aria-hidden="true"></video>`;   // ролики мозаїки повернуто 28.11
     const pic = n => `<img class="t-pic" src="scenes/still/${n}.webp" srcset="scenes/still/${n}-m.webp 800w, scenes/still/${n}.webp 1600w" sizes="(max-width: 960px) 100vw, 34vw" alt="" loading="lazy">`;   // кадри з 3D-моделі (tools/m3d/stills.py); ШІ-ролики scenes/web прибрано 26.11
     const kom = x.inCat(48).find(p => p.img), st = STAGE.filter(s => prod.get(s.id));
@@ -51,7 +55,7 @@ window.ACC_HOME = (() => {
       <div class="flag-word" id="flagWord" aria-hidden="true">${st[0] ? esc(st[0].w) : ''}</div>
       <img class="flag-pic" id="flagPic" src="${st[0] ? st[0].src : ''}" alt="${st[0] ? esc(st[0].n) : ''}" fetchpriority="high" draggable="false">
       <div class="flag-info" aria-live="polite"><h2 id="flagN">${st[0] ? esc(st[0].n) : ''}</h2><p id="flagS">${st[0] ? esc(spec(prod.get(st[0].id), x.lang)) : ''}</p><p class="flag-leg" id="flagL">${st[0] ? esc(L.legend[st[0].id] || '') : ''}</p></div>
-      <div class="flag-buy"><b id="flagP">${st[0] ? money(prod.get(st[0].id).price) : ''}</b><a class="btn" id="flagA" href="${st[0] ? url(`/p/${st[0].id}`) : '#'}">${L.flagOpen}</a></div>
+      <div class="flag-buy"><b id="flagP">${st[0] ? price(prod.get(st[0].id)) : ''}</b><a class="btn" id="flagA" href="${st[0] ? url(`/p/${st[0].id}`) : '#'}">${L.flagOpen}</a></div>
       <button type="button" class="flag-arr p" aria-label="${L.shelfPrev}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="flag-arr n" aria-label="${L.shelfNext}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
       <div class="flag-tabs">${st.map((s, i) => `<button type="button" data-s="${i}" aria-pressed="${i === 0}">${esc(s.t)}</button>`).join('')}<a href="${url('/c/43')}">${L.all(goods(count(43)))}</a></div>
     </section>
@@ -178,7 +182,7 @@ window.ACC_HOME = (() => {
       if (!S.length) return;
       let cur = 0, busy = false;
       const size = w => `${innerWidth > 860 ? Math.min(23, 150 / w.length) : Math.min(24, 126 / w.length)}vw`;
-      const paint = i => { const s = S[i], p = x.prod.get(s.id); el.style.setProperty('--tone', s.tone); word.textContent = s.w; word.style.fontSize = size(s.w); pic.src = s.src; pic.alt = s.n; $('#flagN').textContent = s.n; $('#flagS').textContent = spec(p, x.lang); $('#flagL').textContent = x.L.legend[s.id] || ''; $('#flagP').textContent = x.money(p.price); $('#flagA').href = x.url(`/p/${s.id}`); tabs.forEach((b, k) => b.setAttribute('aria-pressed', k === i)); };
+      const paint = i => { const s = S[i], p = x.prod.get(s.id); el.style.setProperty('--tone', s.tone); word.textContent = s.w; word.style.fontSize = size(s.w); pic.src = s.src; pic.alt = s.n; $('#flagN').textContent = s.n; $('#flagS').textContent = spec(p, x.lang); $('#flagL').textContent = x.L.legend[s.id] || ''; $('#flagP').textContent = p.price ? x.money(p.price) : x.L.orderPrice; $('#flagA').href = x.url(`/p/${s.id}`); tabs.forEach((b, k) => b.setAttribute('aria-pressed', k === i)); };
       paint(0); on(window, 'resize', () => { word.style.fontSize = size(S[cur].w); });
       // Підвантажуємо лише сусідів поточного (стрілка, свайп), а не всі 8 фото одразу: на телефоні це ~1,5 МБ, які більшість не гортає.
       const got = new Set([0]), near = i => [i - 1, i + 1].forEach(k => { k = (k + S.length) % S.length; if (!got.has(k)) { got.add(k); new Image().src = S[k].src; } });
