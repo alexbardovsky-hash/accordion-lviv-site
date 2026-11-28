@@ -31,6 +31,7 @@ window.ACC_HOME = (() => {
 
   function html(x) {
     const { L, esc, url, goods, count, cat, prod, money } = x, N = nodes(x);
+    const vid = (v, p) => `<video src="scenes/web/${v}-w.mp4" data-poster="scenes/web/${p}-m.webp" muted loop playsinline preload="none" aria-hidden="true"></video>`;   // ролики мозаїки повернуто 28.11
     const pic = n => `<img class="t-pic" src="scenes/still/${n}.webp" srcset="scenes/still/${n}-m.webp 800w, scenes/still/${n}.webp 1600w" sizes="(max-width: 960px) 100vw, 34vw" alt="" loading="lazy">`;   // кадри з 3D-моделі (tools/m3d/stills.py); ШІ-ролики scenes/web прибрано 26.11
     const kom = x.inCat(48).find(p => p.img), st = STAGE.filter(s => prod.get(s.id));
     const restCats = x.roots.filter(r => ![3, 38, 43, 48].includes(r.id) && count(r.id));
@@ -42,7 +43,7 @@ window.ACC_HOME = (() => {
     <section class="official dark" aria-label="${L.officialLabel}"><div class="official-row">${x.official}</div></section>
     <section class="cover" aria-labelledby="coverH">
       <picture><source media="(max-aspect-ratio: 1/1)" srcset="img/cover/kb_m-s.webp 540w, img/cover/kb_m.webp 1080w" sizes="100vw"><img class="cover-pic" src="img/cover/kb_d.webp" srcset="img/cover/kb_d-s.webp 1200w, img/cover/kb_d.webp 2400w" sizes="100vw" alt="${L.coverAlt}" fetchpriority="high"></picture>
-      <div class="cover-text"><h1 id="coverH">${L.mast.map(w => `<span>${esc(w)}</span>`).join(' ')}</h1><p>${L.slogan}</p><a class="btn" href="${url('/c/43')}">${L.heroCta}</a></div>
+      <div class="cover-text"><img class="cover-logo" src="img/logo-cover.webp" alt="" width="640" height="387"><h1 id="coverH">${L.mast.map(w => `<span>${esc(w)}</span>`).join(' ')}</h1><p>${L.slogan}</p><a class="btn" href="${url('/c/43')}">${L.heroCta}</a></div>
     </section>
     <section class="partners dark" aria-labelledby="partnersH"><h2 class="partners-h" id="partnersH">${L.partnersH}</h2><div class="marquee" aria-hidden="true">${x.partners}</div></section>
     <section class="flag" id="flag" tabindex="-1" aria-roledescription="carousel" aria-label="${L.instruments}">
@@ -57,7 +58,7 @@ window.ACC_HOME = (() => {
     <section class="pick" id="pick" aria-labelledby="pickH">
       <h2 id="pickH">${L.pickH}</h2>
       ${pick(window.ACC_MAKER ? 'm561' : 561, L.pickBtn, [44, 45, 56])}
-      ${pick(window.ACC_MAKER ? 'm565' : 492, L.pickKeys, [46, 47, 54])}
+      ${pick(window.ACC_MAKER ? 'm540' : 492, L.pickKeys, [46, 47, 54])}
       <div class="pk-brands"><span>${L.pickBrand}</span>${brands.map(([b, n]) => `<a href="${url(`/c/43?brand=${encodeURIComponent(b)}`)}">${esc(b)} <i>${n}</i></a>`).join('')}<a href="${url('/c/43')}">${L.wallAll} <i>${count(43)}</i></a></div>
     </section>
     <section class="lab" id="lab" aria-label="${L.labLabel}">
@@ -73,9 +74,9 @@ window.ACC_HOME = (() => {
       <div class="t t-e"><h3>${L.adviceH}</h3><p>${L.adviceP}</p><div class="t-cta"><a class="btn" href="tel:+380993339890">${L.phoneShow}</a><a class="btn ghost" href="${url('/contacts')}">${L.contacts}</a></div></div>
       <a class="t t-f" href="${url('/c/48')}">${kom ? `<img src="${esc(x.photo(kom))}" alt="" width="800" height="800" loading="lazy">` : ''}<h3>${esc(cat.get(48)?.name || '')}</h3><p>${goods(count(48))}</p></a>
       <h2 class="bento-h" id="bentoH">${L.ownersH}</h2>
-      <a class="t v t-b" href="${url('/service')}">${pic('bellows')}<h3>${L.repairFull}</h3><p>${L.bentoRepair}</p></a>
-      <a class="t v t-b" href="${url('/c/38')}">${pic('strap')}<h3>${esc(cat.get(38)?.name || '')}</h3><p>${goods(count(38))}</p></a>
-      <a class="t v t-b" href="${url('/c/3')}">${pic('buttons')}<h3>${L.parts}</h3><p>${L.bentoParts(goods(count(3)))}</p></a>
+      <a class="t v t-b" href="${url('/service')}">${vid('bellows_macro', 'bellows')}<h3>${L.repairFull}</h3><p>${L.bentoRepair}</p></a>
+      <a class="t v t-b" href="${url('/c/38')}">${vid('keys', 'keys')}<h3>${esc(cat.get(38)?.name || '')}</h3><p>${goods(count(38))}</p></a>
+      <a class="t v t-b" href="${url('/c/3')}">${vid('buttons', 'buttons')}<h3>${L.parts}</h3><p>${L.bentoParts(goods(count(3)))}</p></a>
       <div class="bento-more">${restCats.map(r => `<a href="${url(`/c/${r.id}`)}">${esc(r.name)} <i>${count(r.id)}</i></a>`).join('')}</div>
     </section>`;
   }
@@ -151,6 +152,8 @@ window.ACC_HOME = (() => {
         const v = calm ? null : await Promise.race([load(N[i].k).catch(() => null), new Promise(ok => setTimeout(ok, 6000, null))]);   // повільний інтернет: показуємо деталі без польоту
         clearTimeout(wait); cancelAnimationFrame(ring); el.classList.remove('is-wait'); d.classList.remove('busy'); d.removeAttribute('aria-busy');
         if (ac.signal.aborted) return;
+        // Проліт на весь екран: сцену ставимо рівно під верх вікна, щоб шапка не накривала заголовок панелі (Алекс 28.11).
+        const top = el.getBoundingClientRect().top; if (Math.abs(top) > 4) scrollBy({ top, behavior: calm ? 'auto' : 'smooth' });
         fill(i); el.classList.add('is-fly');
         if (v) { const p = play(v); setTimeout(() => { el.classList.add('is-open'); el.classList.remove('is-swap'); }, Math.max(0, (v.duration || 2.6) * 1000 - 600)); await p; load(N[i].k, true).catch(() => {}); }
         el.classList.add('is-open'); el.classList.remove('is-swap');

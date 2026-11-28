@@ -17,6 +17,7 @@
   for (const x of C.products) { const v = window.VARIANTS?.[x.id]?.[lang === 'uk' ? 0 : 1]; x.name = nice(x.name) + (v && !x.name.includes(v) ? `, ${v}` : '');if (window.VARIANTS?.[x.id]) x.uk += `, ${window.VARIANTS[x.id][0]}`; }
   // Характеристики з сайтів виробників (data/specs.js) — лише там, де в каталозі їх немає.
   for (const x of C.products) { const s = window.SPECS?.[x.id]; if (s && x.features.length < 3) { x.features = s[lang] || s.en; x.maker = true; } }
+  for (const x of C.products) if (x.order) x.maker = true;   // моделі з сайтів виробників (data/makers.js): усе з їхніх таблиць
   /* Де таблиці виробника немає (69 з 88): права й ліва рука з позначки «82/96» у назві — так магазин пише кількість ґудзиків чи клавіш і басів.
      Тип клавіатури — з розділу (44, 45, 56 кнопкові; 46, 47 клавішні). Більше нічого не домислюємо. */
   const pl = (n, f) => { const a = n % 10, b = n % 100; return f[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? 1 : 2]; };
@@ -81,7 +82,8 @@
   const photo = p => LOCAL.has(p.id) ? `${MAKER.has(p.id) ? 'photos/maker_web' : PHOTO_DIR}/${p.id}-m.webp` : p.img;
   const srcset = u => srcsetOf(u) ? ` srcset="${srcsetOf(u)}" sizes="(max-width: 960px) 92vw, 1200px"` : '';
   const toPay = () => L.cur === 'UAH' || !cartTotal() ? '' : `<div class="sum-line sum-uah"><span>${L.toPay}</span><span>${L.uah(cartTotal())}</span></div><p class="p-note">${L.payUah(L.ratesDate)}</p>`;
-  const priceTag = p => p.price ? `<span class="price">${money(p.price)}</span>` : `<span class="price ask">${L.askPrice}</span>`;
+  const askTag = p => p.order ? L.orderPrice : L.askPrice;   // «під замовлення» — моделі з сайтів виробників без ціни
+  const priceTag = p => p.price ? `<span class="price">${money(p.price)}</span>` : `<span class="price ask">${askTag(p)}</span>`;
   /* Обране й порівняння (account.js): сердечко й терези на картці та сторінці товару. */
   const ACC = window.ACC_ACCOUNT, AT = ACC?.t || {};
   const ICON = {
@@ -226,16 +228,19 @@
   const PARTNERS = [
     { n: 'Fisitalia', tier: 'official', cls: 'fisitalia' },
     { n: 'Scandalli', tier: 'official', cls: 'scandalli' },
-    { n: 'Bugari', tier: 'official', cls: 'bugari', sub: 'Armando' },
+    { n: 'Bugari', tier: 'official', cls: 'bugari', sub: 'Armando', img: 'img/brands/bugari.webp', w: 260, h: 42 },   // справжні логотипи з сайтів виробників (Алекс 28.11)
     { n: 'Musictech', tier: 'official', cls: 'musictech' },
-    { n: 'Pigini', tier: 'dealer', cls: 'pigini', mark: '<svg viewBox="0 0 24 24"><path d="M3 13a9 9 0 0 1 9-9M6 13a6 6 0 0 1 6-6M9 13a3 3 0 0 1 3-3"/></svg>' },
+    { n: 'Pigini', tier: 'dealer', cls: 'pigini', img: 'img/brands/pigini.svg', w: 408, h: 100 },
     { n: 'Beltuna', tier: 'dealer', cls: 'beltuna', mark: '<svg class="rays" viewBox="0 0 40 12"><path d="M20 1v10M13 2l4 9M27 2l-4 9M6 5l9 6M34 5l-9 6"/></svg>' },
     { n: 'Victoria', tier: 'dealer', cls: 'victoria' },
     { n: 'Mengascini', tier: 'partner', cls: 'mengascini' },
     { n: 'Serenellini', tier: 'partner', cls: 'serenellini' },
-    { n: 'Dino Baffetti', tier: 'partner', cls: 'baffetti' },
+    { n: 'Dino Baffetti', tier: 'partner', cls: 'baffetti' },   // далі виробники комплектуючих (Алекс 28.11)
+    { n: 'Carini', tier: 'parts', cls: 'carini' },
+    { n: 'Marconi', tier: 'parts', cls: 'marconi' },
+    { n: 'Cagnoni', tier: 'parts', cls: 'cagnoni' },
   ];
-  const logo = p => `<span class="lg lg-${p.cls} is-${p.tier}">${p.mark || ''}<b>${p.n}</b>${p.sub ? `<em>${p.sub}</em>` : ''}${p.tier === 'official' ? `<small>${L.official}</small>` : ''}</span>`;
+  const logo = p => `<span class="lg lg-${p.cls} is-${p.tier}">${p.img ? `<img src="${p.img}" alt="${p.n}${p.sub ? ` ${p.sub}` : ''}" width="${p.w}" height="${p.h}">` : `${p.mark || ''}<b>${p.n}</b>${p.sub ? `<em>${p.sub}</em>` : ''}`}${p.tier === 'official' ? `<small>${L.official}</small>` : p.tier === 'parts' ? `<small>${L.partsMaker}</small>` : ''}</span>`;
 
 
   function home() {
@@ -263,7 +268,7 @@
     const state = { sort: query.get('sort') || 'default', brand: query.get('brand') || '', shown: Math.max(PAGE, +query.get('n') || 0), query };
     const top = path(id)[0];
     if ([3, 38, 65].includes(top.id)) setFoot(L.footLead);
-    const scene = null;   // ШІ-макросцени (міх, клавіші, ґудзики) показували деталі неправильно — прибрано 26.11 (Алекс)
+    const scene = { 11: 'bellows', 6: 'keys', 5: 'buttons' }[id];   // макросцени з колишньої головної живуть у своїх розділах   // повернуто 28.11 (Алекс: «куди зникли анімації?»)
     out.html = `
       ${scene ? `<section class="reel cat-reel" id="reel" aria-hidden="true"><div class="reel-stage" data-key="${scene}"><canvas class="reel-vid is-on"${scene === 'keys' ? ' data-band' : ''} style="${poster(scene)}"></canvas><div class="reel-card" hidden></div></div></section>` : ''}
       ${crumbs(path(id).map((x, i, a) => ({ name: x.name, href: i < a.length - 1 ? url(`/c/${x.id}`) : null })))}
@@ -291,11 +296,14 @@
   }
 
   /* Фільтри для інструментів: ціна, баси, вага. Число басів беремо з назви (41/120) чи характеристики, вагу — з характеристики. */
-  const basses = p => +(p.features.find(f => /^(Ліва рука|Left hand|左手)$/.test(f[0]))?.[1].match(/^\d+/)?.[0] || p.name.match(/\d{2,3}\s*\/\s*(\d{2,3})/)?.[1] || 0);
+  const basses = p => +(p.features.find(f => /^(Ліва рука|Left hand|左手)$/.test(f[0]))?.[1].match(/^\d+/)?.[0] || p.name.match(/\b\d{2,3}\s*\/\s*(\d{2,3})\b/)?.[1] || 0);
   const weight = p => parseFloat((p.features.find(f => /^(Вага|Weight|重量)$/.test(f[0]))?.[1] || '').replace(',', '.')) || 0;
+  /* «Як у каталозі» для інструментів (Алекс 28.11): від менших (дитячих) до більших — за басами, далі за правою рукою, вагою й ціною. Без розміру — у кінці. */
+  const treble = p => +(p.features.find(f => /^(Права рука|Right hand|右手)$/.test(f[0]))?.[1].match(/^\d+/)?.[0] || p.name.match(/(\d{2,3})\s*\/\s*\d{2,3}/)?.[1] || 0);
+  const bySize = (a, b) => (basses(a) || 1e4) - (basses(b) || 1e4) || (treble(a) || 1e4) - (treble(b) || 1e4) || (weight(a) || 1e3) - (weight(b) || 1e3) || (a.price || 1e9) - (b.price || 1e9);
   function listing(root, all, state, brands, base, emptyText) {
     if (!brands.includes(state.brand)) state.brand = '';
-    const inst = all.filter(p => p.price >= 20000).length > 7;
+    const inst = all.filter(p => p.price >= 20000 || p.order).length > 7;
     const bassSet = inst ? [...new Set(all.map(basses).filter(Boolean))].sort((a, b) => a - b) : [];
     const heavy = inst && all.filter(weight).length > 7;
     const qn = k => Math.max(0, +state.query?.get(k) || 0);
@@ -310,6 +318,7 @@
     let painted = false;
     const paint = () => {
       let items = all.filter(p => (!state.brand || p.brand === state.brand) && (!f.min || p.price >= f.min) && (!f.max || (p.price && p.price <= f.max)) && (!f.bass || basses(p) === f.bass) && (!f.kg || (weight(p) && weight(p) <= f.kg)));
+      if (state.sort === 'default' && inst) items.sort(bySize);
       if (state.sort === 'cheap') items.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
       if (state.sort === 'dear') items.sort((a, b) => (b.price ?? -1) - (a.price ?? -1));
       if (state.sort === 'name') items.sort((a, b) => a.name.localeCompare(b.name, L.locale));
@@ -352,9 +361,9 @@
     setFoot(L.footLeadInst, p);
     const related = inCat.get(p.cat).filter(x => x.id !== p.id).slice(0, 10);
     // Інструменти: без «кількості», спершу питають про наявність і домовляються послухати (варіант A, 25.11).
-    const inst = p.price >= 20000 && p.cats.some(c => path(c)[0]?.id === 43 || c === 48);
+    const inst = (p.price >= 20000 || p.order) && p.cats.some(c => path(c)[0]?.id === 43 || c === 48);
     const text = [p.short, p.desc !== p.short ? p.desc : ''].filter(Boolean).map(t => `<p>${esc(t)}</p>`).join('');
-    const spec = p.features.length ? (inst ? `<dl class="p-spec">${p.features.map(f => `<div><dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd></div>`).join('')}</dl>` : `<table>${p.features.map(f => `<tr><td>${esc(f[0])}</td><td>${esc(f[1])}</td></tr>`).join('')}</table>`) + (p.maker ? `<p class="p-note">${L.makerData}</p>` : '') : '';
+    const spec = p.features.length ? (inst ? `<dl class="p-spec">${p.features.map(f => `<div><dt>${esc(f[0])}</dt><dd>${esc(f[1])}</dd></div>`).join('')}</dl>` : `<table>${p.features.map(f => `<tr><td>${esc(f[0])}</td><td>${esc(f[1])}</td></tr>`).join('')}</table>`) + (p.maker ? `<p class="p-note">${L.makerData}${p.src ? ` <a href="${esc(p.src)}" target="_blank" rel="noopener">${esc(new URL(p.src).hostname.replace(/^www\./, ''))}</a>` : ''}</p>` : '') : '';
     const desc = text || spec ? `<div class="p-desc"><h2>${inst && spec ? L.specH : L.desc}</h2>${text}${spec}</div>` : '';
     out.html = `
       ${crumbs([...path(p.cat).map(x => ({ name: x.name, href: url(`/c/${x.id}`) })), { name: p.name }])}
@@ -366,7 +375,7 @@
         <div class="p-info">
           <h1>${esc(p.name)}</h1>
           <p class="p-ref">${[p.ref && `${L.sku} ${esc(p.ref)}`, p.brand && esc(p.brand)].filter(Boolean).join(', ')}</p>
-          ${p.price ? `<p class="p-price">${money(p.price)}</p>${L.cur === 'UAH' ? '' : `<p class="p-uah">${L.uah(p.price)} · ${L.payUah(L.ratesDate)}</p>`}` : `<p class="p-price" style="font-size:1.4rem">${L.askPrice}</p>`}
+          ${p.price ? `<p class="p-price">${money(p.price)}</p>${L.cur === 'UAH' ? '' : `<p class="p-uah">${L.uah(p.price)} · ${L.payUah(L.ratesDate)}</p>`}` : `<p class="p-price" style="font-size:1.4rem">${askTag(p)}</p>${p.order ? `<p class="p-uah">${L.orderNote}</p>` : ''}`}
           ${inst ? `<div class="p-ask">
               ${window.ACC_CHAT?.enabled ? `<button class="btn" id="askP" type="button">${L.instAsk}</button><button class="btn ghost" id="askL" type="button">${L.instListen}</button>` : `<a class="btn" href="tel:${PHONE}">${L.instAsk}</a><a class="btn ghost" href="${url('/contacts')}">${L.instListen}</a>`}
               ${p.buy ? `<button class="link-btn p-add" data-add="${p.id}">${L.addToCart}</button>` : ''}</div>`
@@ -483,7 +492,7 @@
     const keys = [...new Set(list.flatMap(p => p.features.map(f => f[0])))];
     const feat = (p, k) => p.features.find(f => f[0] === k)?.[1] || '';
     const rows = [
-      [AT.rowPrice, p => p.price ? money(p.price) : L.askPrice],
+      [AT.rowPrice, p => p.price ? money(p.price) : askTag(p)],
       [AT.rowBrand, p => esc(p.brand || '')],
       [AT.rowRef, p => esc(p.ref || '')],
       [AT.rowCat, p => cat.get(p.cat) ? `<a href="${url(`/c/${p.cat}`)}">${esc(cat.get(p.cat).name)}</a>` : ''],
@@ -513,7 +522,7 @@
 
   const PAGES = {
     delivery: [L.delivery, links(L.pages.delivery)],
-    service: [L.repairFull, `<div class="svc-media" aria-hidden="true"><img src="scenes/still/grille.webp" alt="" loading="lazy"><img src="scenes/still/registers.webp" alt="" loading="lazy"></div>${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
+    service: [L.repairFull, `<div class="svc-media" aria-hidden="true"><video src="scenes/web/bellows_macro-w.mp4" poster="scenes/web/bellows-m.webp" muted loop playsinline preload="none"></video><video src="scenes/web/buttons-w.mp4" poster="scenes/web/buttons-m.webp" muted loop playsinline preload="none"></video></div>${links(L.pages.service)}<p style="margin-top:20px"><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>`],
     contacts: [L.contacts, `<p><a class="contact-big" href="tel:${PHONE}">${PHONE_TEXT}</a></p>
       <p><a class="contact-big" style="font-size:1.4rem" href="mailto:${MAIL}">${MAIL}</a></p>
       <h2>${L.footTitle}</h2>${links(L.pages.contacts)}<div id="letterBox"></div>`],

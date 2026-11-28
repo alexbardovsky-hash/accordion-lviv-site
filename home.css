@@ -25,7 +25,7 @@
 .hs:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 50%; }
 .hs span { position: absolute; left: 44px; white-space: nowrap; padding: 5px 13px; border-radius: 999px; background: rgba(18, 14, 15, .84); font-weight: 500; font-size: .95rem; transition: background .2s; } .hs.l span { left: auto; right: 44px; } .hs:hover span { background: var(--red); }
 .is-fly .lab-text, .is-fly .lab-hint, .is-fly .hs { opacity: 0; pointer-events: none; visibility: hidden; transition: opacity .25s, visibility 0s .25s; } .is-fly .lab-text { translate: 24px -52%; }
-.lab-panel { position: absolute; z-index: 3; right: 0; top: 0; bottom: 0; width: min(440px, 100%); padding: 112px clamp(22px, 2.6vw, 40px) 30px; background: rgba(18, 14, 15, .68); -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); color: var(--night-ink); translate: 102% 0; visibility: hidden; transition: translate .6s cubic-bezier(.2, .8, .2, 1), visibility 0s .6s; display: flex; flex-direction: column; gap: 16px; }
+.lab-panel { position: absolute; z-index: 3; right: 0; top: 0; bottom: 0; width: min(440px, 100%); padding: max(112px, calc(var(--top-h, 74px) + 38px)) clamp(22px, 2.6vw, 40px) 30px; background: rgba(18, 14, 15, .68); -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); color: var(--night-ink); translate: 102% 0; visibility: hidden; transition: translate .6s cubic-bezier(.2, .8, .2, 1), visibility 0s .6s; display: flex; flex-direction: column; gap: 16px; }
 .is-open .lab-panel { translate: 0 0; visibility: visible; transition-delay: 0s; }
 .lab-panel h2 { font: 700 clamp(2rem, 3.1vw, 3.1rem)/.98 var(--display); letter-spacing: -.06em; padding-right: 60px; overflow-wrap: anywhere; } .lab-panel p { color: var(--night-muted); }
 .lab-panel ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .3) transparent; align-content: start; }
@@ -164,6 +164,7 @@
 .cover::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgba(0, 0, 0, .7), transparent 46%); pointer-events: none; }
 @media (max-aspect-ratio: 1/1) { .cover-pic { object-position: 50% 0%; } .cover::after { background: linear-gradient(0deg, #000 0, rgba(0, 0, 0, .55) 34%, transparent 58%); } }
 .cover-text { position: absolute; left: var(--pad, clamp(18px, 3.2vw, 56px)); top: 52%; translate: 0 -50%; max-width: min(44vw, 640px); display: grid; gap: clamp(18px, 2.4vw, 30px); justify-items: start; }
+.cover-logo { width: clamp(130px, 13vw, 250px); height: auto; margin-bottom: clamp(-6px, -.4vw, 0px); filter: drop-shadow(0 4px 18px rgba(0, 0, 0, .55)); }   /* емблема над назвою (Алекс 28.11) */
 .cover h1 { font: 700 clamp(2.6rem, 4.7vw, 6rem)/.88 var(--display); letter-spacing: -.05em; text-transform: uppercase; } .cover h1 span { display: block; }
 .cover p { font-size: clamp(1rem, 1.25vw, 1.3rem); line-height: 1.45; color: rgba(255, 255, 255, .8); max-width: 34ch; }
 .cover .btn { background: var(--red); border-color: var(--red); color: #fff; } .cover .btn:hover { background: #fff; border-color: #fff; color: #1a1213; }

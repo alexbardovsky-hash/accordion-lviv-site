@@ -142,6 +142,12 @@ svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width:
 .lg-scandalli b { font: 600 1.45rem "Cormorant Garamond", serif; letter-spacing: .28em; text-transform: uppercase; }
 .lg-bugari b { font: 700 1.1rem "Cormorant Garamond", serif; letter-spacing: .16em; text-transform: uppercase; border: 1.5px solid currentColor; border-radius: 50%; padding: 8px 24px 7px; }
 .lg-musictech b { font: 600 1.15rem Orbitron, sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.lg img { display: block; width: auto; max-width: none; height: 34px; }
+.lg-bugari img { width: 235px; height: 38px; } .lg-pigini img { width: 122px; height: 30px; }   /* SVG без власних розмірів у flex-колонці стискається до нуля — ширину задаємо явно */
+.lg-carini b { font: 600 1.4rem Cinzel, serif; letter-spacing: .14em; text-transform: uppercase; }
+.lg-marconi b { font: 700 1.25rem Montserrat, sans-serif; letter-spacing: .2em; text-transform: uppercase; }
+.lg-cagnoni b { font: italic 600 1.7rem "Cormorant Garamond", serif; letter-spacing: .03em; }
+.lg.is-parts small { margin-top: 10px; font: 500 .72rem/1 var(--ui); color: var(--muted); }
 .lg-pigini b { font: 800 1.5rem Montserrat, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
 .lg-beltuna b { font: 600 1.35rem Cinzel, serif; letter-spacing: .18em; text-transform: uppercase; }
 .lg-victoria b { font: 400 2.2rem "Great Vibes", cursive; }
